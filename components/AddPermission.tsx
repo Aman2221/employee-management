@@ -1,7 +1,8 @@
 "use client";
+import moment from "moment";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
-import { addDoc, collection } from "firebase/firestore";
+import { Timestamp, addDoc, collection } from "firebase/firestore";
 import React, { useState } from "react";
 
 const AddPermission = ({
@@ -20,7 +21,9 @@ const AddPermission = ({
     duration: null,
     emp_id: null,
     reason: "",
-    date_time: new Date().toString(),
+    date: moment().format("L"),
+    time: moment().format("LTS"),
+    created_at: Timestamp.now(),
   });
 
   const handleInputChange = (
@@ -66,7 +69,10 @@ const AddPermission = ({
         <div className="relative p-4 w-full max-w-md max-h-full">
           <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+              <h3
+                onClick={() => console.log(moment().format("MMMM Do YYYY"))}
+                className="text-lg font-semibold text-gray-900 dark:text-white"
+              >
                 Add Leave
               </h3>
               <button

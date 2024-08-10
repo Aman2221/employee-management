@@ -10,4 +10,7 @@ export interface permissions {
   email: s;
   phone: s;
   reason: s;
+  date: s;
+  time: s;
+  created_at: s;
 }

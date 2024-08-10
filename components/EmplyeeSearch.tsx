@@ -123,7 +123,11 @@ export const TableDataRows = ({
       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
     >
       {headings.map((item: string) => (
-        <th key={item} scope="col" className="px-6 py-3">
+        <th
+          key={item}
+          scope="col"
+          className={`${item == "id" ? "hidden" : ""} px-6 py-3`}
+        >
           {row[item as any]}
         </th>
       ))}

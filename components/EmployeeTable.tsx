@@ -1,10 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
 import Loader from "./Loader";
 import EmplyeeSearch, { TableDataRows } from "./EmplyeeSearch";
+import { removeKeyFromArray } from "@/functions";
+import { permissions } from "@/interfaces";
 
 interface pmsInterface {
   headings: string[];
@@ -58,17 +60,30 @@ const EmployeeTable = () => {
 
   const getData = async () => {
     const tempData: any = [];
-    const querySnapshot = await getDocs(collection(db, "permissions"));
-    querySnapshot.forEach((doc) => {
-      tempData.push(doc.data());
-    });
+    try {
+      const q = query(
+        collection(db, "permissions"),
+        orderBy("created_at", "desc")
+      );
+      const querySnapshot = await getDocs(q);
+      querySnapshot.docs.map((doc) =>
+        tempData.push({
+          id: doc.id,
+          ...doc.data(),
+        })
+      );
+    } catch (e) {
+      console.error("Error fetching sorted documents: ", e);
+      return [];
+    }
 
     setTimeout(() => {
+      const updatedUsers = removeKeyFromArray(tempData, "created_at");
       if (tempData.length) {
         setPmsData({
           ...pmsdata,
-          headings: Object.keys(tempData[0]) as string[],
-          db_data: tempData,
+          headings: Object.keys(updatedUsers[0]) as string[],
+          db_data: updatedUsers,
         });
       }
       setShowLoader(false);
@@ -104,7 +119,13 @@ const EmployeeTable = () => {
                       <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                           {pmsdata.headings.map((item: string) => (
-                            <th key={item} scope="col" className="px-6 py-3">
+                            <th
+                              key={item}
+                              scope="col"
+                              className={`${
+                                item == "id" ? "hidden" : ""
+                              } px-6 py-3`}
+                            >
                               {item.replace("_", " ")}
                             </th>
                           ))}
