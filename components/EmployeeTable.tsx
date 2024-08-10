@@ -6,7 +6,6 @@ import { usePmsContext } from "@/context";
 import Loader from "./Loader";
 import EmplyeeSearch, { TableDataRows } from "./EmplyeeSearch";
 import { removeKeyFromArray } from "@/functions";
-import { permissions } from "@/interfaces";
 
 interface pmsInterface {
   headings: string[];
@@ -87,7 +86,7 @@ const EmployeeTable = () => {
         });
       }
       setShowLoader(false);
-    }, 2000);
+    }, 3000);
   };
 
   useEffect(() => {

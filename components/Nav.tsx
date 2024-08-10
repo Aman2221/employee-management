@@ -1,9 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import AddPermission from "./AddPermission";
+import PasteMessage from "./PasteMessage";
 
 const Nav = () => {
   const [show, setShow] = useState(false);
+  const [showMsg, setShowMsg] = useState(false);
 
   return (
     <div>
@@ -27,7 +29,7 @@ const Nav = () => {
                 New Record
               </button>
               <button
-                //  onClick={() => setShowPstMsg(!show)}
+                onClick={() => setShowMsg(!show)}
                 type="button"
                 className="text-white uppercase  bg-lime-700 hover:bg-lime-800 focus:ring-4 focus:outline-none focus:ring-lime-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-lime-600 dark:hover:bg-lime-700 dark:focus:ring-lime-800"
               >
@@ -69,6 +71,7 @@ const Nav = () => {
         </div>
       </nav>
       {show && <AddPermission show={show} setShow={setShow} />}
+      {showMsg && <PasteMessage show={showMsg} setShow={setShowMsg} />}
     </div>
   );
 };

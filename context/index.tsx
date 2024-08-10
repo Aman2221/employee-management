@@ -18,7 +18,12 @@ export const PmsProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <PmsContext.Provider
-      value={{ showLoader, setShowLoader, callGetData, setCallGetData }}
+      value={{
+        showLoader,
+        setShowLoader,
+        callGetData,
+        setCallGetData,
+      }}
     >
       {children}
     </PmsContext.Provider>
