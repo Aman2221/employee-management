@@ -20,6 +20,7 @@ const AddPermission = ({
     duration: null,
     emp_id: null,
     reason: "",
+    date_time: new Date(),
   });
 
   const handleInputChange = (

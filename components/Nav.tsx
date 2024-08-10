@@ -18,13 +18,22 @@ const Nav = () => {
             </span>
           </a>
           <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-            <button
-              onClick={() => setShow(!show)}
-              type="button"
-              className="text-white uppercase  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            >
-              New Record
-            </button>
+            <div className="flex gap-5">
+              <button
+                onClick={() => setShow(!show)}
+                type="button"
+                className="text-white uppercase  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              >
+                New Record
+              </button>
+              <button
+                type="button"
+                className="text-white uppercase  bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+              >
+                Export data
+              </button>
+            </div>
+
             <button
               data-collapse-toggle="navbar-sticky"
               type="button"
