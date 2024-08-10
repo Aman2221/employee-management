@@ -4,7 +4,6 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
 import Loader from "./Loader";
-import { permissions } from "@/interfaces";
 import EmplyeeSearch, { TableDataRows } from "./EmplyeeSearch";
 
 interface pmsInterface {
@@ -13,7 +12,7 @@ interface pmsInterface {
   filter_data: string[];
 }
 const EmployeeTable = () => {
-  const { showLoader, setShowLoader } = usePmsContext();
+  const { showLoader, setShowLoader, callGetData } = usePmsContext();
   const [searchFilter, setSearchFilter] = useState({
     type: "type",
     searchKey: "",
@@ -63,19 +62,22 @@ const EmployeeTable = () => {
     querySnapshot.forEach((doc) => {
       tempData.push(doc.data());
     });
+
     setTimeout(() => {
-      setPmsData({
-        ...pmsdata,
-        headings: Object.keys(tempData[0]) as string[],
-        db_data: tempData,
-      });
+      if (tempData.length) {
+        setPmsData({
+          ...pmsdata,
+          headings: Object.keys(tempData[0]) as string[],
+          db_data: tempData,
+        });
+      }
       setShowLoader(false);
     }, 2000);
   };
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [callGetData]);
 
   return (
     <>
@@ -83,41 +85,49 @@ const EmployeeTable = () => {
         <Loader />
       ) : (
         <>
-          <EmplyeeSearch
-            handleCategory={handleCategory}
-            handleSearch={handleSearch}
-            handleInputChange={handleInputChange}
-            searchFilter={searchFilter}
-          />
-          <div className="mt-6 animate__animated animate__fadeIn">
-            {pmsdata && pmsdata.db_data.length ? (
-              <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                      {pmsdata.headings.map((item: string) => (
-                        <th key={item} scope="col" className="px-6 py-3">
-                          {item.replace("_", " ")}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <TableDataRows
-                      data={
-                        pmsdata.filter_data.length
-                          ? pmsdata.filter_data
-                          : pmsdata.db_data
-                      }
-                      headings={pmsdata.headings}
-                    />
-                  </tbody>
-                </table>
+          {pmsdata.db_data.length == 0 ? (
+            <div className="flex my-10 w-full justify-center items-center">
+              <h1 className="text-4xl text-center font-bold">No data</h1>
+            </div>
+          ) : (
+            <>
+              <EmplyeeSearch
+                handleCategory={handleCategory}
+                handleSearch={handleSearch}
+                handleInputChange={handleInputChange}
+                searchFilter={searchFilter}
+              />
+              <div className="mt-6 animate__animated animate__fadeIn">
+                {pmsdata && pmsdata.db_data.length ? (
+                  <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                      <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                          {pmsdata.headings.map((item: string) => (
+                            <th key={item} scope="col" className="px-6 py-3">
+                              {item.replace("_", " ")}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <TableDataRows
+                          data={
+                            pmsdata.filter_data.length
+                              ? pmsdata.filter_data
+                              : pmsdata.db_data
+                          }
+                          headings={pmsdata.headings}
+                        />
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <></>
+                )}
               </div>
-            ) : (
-              <></>
-            )}
-          </div>
+            </>
+          )}
         </>
       )}
     </>

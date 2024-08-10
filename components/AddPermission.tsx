@@ -11,7 +11,7 @@ const AddPermission = ({
   show: boolean;
   setShow: (a: boolean) => void;
 }) => {
-  const { showLoader, setShowLoader } = usePmsContext();
+  const { setShowLoader, callGetData, setCallGetData } = usePmsContext();
   const [permission, setPermission] = useState({
     name: "",
     type: "4 Hours",
@@ -20,7 +20,7 @@ const AddPermission = ({
     duration: null,
     emp_id: null,
     reason: "",
-    date_time: new Date(),
+    date_time: new Date().toString(),
   });
 
   const handleInputChange = (
@@ -47,6 +47,7 @@ const AddPermission = ({
       const docRef = await addDoc(collection(db, "permissions"), permission);
       setShow(!show);
       setShowLoader(true);
+      setCallGetData(!callGetData);
     } catch (e) {
       console.error("Error adding document: ", e);
     }

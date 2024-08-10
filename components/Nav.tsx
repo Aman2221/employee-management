@@ -27,6 +27,13 @@ const Nav = () => {
                 New Record
               </button>
               <button
+                //  onClick={() => setShowPstMsg(!show)}
+                type="button"
+                className="text-white uppercase  bg-lime-700 hover:bg-lime-800 focus:ring-4 focus:outline-none focus:ring-lime-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-lime-600 dark:hover:bg-lime-700 dark:focus:ring-lime-800"
+              >
+                Paste message
+              </button>
+              <button
                 type="button"
                 className="text-white uppercase  bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
               >
