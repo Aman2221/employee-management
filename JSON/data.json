@@ -1,0 +1,22 @@
+{
+    "leaves" : [
+        {
+            "emp_id" : 123,
+            "name" :"Aman",
+            "duration" :1,
+            "type" :"sick",
+            "email" :"as@gmail.com",
+            "phone" :"+91 324324234",
+            "reason" :"This is a reason 1"
+        },
+        {
+            "emp_id" : 12,
+            "name" :"Raj",
+            "duration" :1,
+            "type" :"casual",
+            "email" :"info@gmail.com",
+            "phone" :"+91 324324234",
+            "reason" :"This is a reason 2"
+        }
+    ]
+}
