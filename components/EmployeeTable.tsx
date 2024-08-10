@@ -1,11 +1,13 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
 import Loader from "./Loader";
-import EmplyeeSearch, { TableDataRows } from "./EmplyeeSearch";
-import { removeKeyFromArray } from "@/functions";
+import { AgGridReact } from "ag-grid-react";
+import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS
+import "ag-grid-community/styles/ag-theme-alpine.css";
+import data from "@/JSON/data.json";
 
 interface pmsInterface {
   headings: string[];
@@ -14,48 +16,13 @@ interface pmsInterface {
 }
 const EmployeeTable = () => {
   const { showLoader, setShowLoader, callGetData } = usePmsContext();
-  const [searchFilter, setSearchFilter] = useState({
-    type: "type",
-    searchKey: "",
-  });
   const [pmsdata, setPmsData] = useState<pmsInterface>({
     headings: [],
     db_data: [],
     filter_data: [],
   });
 
-  const handleCategory = (type: string) => {
-    setSearchFilter({ ...searchFilter, type: type });
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value: any = e.target.value;
-
-    if (value.length > 3) {
-      setSearchFilter({
-        ...searchFilter,
-        searchKey: value.toLowerCase(),
-      });
-    } else {
-      setPmsData({
-        ...pmsdata,
-        filter_data: [],
-      });
-    }
-  };
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchFilter.searchKey) {
-      const temp_data = pmsdata.db_data.filter((i: any) =>
-        i.name.toLowerCase().includes(searchFilter.searchKey)
-      );
-      setPmsData({
-        ...pmsdata,
-        filter_data: temp_data,
-      });
-    }
-  };
+  const columnDefs = useMemo(() => data.column_defs, []);
 
   const getData = async () => {
     const tempData: any = [];
@@ -77,12 +44,11 @@ const EmployeeTable = () => {
     }
 
     setTimeout(() => {
-      const updatedUsers = removeKeyFromArray(tempData, "created_at");
       if (tempData.length) {
         setPmsData({
           ...pmsdata,
-          headings: Object.keys(updatedUsers[0]) as string[],
-          db_data: updatedUsers,
+          headings: Object.keys(tempData[0]) as string[],
+          db_data: tempData,
         });
       }
       setShowLoader(false);
@@ -105,42 +71,16 @@ const EmployeeTable = () => {
             </div>
           ) : (
             <>
-              <EmplyeeSearch
-                handleCategory={handleCategory}
-                handleSearch={handleSearch}
-                handleInputChange={handleInputChange}
-                searchFilter={searchFilter}
-              />
-              <div className="mt-6 animate__animated animate__fadeIn">
+              <div className="mt-6 w-full animate__animated animate__fadeIn">
                 {pmsdata && pmsdata.db_data.length ? (
                   <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                      <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                          {pmsdata.headings.map((item: string) => (
-                            <th
-                              key={item}
-                              scope="col"
-                              className={`${
-                                item == "id" ? "hidden" : ""
-                              } px-6 py-3`}
-                            >
-                              {item.replace("_", " ")}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <TableDataRows
-                          data={
-                            pmsdata.filter_data.length
-                              ? pmsdata.filter_data
-                              : pmsdata.db_data
-                          }
-                          headings={pmsdata.headings}
-                        />
-                      </tbody>
-                    </table>
+                    <div className="ag-theme-alpine-dark ag-grid-table overflow-y-scroll dm-sans rounded-sm">
+                      <AgGridReact
+                        rowData={pmsdata.db_data}
+                        columnDefs={columnDefs as any}
+                        className="dm-sans custom-cell-border"
+                      />
+                    </div>
                   </div>
                 ) : (
                   <></>

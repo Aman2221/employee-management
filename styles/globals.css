@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -24,10 +25,37 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+
+  overflow-y: hidden;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.dm-sans {
+  font-family: "DM Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+.ag-grid-table {
+  height: 70vh;
+}
+
+.ag-grid-table::-webkit-scrollbar,
+.ag-body-vertical-scroll-viewport,
+.ag-body-horizontal-scroll-viewport {
+  display: none !important;
+}
+
+.custom-cell-border .ag-cell {
+  font-family: "Inter", sans-serif !important;
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Add a border to all cells */
+}
+
+.custom-cell-border .ag-header-cell {
+  font-family: "Inter", sans-serif !important;
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Add a border to all header cells */
 }

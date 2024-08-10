@@ -2,10 +2,16 @@
 import React, { useState } from "react";
 import AddPermission from "./AddPermission";
 import PasteMessage from "./PasteMessage";
+import { exportToExcel, getData } from "@/functions";
 
 const Nav = () => {
   const [show, setShow] = useState(false);
   const [showMsg, setShowMsg] = useState(false);
+
+  const handleExport = async () => {
+    const data = await getData();
+    exportToExcel(data);
+  };
 
   return (
     <div>
@@ -37,6 +43,7 @@ const Nav = () => {
               </button>
               <button
                 type="button"
+                onClick={handleExport}
                 className="text-white uppercase  bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
               >
                 Export data

@@ -18,5 +18,68 @@
             "phone" :"+91 324324234",
             "reason" :"This is a reason 2"
         }
-    ]
+    ],
+    "column_defs" : [
+        {
+          "headerName": "emp id",
+          "field": "emp_id",
+          "sortable": true,
+          "filter": true,
+          "headerClass": "uppercase",
+          "width": 120
+        },
+        {
+          "headerName": "name",
+          "field": "name",
+          "headerClass": "uppercase",
+          "filter": true
+        },
+        {
+          "headerName": "duration",
+          "field": "duration",
+          "headerClass": "uppercase",
+          "width": 120
+        },
+        {
+          "headerName": "type",
+          "field": "type",
+          "sortable": false,
+          "headerClass": "uppercase",
+          "filter": true,
+          "width": 210
+        },
+        {
+          "headerName": "email",
+          "field": "email",
+          "headerClass": "uppercase",
+          "filter": true
+        },
+        {
+          "headerName": "phone",
+          "field": "phone",
+          "sortable": false,
+          "headerClass": "uppercase",
+          "width": 200
+        },
+        {
+          "headerName": "reason",
+          "field": "reason",
+          "sortable": false,
+          "headerClass": "uppercase"
+        },
+        {
+          "headerName": "date",
+          "field": "date",
+          "headerClass": "uppercase",
+          "sortable": true,
+          "width": 140
+        },
+        {
+          "headerName": "time",
+          "field": "time",
+          "headerClass": "uppercase",
+          "sortable": true,
+          "width": 140
+        }
+      ]
 }

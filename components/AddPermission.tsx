@@ -42,14 +42,15 @@ const AddPermission = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setShow(!show);
+    setShowLoader(true);
     addDocument();
   };
 
   const addDocument = async () => {
     try {
       const docRef = await addDoc(collection(db, "permissions"), permission);
-      setShow(!show);
-      setShowLoader(true);
+
       setCallGetData(!callGetData);
     } catch (e) {
       console.error("Error adding document: ", e);

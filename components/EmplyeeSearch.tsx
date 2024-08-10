@@ -1,4 +1,3 @@
-import { permissions } from "@/interfaces";
 import React, { useState } from "react";
 
 const EmplyeeSearch = ({
@@ -16,8 +15,9 @@ const EmplyeeSearch = ({
   const [showDropDown, setShowDropDown] = useState(false);
 
   return (
-    <div className="flex justify-end w-full">
-      <form className="w-96 mx-auto" onSubmit={handleSearch}>
+    <div className="flex justify-between w-full items-center">
+      <h1 className="text-2xl">Admin</h1>
+      <form className="w-96" onSubmit={handleSearch}>
         <div className="flex relative">
           <label
             htmlFor="search-dropdown"
