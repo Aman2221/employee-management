@@ -39,3 +39,11 @@ export const getData = async () => {
     return [];
   }
 };
+
+export const validateEmail = (email: string) => {
+  const domain = "@companyname.com";
+  if (!email.endsWith(domain)) {
+    return `Email must end with ${domain}`;
+  }
+  return "";
+};
