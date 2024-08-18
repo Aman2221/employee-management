@@ -8,18 +8,21 @@ const ChooseLoginType = () => {
   const login_types = [
     {
       type: "employee",
-      bg: "sky",
+      bg: "bg-green",
       route: "employee",
+      hover: "hover:bg-green-400",
     },
     {
       type: "HR",
-      bg: "green",
+      bg: "bg-red",
       route: "hr",
+      hover: "hover:bg-red-400",
     },
     {
       type: "manager",
-      bg: "red",
+      bg: "bg-yellow",
       route: "manager",
+      hover: "hover:bg-yellow-400",
     },
   ];
 
@@ -48,10 +51,10 @@ const ChooseLoginType = () => {
                   <Link
                     key={item.type}
                     href={"/login/" + item.route}
-                    className="w-full"
+                    className={`w-full ${item.bg}-300 ${item.hover}`}
                   >
                     <button
-                      className={`bg-${item.bg}-300 capitalize hover:bg-sky-400 text-gray-800 font-medium py-2 px-4 rounded inline-flex items-center flex-center w-full gap-2`}
+                      className={` capitalize text-gray-800 font-medium py-2 px-4 rounded w-full`}
                     >
                       {item.type} Login
                     </button>

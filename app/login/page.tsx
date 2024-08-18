@@ -1,9 +1,8 @@
-import Layout from "@/components/Layout";
-import ChooseLoginType from "@/components/SelectLogin";
+import LoginPg from "@/components/LoginPg";
 import React from "react";
 
 const SelectLogin = () => {
-  return <ChooseLoginType />;
+  return <LoginPg />;
 };
 
 export default SelectLogin;

@@ -1,10 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddPermission from "./AddPermission";
 import PasteMessage from "./PasteMessage";
 import { exportToExcel, getData } from "@/functions";
 
 const Nav = () => {
+  const [isSuper, setIsSuper] = useState(false);
+
   const [show, setShow] = useState(false);
   const [showMsg, setShowMsg] = useState(false);
 
