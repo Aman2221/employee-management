@@ -5,7 +5,6 @@ import { auth } from "@/config/firebase";
 import {
   ErrorToast,
   SuccessToast,
-  checkIfSuperUser,
   setCookie,
   setCookieOnServer,
   setUserToLocal,
@@ -17,8 +16,8 @@ import { useRouter } from "next/navigation";
 const LoginPg = () => {
   const router = useRouter();
   const [userData, setUserData] = useState({
-    email: "",
-    password: "",
+    email: "aman@primasoft.ae",
+    password: "Aman@123",
   });
 
   const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -42,11 +41,12 @@ const LoginPg = () => {
         );
 
         const user: any = userCredential.user;
-        // console.log("handleSignIn:", auth.currentUser);
-        // setUserToLocal(user);
+        // setUserToLocal("user", user);
         setCookieOnServer(user.accessToken);
         SuccessToast("Login Successful");
-        router.push("/home");
+        setTimeout(() => {
+          router.push("/home");
+        }, 500);
       } catch (error) {
         ErrorToast("Please enter valid email and password");
       }

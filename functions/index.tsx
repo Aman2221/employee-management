@@ -3,7 +3,7 @@ import * as XLSX from "xlsx";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { auth, db } from "@/config/firebase";
 import { Bounce, toast } from "react-toastify";
-import { getIdTokenResult } from "firebase/auth";
+import { getAuth, getIdTokenResult } from "firebase/auth";
 // import { cookies } from "next/headers";
 
 export const removeKeyFromArray = (arr: any, key: keyof permissions) => {
@@ -57,14 +57,35 @@ export function isPasswordComplex(password: string): boolean {
   return passwordRegex.test(password);
 }
 
-export async function checkIfSuperUser() {
-  const localUser = getUserFromLocal();
-  const currentUser: any = auth.currentUser ? auth.currentUser : localUser;
-  if (currentUser) {
-    const idTokenResult = await getIdTokenResult(currentUser);
-    return idTokenResult.claims.superUser;
-  } else return false;
-}
+// export async function checkIfSuperUser() {
+//   const auth = getAuth(); // Initialize Firebase Auth
+//   const user = auth.currentUser; // Get the current user
+
+//   if (user) {
+//     try {
+//       // Get ID token result, which includes custom claims
+//       const idTokenResult = await user.getIdTokenResult();
+//       console.log("idTokenResult :", idTokenResult);
+//       console.log("claims :", idTokenResult.claims);
+//       console.log(
+//         "idTokenResult.claims.superUser :",
+//         idTokenResult.claims.superUser
+//       );
+//       console.log(
+//         "idTokenResult.claims.superUser :",
+//         idTokenResult.claims.superUser
+//       );
+//       // Check if the custom claim 'superUser' is present
+//       if (idTokenResult.claims.superUser) {
+//         console.log("User is a super user");
+//       } else {
+//         console.log("User is not a super user");
+//       }
+//     } catch (error) {
+//       console.error("Error getting ID token result:", error);
+//     }
+//   } else return false;
+// }
 
 //get and set cookie on the client side
 export function setCookie(name: string, value: string, days: number) {
@@ -101,7 +122,7 @@ export function getCookie(name: string): string | null {
 // }
 
 export const setCookieOnServer = async (token: string) => {
-  const response = await fetch("/api/login", {
+  const response = await fetch("/api/set-cookie", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -168,11 +189,20 @@ export const ErrorToast = (
   });
 };
 
-export const setUserToLocal = (user: any) => {
-  localStorage.setItem("user", JSON.stringify(user));
+export const setUserToLocal = (name: string = "user", value: any) => {
+  localStorage.setItem("user", JSON.stringify(value));
 };
 
 export const getUserFromLocal = () => {
   const getUser: any = localStorage.getItem("user");
+  return JSON.parse(getUser);
+};
+
+export const setItemToSession = (name: string = "user", value: any) => {
+  sessionStorage.setItem("user", JSON.stringify(value));
+};
+
+export const getItemFromSession = () => {
+  const getUser: any = sessionStorage.getItem("user");
   return JSON.parse(getUser);
 };
