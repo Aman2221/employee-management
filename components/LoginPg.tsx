@@ -5,9 +5,7 @@ import { auth } from "@/config/firebase";
 import {
   ErrorToast,
   SuccessToast,
-  setCookie,
   setCookieOnServer,
-  setUserToLocal,
   validateEmail,
 } from "@/functions";
 import { ToastContainer } from "react-toastify";
