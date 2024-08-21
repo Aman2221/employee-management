@@ -1,25 +1,33 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/config/firebase";
+import { auth, db } from "@/config/firebase";
 import {
   ErrorToast,
   SuccessToast,
+  addUserToDB,
+  checkPassword,
   deleteAllCookies,
-  getUserDoc,
-  setCookie,
+  setCookieOnServer,
   validateEmail,
 } from "@/functions";
 import { ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
+import InputField from "./common/InputField";
+import data from "@/JSON/data.json";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
-const LoginPg = () => {
+const RegisterPg = () => {
   const router = useRouter();
   const [userData, setUserData] = useState({
-    // email: "aman@primasoft.ae",
-    // password: "Aman@123",
+    username: "",
+    emp_id: "",
+    phone: "",
+    role: "",
     email: "",
     password: "",
+    confirm_password: "",
+    designation: "",
   });
 
   const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -31,12 +39,16 @@ const LoginPg = () => {
     });
   };
 
-  const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     let validEmail = validateEmail(userData.email);
-    if (validEmail) {
+    let validPassword = checkPassword(
+      userData.email,
+      userData.confirm_password
+    );
+    if (validEmail && validPassword) {
       try {
-        const userCredential = await signInWithEmailAndPassword(
+        const userCredential = await createUserWithEmailAndPassword(
           auth,
           userData.email,
           userData.password
@@ -44,27 +56,31 @@ const LoginPg = () => {
 
         const user: any = userCredential.user;
         // setUserToLocal("user", user);
-        setCookie("token", user.accessToken, 7);
-        await getUserDoc(user.uid);
-        SuccessToast("Login Successful");
+
+        const userDoc = doc(db, "users", user.uid);
+        await addUserToDB(userDoc, userData, user.uid); //adding user data to collection
+        SuccessToast("User Registered Successful");
         setTimeout(() => {
-          router.push("/home");
+          router.push("/login");
         }, 500);
       } catch (error) {
-        ErrorToast("Please enter valid email and password");
+        ErrorToast("");
       }
     } else {
-      ErrorToast("Email is not valid");
+      ErrorToast(
+        validEmail
+          ? "Email is not valid"
+          : "Password should include one capital letter, one small letter, one special character, numbers, the length should be atleast 8 characters long and password and confirm password should be the same"
+      );
     }
   };
 
-  //if want to access login page even after login just remove this code
-  // useEffect(() => {
-  //   deleteAllCookies();
-  // });
+  useEffect(() => {
+    deleteAllCookies();
+  }, []);
 
   return (
-    <section className="">
+    <>
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <div className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
           <img
@@ -74,48 +90,25 @@ const LoginPg = () => {
           />
           Primasoft
         </div>
-        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+        <div className="register_form bg-white rounded-lg shadow dark:border md:mt-0 xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+          <div className="p-6 space-y-4 md:space-y-6 sm:p-8 w-full">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              Sign in to your account
+              Register new user
             </h1>
-            <form className="space-y-4 md:space-y-6" onSubmit={handleSignIn}>
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Your email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  onChange={handleInputChange}
-                  value={userData.email}
-                  className=" outline-none border bg-transparent border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="name@company.com"
-                  required
-                />
+            <form className="space-y-4 md:space-y-6" onSubmit={handleRegister}>
+              <div className=" grid grid-cols-2 gap-x-10 gap-y-5">
+                {data.register_fields.map((item) => (
+                  <InputField
+                    name={item.name}
+                    placeholder={item.placeholder}
+                    type={item.type}
+                    onChange={handleInputChange}
+                    label={item.label}
+                    extrClasses="w-52"
+                  />
+                ))}
               </div>
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Password
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  placeholder="••••••••"
-                  onChange={handleInputChange}
-                  value={userData.password}
-                  className="bg-transparent border outline-none border-gray-300 text-gray-900 rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required
-                />
-              </div>
+
               <div className="flex items-center justify-between">
                 <div className="flex items-start">
                   <div className="flex items-center h-5">
@@ -153,8 +146,8 @@ const LoginPg = () => {
         </div>
       </div>
       <ToastContainer />
-    </section>
+    </>
   );
 };
 
-export default LoginPg;
+export default RegisterPg;

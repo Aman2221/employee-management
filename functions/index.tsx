@@ -1,10 +1,17 @@
 import { permissions } from "@/interfaces";
 import * as XLSX from "xlsx";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
-import { auth, db } from "@/config/firebase";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  orderBy,
+  query,
+  setDoc,
+} from "firebase/firestore";
+import { db } from "@/config/firebase";
 import { Bounce, toast } from "react-toastify";
-import { getAuth, getIdTokenResult } from "firebase/auth";
-// import { cookies } from "next/headers";
+import cookie from "cookie";
 
 export const removeKeyFromArray = (arr: any, key: keyof permissions) => {
   return arr.map((item: permissions) => {
@@ -51,6 +58,13 @@ export const validateEmail = (email: string) => {
   return true;
 };
 
+export const checkPassword = (password: string, confirm_password: string) => {
+  const checkPasswordCompxity = isPasswordComplex(password);
+  if (password === confirm_password && checkPasswordCompxity) {
+    return true;
+  }
+  return false;
+};
 export function isPasswordComplex(password: string): boolean {
   const passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -99,17 +113,9 @@ export function setCookie(name: string, value: string, days: number) {
 }
 
 export function getCookie(name: string): string | null {
-  if (typeof document === "undefined") {
-    return null;
-  }
-
-  const nameEQ = name + "=";
-  const ca = document.cookie.split(";");
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) === " ") c = c.substring(1, c.length);
-    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-  }
+  const value = `; ${document.cookie}`;
+  const parts: any = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
   return null;
 }
 
@@ -129,7 +135,6 @@ export const setCookieOnServer = async (token: string) => {
     },
     body: JSON.stringify({ token }),
   });
-  console.log("response :", response);
 };
 
 export const SuccessToast = (
@@ -205,4 +210,58 @@ export const setItemToSession = (name: string = "user", value: any) => {
 export const getItemFromSession = () => {
   const getUser: any = sessionStorage.getItem("user");
   return JSON.parse(getUser);
+};
+
+export const addUserToDB = async (
+  userDoc: any,
+  userData: { [key: string]: string },
+  uid: string
+) => {
+  await setDoc(userDoc, {
+    ...userData,
+    uid: uid,
+    createdAt: new Date(),
+  });
+};
+
+export const getUserDoc = async (uid: string) => {
+  try {
+    const userDocRef = doc(db, "users", uid);
+    const userDocSnap: any = await getDoc(userDocRef);
+    const { pasword, password, confirm_password, ...userData } =
+      userDocSnap.data();
+    setCookie("user", JSON.stringify(userData), 1);
+  } catch (error) {
+    console.error("Error fetching user document: ", error);
+    throw error;
+  }
+};
+
+export const deleteAllCookies = (req?: any, res?: any) => {
+  // Client-side deletion
+  if (typeof window !== "undefined") {
+    const cookies = document.cookie.split(";");
+
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i];
+      const eqPos = cookie.indexOf("=");
+      const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    }
+  }
+
+  // Server-side deletion
+  if (res && req) {
+    const cookies = req.headers.cookie ? cookie.parse(req.headers.cookie) : {};
+
+    for (const name in cookies) {
+      res.setHeader(
+        "Set-Cookie",
+        cookie.serialize(name, "", {
+          maxAge: -1,
+          path: "/",
+        })
+      );
+    }
+  }
 };
