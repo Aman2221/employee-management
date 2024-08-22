@@ -2,8 +2,14 @@
 import React, { useEffect, useState } from "react";
 import AddPermission from "./AddPermission";
 import PasteMessage from "./PasteMessage";
-import { exportToExcel, getCookie, getData } from "@/functions";
+import {
+  deleteAllCookies,
+  exportToExcel,
+  getCookie,
+  getData,
+} from "@/functions";
 import { useRouter } from "next/navigation";
+import { getAuth, signOut } from "firebase/auth";
 
 const Nav = () => {
   const router = useRouter();
@@ -15,6 +21,15 @@ const Nav = () => {
   const handleExport = async () => {
     const data = await getData();
     exportToExcel(data);
+  };
+
+  const handleLogout = async () => {
+    const auth = getAuth();
+    await signOut(auth);
+    localStorage.clear();
+    sessionStorage.clear();
+    deleteAllCookies();
+    router.push("/login");
   };
 
   useEffect(() => {
@@ -81,9 +96,22 @@ const Nav = () => {
                   >
                     Export data
                   </button>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="text-white uppercase  bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                  >
+                    Logout
+                  </button>
                 </div>
               ) : (
-                <></>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="text-white uppercase  bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                >
+                  Logout
+                </button>
               )}
             </div>
           </div>

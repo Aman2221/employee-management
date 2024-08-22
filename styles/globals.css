@@ -45,8 +45,7 @@ body {
 }
 
 .ag-grid-table::-webkit-scrollbar,
-.ag-body-vertical-scroll-viewport,
-.ag-body-horizontal-scroll-viewport {
+.ag-body-vertical-scroll-viewport {
   display: none !important;
 }
 

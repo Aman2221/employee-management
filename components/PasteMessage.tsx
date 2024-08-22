@@ -4,6 +4,7 @@ import moment from "moment";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
 import { Timestamp, addDoc, collection } from "firebase/firestore";
+import { getCookie } from "@/functions";
 
 const PasteMessage = ({
   show,
@@ -12,6 +13,7 @@ const PasteMessage = ({
   show: boolean;
   setShow: (a: boolean) => void;
 }) => {
+  const userUid = JSON.parse(getCookie("user") as string);
   const [message, setMessage] = useState("");
   const { setShowLoader, callGetData, setCallGetData } = usePmsContext();
 
@@ -38,6 +40,9 @@ const PasteMessage = ({
       date: moment().format("L"),
       time: moment().format("LTS"),
       created_at: Timestamp.now(),
+      status: "pending",
+      uid: userUid.uid,
+      added_by: userUid.email,
     };
 
     try {

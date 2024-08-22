@@ -8,10 +8,12 @@ import {
   orderBy,
   query,
   setDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { Bounce, toast } from "react-toastify";
 import cookie from "cookie";
+import { ReactNode } from "react";
 
 export const removeKeyFromArray = (arr: any, key: keyof permissions) => {
   return arr.map((item: permissions) => {
@@ -263,5 +265,75 @@ export const deleteAllCookies = (req?: any, res?: any) => {
         })
       );
     }
+  }
+};
+
+export const dynamic_column_def = (
+  StatusRenderer: (a: any, b: any) => void,
+  CellStatusRenderer: (a: any) => void,
+  db_data: any,
+  openStatusUpdateModal: (a: string, b: string) => void
+) => {
+  const user = JSON.parse(getCookie("user") as string);
+  const user_role = user.role.toLowerCase();
+  return [
+    user_role == "hr" || user_role == "manager"
+      ? {
+          headerName: "Action",
+          field: "action",
+          cellRenderer: StatusRenderer,
+          cellRendererParams: {
+            data: db_data,
+            openStatusUpdateModal: openStatusUpdateModal,
+          },
+          cellClass: "flex-center",
+          sortable: false,
+          filter: false,
+          headerClass: "uppercase",
+          width: 150,
+        }
+      : {
+          headerName: "status",
+          field: "status",
+          headerClass: "uppercase",
+          sortable: true,
+          width: 140,
+          cellRenderer: CellStatusRenderer,
+          cellRendererParams: (params: any) => {
+            params: params;
+          },
+        },
+  ];
+};
+
+export const updateSatatusAccordingDB = (status: string) => {
+  if (status == "approve") return "approved";
+  else if (status == "reject") return "rejected";
+  else return status;
+};
+
+export const updateSatatusAccordingLocal = (status: string) => {
+  if (status == "approved") return "approve";
+  else if (status == "rejected") return "reject";
+  else return status;
+};
+
+export const updatePermissionStatusInDB = async (
+  docId: string,
+  newStatus: string
+) => {
+  try {
+    // Reference to the specific document by ID
+    const docRef = doc(db, "permissions", docId);
+
+    // Update the status field in the document
+    await updateDoc(docRef, { status: newStatus });
+
+    SuccessToast("Status updated!");
+    // Optionally, return true if the update was successful
+    return true;
+  } catch (error) {
+    console.error("Error updating document: ", error);
+    return false;
   }
 };

@@ -4,6 +4,7 @@ import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
 import { Timestamp, addDoc, collection } from "firebase/firestore";
 import React, { useState } from "react";
+import { getCookie } from "@/functions";
 
 const AddPermission = ({
   show,
@@ -12,6 +13,7 @@ const AddPermission = ({
   show: boolean;
   setShow: (a: boolean) => void;
 }) => {
+  const userUid = JSON.parse(getCookie("user") as string);
   const { setShowLoader, callGetData, setCallGetData } = usePmsContext();
   const [permission, setPermission] = useState({
     name: "",
@@ -24,6 +26,9 @@ const AddPermission = ({
     date: moment().format("L"),
     time: moment().format("LTS"),
     created_at: Timestamp.now(),
+    status: "pending",
+    uid: userUid.uid,
+    added_by: userUid.email,
   });
 
   const handleInputChange = (

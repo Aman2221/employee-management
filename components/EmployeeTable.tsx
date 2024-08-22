@@ -7,22 +7,59 @@ import Loader from "./Loader";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS
 import "ag-grid-community/styles/ag-theme-alpine.css";
+import StatusRenderer, { CellStatusRenderer } from "./StatusRenderer";
+import LeaveModal from "./LeaveModal";
 import data from "@/JSON/data.json";
+import { dynamic_column_def, updatePermissionStatusInDB } from "@/functions";
 
 interface pmsInterface {
   headings: string[];
-  db_data: string[];
-  filter_data: string[];
+  db_data: any[];
 }
 const EmployeeTable = () => {
   const { showLoader, setShowLoader, callGetData } = usePmsContext();
+  const [openLeaveModal, setOpenLeaveModal] = useState(false);
+  const [currentStatus, setCurrentStatus] = useState("");
+  const [currentDocId, setCurrentDocId] = useState("");
   const [pmsdata, setPmsData] = useState<pmsInterface>({
     headings: [],
     db_data: [],
-    filter_data: [],
   });
 
-  const columnDefs = useMemo(() => data.column_defs, []);
+  const openStatusUpdateModal = (status: string, docId: string) => {
+    setOpenLeaveModal(!openLeaveModal);
+    setCurrentStatus(status);
+    setCurrentDocId(docId);
+  };
+
+  const storeStatusToLocal = async (status: string) => {
+    let all_data: any = pmsdata.db_data;
+
+    const userIndex = all_data.findIndex(
+      (user: any) => user.id === currentDocId
+    );
+    if (userIndex !== -1) {
+      all_data[userIndex] = {
+        ...all_data[userIndex], // Copy the existing user object
+        status: status, // Update the status
+      };
+    }
+    setPmsData({
+      ...pmsdata,
+      db_data: [...all_data],
+    });
+    await updatePermissionStatusInDB(currentDocId, status); //updating status in database
+  };
+
+  const columnDefs = useMemo(() => {
+    const dynamic_defs = dynamic_column_def(
+      StatusRenderer,
+      CellStatusRenderer,
+      pmsdata.db_data,
+      openStatusUpdateModal
+    );
+    return [...data.column_defs, ...dynamic_defs];
+  }, []);
 
   const getData = async () => {
     const tempData: any = [];
@@ -46,7 +83,6 @@ const EmployeeTable = () => {
     setTimeout(() => {
       if (tempData.length) {
         setPmsData({
-          ...pmsdata,
           headings: Object.keys(tempData[0]) as string[],
           db_data: tempData,
         });
@@ -88,6 +124,13 @@ const EmployeeTable = () => {
               </div>
             </>
           )}
+          <LeaveModal
+            show={openLeaveModal}
+            setShow={setOpenLeaveModal}
+            currentStatus={currentStatus}
+            setCurrentStatus={setCurrentStatus}
+            storeStatusToLocal={storeStatusToLocal}
+          />
         </>
       )}
     </>
