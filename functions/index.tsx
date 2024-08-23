@@ -115,9 +115,9 @@ export function setCookie(name: string, value: string, days: number) {
 }
 
 export function getCookie(name: string): string | null {
-  const value = `; ${document.cookie}`;
+  const value = document ? `; ${document.cookie}` : "";
   const parts: any = value.split(`; ${name}=`);
-  if (parts.length === 2) {
+  if (value && parts.length === 2) {
     const encryptedCookie = parts.pop().split(";").shift();
     const user_uid = getItemFromLocal("uid");
     const decryptedCookie = decryptData(encryptedCookie, user_uid);
