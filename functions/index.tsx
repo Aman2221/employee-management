@@ -121,7 +121,6 @@ export function getCookie(name: string): string | null {
     const encryptedCookie = parts.pop().split(";").shift();
     const user_uid = getItemFromLocal("uid");
     const decryptedCookie = decryptData(encryptedCookie, user_uid);
-
     return decryptedCookie;
   }
   return null;
@@ -234,7 +233,7 @@ export const addUserToDB = async (
 
 export const getUserDoc = async (docId: string) => {
   try {
-    const userDocRef = doc(db, "users", "H668hSKmrcdCY6rfNsSmIc1egBs2");
+    const userDocRef = doc(db, "users", docId);
     const userDocSnap: any = await getDoc(userDocRef);
 
     const { password, confirm_password, ...userData } = userDocSnap.data();

@@ -10,11 +10,12 @@ import {
 } from "@/functions";
 import { useRouter } from "next/navigation";
 import { getAuth, signOut } from "firebase/auth";
+import Avatar from "./common/Avatar";
 
 const Nav = () => {
   const router = useRouter();
   const [isSuper, setIsSuper] = useState(false);
-
+  const [userName, setUserName] = useState("");
   const [show, setShow] = useState(false);
   const [showMsg, setShowMsg] = useState(false);
 
@@ -34,6 +35,8 @@ const Nav = () => {
 
   useEffect(() => {
     const user = JSON.parse(getCookie("user") as any);
+    console.log("user :", user);
+    setUserName(user.username);
     if (user) setIsSuper(user.role.toLowerCase() !== "employee");
     const getToken = getCookie("token");
     if (
@@ -57,7 +60,7 @@ const Nav = () => {
               Primasoft
             </span>
           </a>
-          <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+          <div className="flex gap-5 md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
             <div className="flex gap-5">
               <div className="flex md:hidden items-center gap-2">
                 <i
@@ -114,6 +117,7 @@ const Nav = () => {
                 </button>
               )}
             </div>
+            <Avatar name={userName} />
           </div>
         </div>
       </nav>

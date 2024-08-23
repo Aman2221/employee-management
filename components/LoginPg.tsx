@@ -18,10 +18,10 @@ import { useRouter } from "next/navigation";
 const LoginPg = () => {
   const router = useRouter();
   const [userData, setUserData] = useState({
-    email: "aman@primasoft.ae",
-    password: "Aman@123",
-    // email: "",
-    // password: "",
+    // email: "aman@primasoft.ae",
+    // password: "Aman@123",
+    email: "",
+    password: "",
   });
 
   const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
