@@ -58,7 +58,8 @@ const EmployeeTable = () => {
       pmsdata.db_data,
       openStatusUpdateModal
     );
-    return [...data.column_defs, ...dynamic_defs];
+    if (dynamic_defs) return [...data.column_defs, ...dynamic_defs];
+    else return [...data.column_defs];
   }, [openStatusUpdateModal, pmsdata.db_data]);
 
   const getData = async () => {
