@@ -300,35 +300,38 @@ export const dynamic_column_def = (
 ) => {
   const getUser = getCookie("user");
   const user = JSON.parse(getUser as string);
-  const user_role = user.role.toLowerCase();
-  return [
-    user_role == "hr" || user_role == "manager"
-      ? {
-          headerName: "Action",
-          field: "action",
-          cellRenderer: StatusRenderer,
-          cellRendererParams: {
-            data: db_data,
-            openStatusUpdateModal: openStatusUpdateModal,
+  if (user) {
+    const user_role = user?.role?.toLowerCase();
+    return [
+      user_role == "hr" || user_role == "manager"
+        ? {
+            headerName: "Action",
+            field: "action",
+            cellRenderer: StatusRenderer,
+            cellRendererParams: {
+              data: db_data,
+              openStatusUpdateModal: openStatusUpdateModal,
+            },
+            cellClass: "flex-center",
+            sortable: false,
+            filter: false,
+            headerClass: "uppercase",
+            width: 150,
+          }
+        : {
+            headerName: "status",
+            field: "status",
+            headerClass: "uppercase",
+            sortable: true,
+            width: 140,
+            cellRenderer: CellStatusRenderer,
+            cellRendererParams: (params: any) => {
+              params: params;
+            },
           },
-          cellClass: "flex-center",
-          sortable: false,
-          filter: false,
-          headerClass: "uppercase",
-          width: 150,
-        }
-      : {
-          headerName: "status",
-          field: "status",
-          headerClass: "uppercase",
-          sortable: true,
-          width: 140,
-          cellRenderer: CellStatusRenderer,
-          cellRendererParams: (params: any) => {
-            params: params;
-          },
-        },
-  ];
+    ];
+  }
+  return "";
 };
 
 export const updateSatatusAccordingDB = (status: string) => {

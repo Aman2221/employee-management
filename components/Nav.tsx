@@ -35,9 +35,11 @@ const Nav = () => {
 
   useEffect(() => {
     const user = JSON.parse(getCookie("user") as any);
-    console.log("user :", user);
-    setUserName(user.username);
-    if (user) setIsSuper(user.role.toLowerCase() !== "employee");
+
+    if (user) {
+      setUserName(user.username);
+      setIsSuper(user.role.toLowerCase() !== "employee");
+    }
     const getToken = getCookie("token");
     if (
       !getToken ||
