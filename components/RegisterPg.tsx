@@ -98,14 +98,16 @@ const RegisterPg = () => {
             <form className="space-y-4 md:space-y-6" onSubmit={handleRegister}>
               <div className=" grid grid-cols-2 gap-x-10 gap-y-5">
                 {data.register_fields.map((item) => (
-                  <InputField
-                    name={item.name}
-                    placeholder={item.placeholder}
-                    type={item.type}
-                    onChange={handleInputChange}
-                    label={item.label}
-                    extrClasses="w-52"
-                  />
+                  <div key={item.label}>
+                    <InputField
+                      name={item.name}
+                      placeholder={item.placeholder}
+                      type={item.type}
+                      onChange={handleInputChange}
+                      label={item.label}
+                      extrClasses="w-52"
+                    />
+                  </div>
                 ))}
               </div>
 
