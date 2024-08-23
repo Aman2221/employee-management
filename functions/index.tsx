@@ -115,19 +115,33 @@ export function setCookie(name: string, value: string, days: number) {
 }
 
 export function getCookie(name: string): string | null {
-  if (document) {
-    const value = document ? `; ${document.cookie}` : "";
+  if (typeof document !== "undefined") {
+    const value = `; ${document.cookie}`;
     const parts: any = value.split(`; ${name}=`);
-    if (value && parts.length === 2) {
+    if (parts.length === 2) {
       const encryptedCookie = parts.pop().split(";").shift();
       const user_uid = getItemFromLocal("uid");
       const decryptedCookie = decryptData(encryptedCookie, user_uid);
       return decryptedCookie;
     }
-    return null;
   }
   return null;
 }
+
+// export function getCookie(name: string): string | null {
+//   if (document) {
+//     const value = document ? `; ${document.cookie}` : "";
+//     const parts: any = value.split(`; ${name}=`);
+//     if (value && parts.length === 2) {
+//       const encryptedCookie = parts.pop().split(";").shift();
+//       const user_uid = getItemFromLocal("uid");
+//       const decryptedCookie = decryptData(encryptedCookie, user_uid);
+//       return decryptedCookie;
+//     }
+//     return null;
+//   }
+//   return null;
+// }
 
 //get cookie from the server
 // export async function getServerCookie(request: Request) {
