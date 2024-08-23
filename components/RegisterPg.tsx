@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import InputField from "./common/InputField";
 import data from "@/JSON/data.json";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc } from "firebase/firestore";
 
 const RegisterPg = () => {
   const router = useRouter();

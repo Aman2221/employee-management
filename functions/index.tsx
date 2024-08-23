@@ -13,7 +13,7 @@ import {
 import { db } from "@/config/firebase";
 import { Bounce, toast } from "react-toastify";
 import cookie from "cookie";
-import { ReactNode } from "react";
+import CryptoJS from "crypto-js";
 
 export const removeKeyFromArray = (arr: any, key: keyof permissions) => {
   return arr.map((item: permissions) => {
@@ -117,7 +117,13 @@ export function setCookie(name: string, value: string, days: number) {
 export function getCookie(name: string): string | null {
   const value = `; ${document.cookie}`;
   const parts: any = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(";").shift();
+  if (parts.length === 2) {
+    const encryptedCookie = parts.pop().split(";").shift();
+    const user_uid = getItemFromLocal("uid");
+    const decryptedCookie = decryptData(encryptedCookie, user_uid);
+
+    return decryptedCookie;
+  }
   return null;
 }
 
@@ -196,17 +202,17 @@ export const ErrorToast = (
   });
 };
 
-export const setUserToLocal = (name: string = "user", value: any) => {
-  localStorage.setItem("user", JSON.stringify(value));
+export const setItemToLocal = (name: string = "user", value: any) => {
+  localStorage.setItem(name, JSON.stringify(value));
 };
 
-export const getUserFromLocal = () => {
-  const getUser: any = localStorage.getItem("user");
+export const getItemFromLocal = (name: string = "user") => {
+  const getUser: any = localStorage.getItem(name);
   return JSON.parse(getUser);
 };
 
 export const setItemToSession = (name: string = "user", value: any) => {
-  sessionStorage.setItem("user", JSON.stringify(value));
+  sessionStorage.setItem(name, JSON.stringify(value));
 };
 
 export const getItemFromSession = () => {
@@ -226,13 +232,15 @@ export const addUserToDB = async (
   });
 };
 
-export const getUserDoc = async (uid: string) => {
+export const getUserDoc = async (docId: string) => {
   try {
-    const userDocRef = doc(db, "users", uid);
+    const userDocRef = doc(db, "users", "H668hSKmrcdCY6rfNsSmIc1egBs2");
     const userDocSnap: any = await getDoc(userDocRef);
-    const { pasword, password, confirm_password, ...userData } =
-      userDocSnap.data();
-    setCookie("user", JSON.stringify(userData), 1);
+
+    const { password, confirm_password, ...userData } = userDocSnap.data();
+
+    const encryptUser = encryptData(JSON.stringify(userData), docId);
+    setCookie("user", encryptUser, 1);
   } catch (error) {
     console.error("Error fetching user document: ", error);
     throw error;
@@ -274,7 +282,8 @@ export const dynamic_column_def = (
   db_data: any,
   openStatusUpdateModal: (a: string, b: string) => void
 ) => {
-  const user = JSON.parse(getCookie("user") as string);
+  const getUser = getCookie("user");
+  const user = JSON.parse(getUser as string);
   const user_role = user.role.toLowerCase();
   return [
     user_role == "hr" || user_role == "manager"
@@ -336,4 +345,32 @@ export const updatePermissionStatusInDB = async (
     console.error("Error updating document: ", error);
     return false;
   }
+};
+
+// Encrypt data
+export const encryptData = (data: any, secretKey: string) => {
+  const hashAndSalt = data + process.env.NEXT_PUBLIC_HASH_SALT;
+  return CryptoJS.AES.encrypt(hashAndSalt, secretKey).toString();
+};
+
+// Decrypt data
+export const decryptData = (cipherText: string, secretKey: string) => {
+  if (cipherText && secretKey) {
+    const hashWithoutSalt = cipherText.replace(
+      process.env.NEXT_PUBLIC_HASH_SALT as string,
+      ""
+    );
+    const bytes = CryptoJS.AES.decrypt(hashWithoutSalt, secretKey);
+    // console.log(
+    //   "bytes.toString(CryptoJS.enc.Utf8) :",
+    //   JSON.parse(
+    //     bytes
+    //       .toString(CryptoJS.enc.Utf8)
+    //       .replace(process.env.NEXT_PUBLIC_HASH_SALT as string, "")
+    //   )
+    // );
+    return bytes
+      .toString(CryptoJS.enc.Utf8)
+      .replace(process.env.NEXT_PUBLIC_HASH_SALT as string, "");
+  } else return "";
 };

@@ -6,8 +6,10 @@ import {
   ErrorToast,
   SuccessToast,
   deleteAllCookies,
+  encryptData,
   getUserDoc,
   setCookie,
+  setItemToLocal,
   validateEmail,
 } from "@/functions";
 import { ToastContainer } from "react-toastify";
@@ -16,10 +18,10 @@ import { useRouter } from "next/navigation";
 const LoginPg = () => {
   const router = useRouter();
   const [userData, setUserData] = useState({
-    // email: "aman@primasoft.ae",
-    // password: "Aman@123",
-    email: "",
-    password: "",
+    email: "aman@primasoft.ae",
+    password: "Aman@123",
+    // email: "",
+    // password: "",
   });
 
   const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -43,8 +45,10 @@ const LoginPg = () => {
         );
 
         const user: any = userCredential.user;
+        const encryptToken = encryptData(user.accessToken, user.uid);
         // setUserToLocal("user", user);
-        setCookie("token", user.accessToken, 7);
+        setCookie("token", encryptToken, 7);
+        setItemToLocal("uid", user.uid);
         await getUserDoc(user.uid);
         SuccessToast("Login Successful");
         setTimeout(() => {
