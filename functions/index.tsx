@@ -1,3 +1,4 @@
+"use client";
 import { permissions } from "@/interfaces";
 import * as XLSX from "xlsx";
 import {
