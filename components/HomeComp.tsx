@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import EmployeeTable from "./EmployeeTable";
 import Footer from "./Footer";
