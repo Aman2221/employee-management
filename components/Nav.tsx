@@ -11,12 +11,14 @@ import {
 import { useRouter } from "next/navigation";
 import { getAuth, signOut } from "firebase/auth";
 import Avatar from "./common/Avatar";
+import AddUpdates from "./AddUpdates";
 
 const Nav = () => {
   const router = useRouter();
   const [isSuper, setIsSuper] = useState(false);
   const [userName, setUserName] = useState("");
   const [show, setShow] = useState(false);
+  const [showUpdateMdl, setShowUpdateMdl] = useState(false);
   const [showMsg, setShowMsg] = useState(false);
 
   const handleExport = async () => {
@@ -32,6 +34,30 @@ const Nav = () => {
     deleteAllCookies();
     router.push("/login");
   };
+
+  // // Example of calling the API from a form submission
+  // const handleSendMail = async () => {
+  //   //  event.preventDefault();
+
+  //   const res = await fetch("/api/send-email", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       to: "as562770@gmail.com",
+  //       subject: "Daily Update Reminder",
+  //       text: "This is a reminder to submit your daily update.",
+  //     }),
+  //   });
+
+  //   const data = await res.json();
+  //   if (res.ok) {
+  //     console.log(data.message);
+  //   } else {
+  //     console.error(data.message);
+  //   }
+  // };
 
   useEffect(() => {
     const user = JSON.parse(getCookie("user") as any);
@@ -85,7 +111,7 @@ const Nav = () => {
                     type="button"
                     className="text-white uppercase  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   >
-                    New Record
+                    add leave
                   </button>
                   <button
                     onClick={() => setShowMsg(!show)}
@@ -93,6 +119,13 @@ const Nav = () => {
                     className="text-white uppercase  bg-lime-700 hover:bg-lime-800 focus:ring-4 focus:outline-none focus:ring-lime-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-lime-600 dark:hover:bg-lime-700 dark:focus:ring-lime-800"
                   >
                     Paste message
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowUpdateMdl(!showUpdateMdl)}
+                    className="text-white uppercase  bg-cyan-400 hover:bg-cyan-800 focus:ring-4 focus:outline-none focus:ring-cyan-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
+                  >
+                    Add update
                   </button>
                   <button
                     type="button"
@@ -110,13 +143,29 @@ const Nav = () => {
                   </button>
                 </div>
               ) : (
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="text-white uppercase  bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
-                >
-                  Logout
-                </button>
+                <>
+                  <button
+                    onClick={() => setShow(!show)}
+                    type="button"
+                    className="text-white uppercase  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    add leave
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowUpdateMdl(!showUpdateMdl)}
+                    className="text-white uppercase  bg-cyan-400 hover:bg-cyan-800 focus:ring-4 focus:outline-none focus:ring-cyan-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
+                  >
+                    Add update
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="text-white uppercase  bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                  >
+                    Logout
+                  </button>
+                </>
               )}
             </div>
             <Avatar name={userName} />
@@ -125,6 +174,9 @@ const Nav = () => {
       </nav>
       {show && <AddPermission show={show} setShow={setShow} />}
       {showMsg && <PasteMessage show={showMsg} setShow={setShowMsg} />}
+      {showUpdateMdl && (
+        <AddUpdates show={showUpdateMdl} setShow={setShowUpdateMdl} />
+      )}
     </div>
   );
 };

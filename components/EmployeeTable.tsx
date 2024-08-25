@@ -10,7 +10,11 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import StatusRenderer, { CellStatusRenderer } from "./StatusRenderer";
 import LeaveModal from "./LeaveModal";
 import data from "@/JSON/data.json";
-import { dynamic_column_def, updatePermissionStatusInDB } from "@/functions";
+import {
+  dynamic_column_def,
+  setDataToState,
+  updatePermissionStatusInDB,
+} from "@/functions";
 
 interface pmsInterface {
   headings: string[];
@@ -81,15 +85,7 @@ const EmployeeTable = () => {
       return [];
     }
 
-    setTimeout(() => {
-      if (tempData.length) {
-        setPmsData({
-          headings: Object.keys(tempData[0]) as string[],
-          db_data: tempData,
-        });
-      }
-      setShowLoader(false);
-    }, 3000);
+    setDataToState(tempData, setShowLoader, setPmsData);
   };
 
   useEffect(() => {

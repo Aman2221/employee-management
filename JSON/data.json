@@ -131,5 +131,115 @@
         "type": "password",
         "placeholder": "••••••••"
       }
+    ],
+    "updates_fields" :[
+      {
+        "name" : "website_names",
+        "label" : "websites",
+        "type" : "text",
+        "placeholder" : "Websites worked on"
+      },
+      {
+        "name" : "status",
+        "label" : "status",
+        "type" : "text",
+        "placeholder" : "Websites status"
+      },
+      {
+        "name" : "assigned_by",
+        "label" : "assigned by",
+        "type" : "text",
+        "placeholder" : "Assigned By"
+      },
+      {
+        "name" : "verified_by",
+        "label" : "verified by",
+        "type" : "text",
+        "placeholder" : "Verified By"
+      },
+      {
+        "name" : "task",
+        "label" : "taks",
+        "type" : "text",
+        "placeholder" : "Task"
+      },
+      {
+        "name" : "summary",
+        "label" : "summary",
+        "type" : "text",
+        "placeholder" : "Summary"
+      }      
+    ],
+    "update_column_defs" : [
+      {
+        "headerName": "emp id",
+        "field": "emp_id",
+        "sortable": true,
+        "filter": true,
+        "headerClass": "uppercase",
+        "width": 120
+      },
+      {
+        "headerName": "name",
+        "field": "name",
+        "headerClass": "uppercase",
+        "filter": true
+      },
+      {
+        "headerName": "designation",
+        "field": "designation",
+        "headerClass": "uppercase",
+        "filter": true
+      },
+      {
+        "headerName": "email",
+        "field": "email",
+        "headerClass": "uppercase",
+        "filter": true
+      },
+      {
+        "headerName": "website_names",
+        "field": "website_names",
+        "headerClass": "uppercase",
+        "filter": true
+      },
+      {
+        "headerName": "status",
+        "field": "status",
+        "headerClass": "uppercase",
+        "filter": true
+      },
+      {
+        "headerName": "task",
+        "field": "task",
+        "headerClass": "uppercase",
+        "filter": true
+      },
+      {
+        "headerName": "assigned by",
+        "field": "assigned_by",
+        "headerClass": "uppercase",
+        "filter": true
+      },
+      {
+        "headerName": "verified by",
+        "field": "verified_by",
+        "headerClass": "uppercase",
+        "filter": true
+      },
+      {
+        "headerName": "date",
+        "field": "date",
+        "headerClass": "uppercase",
+        "sortable": true,
+        "width": 140
+      },
+      {
+        "headerName": "time",
+        "field": "time",
+        "headerClass": "uppercase",
+        "sortable": true,
+        "width": 140
+      }
     ]
 }

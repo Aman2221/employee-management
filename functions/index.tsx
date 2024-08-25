@@ -393,3 +393,19 @@ export const decryptData = (cipherText: string, secretKey: string) => {
       .replace(process.env.NEXT_PUBLIC_HASH_SALT as string, "");
   } else return "";
 };
+
+export const setDataToState = (
+  tempData: any,
+  setShowLoader: (a: boolean) => void,
+  setUpdatesData: (a: any) => void
+) => {
+  setTimeout(() => {
+    if (tempData.length) {
+      setUpdatesData({
+        headings: Object.keys(tempData[0]) as string[],
+        db_data: tempData,
+      });
+    }
+    setShowLoader(false);
+  }, 1000);
+};
