@@ -4,9 +4,15 @@ import React from "react";
 const Avatar = ({
   imgSrc = "",
   name = "",
+  onClick,
+  onMouseHover,
+  onMouseOut,
 }: {
   imgSrc?: string;
   name?: string;
+  onClick?: () => void;
+  onMouseHover?: () => void;
+  onMouseOut?: () => void;
 }) => {
   function getInitials() {
     let nameParts = name.trim().split(" ");
@@ -23,7 +29,7 @@ const Avatar = ({
   const nameInitials = getInitials();
 
   return (
-    <div>
+    <div onClick={onClick} className="cursor-pointer">
       {imgSrc && imgSrc.length && name.length == 0 ? (
         <img
           className="w-10 h-10 rounded-full"
@@ -32,12 +38,9 @@ const Avatar = ({
         ></img>
       ) : name.length ? (
         <div className="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-          <Link
-            href="/profile"
-            className="font-bold text-gray-600 dark:text-gray-300 poppins"
-          >
+          <span className="font-bold text-gray-600 dark:text-gray-300 poppins">
             {nameInitials}
-          </Link>
+          </span>
         </div>
       ) : (
         <div className="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">

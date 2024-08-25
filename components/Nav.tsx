@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { getAuth, signOut } from "firebase/auth";
 import Avatar from "./common/Avatar";
 import AddUpdates from "./AddUpdates";
+import NavDropdown from "./NavDropdown";
 
 const Nav = () => {
   const router = useRouter();
@@ -20,6 +21,7 @@ const Nav = () => {
   const [show, setShow] = useState(false);
   const [showUpdateMdl, setShowUpdateMdl] = useState(false);
   const [showMsg, setShowMsg] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const handleExport = async () => {
     const data = await getData();
@@ -104,71 +106,21 @@ const Nav = () => {
                   className="bx bx-table text-lg font-bold cursor-pointer"
                 ></i>
               </div>
-              {isSuper ? (
-                <div className="md:flex hidden gap-4">
-                  <button
-                    onClick={() => setShow(!show)}
-                    type="button"
-                    className="text-white uppercase  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  >
-                    add leave
-                  </button>
-                  <button
-                    onClick={() => setShowMsg(!show)}
-                    type="button"
-                    className="text-white uppercase  bg-lime-700 hover:bg-lime-800 focus:ring-4 focus:outline-none focus:ring-lime-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-lime-600 dark:hover:bg-lime-700 dark:focus:ring-lime-800"
-                  >
-                    Paste message
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowUpdateMdl(!showUpdateMdl)}
-                    className="text-white uppercase  bg-cyan-400 hover:bg-cyan-800 focus:ring-4 focus:outline-none focus:ring-cyan-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
-                  >
-                    Add update
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleExport}
-                    className="text-white uppercase  bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                  >
-                    Export data
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleLogout}
-                    className="text-white uppercase  bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
-                  >
-                    Logout
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <button
-                    onClick={() => setShow(!show)}
-                    type="button"
-                    className="text-white uppercase  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  >
-                    add leave
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowUpdateMdl(!showUpdateMdl)}
-                    className="text-white uppercase  bg-cyan-400 hover:bg-cyan-800 focus:ring-4 focus:outline-none focus:ring-cyan-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
-                  >
-                    Add update
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleLogout}
-                    className="text-white uppercase  bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-5 py-3 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
-                  >
-                    Logout
-                  </button>
-                </>
-              )}
             </div>
-            <Avatar name={userName} />
+            <Avatar
+              name={userName}
+              onClick={() => setShowDropdown(!showDropdown)}
+            />
+            <NavDropdown
+              setShow={setShowDropdown}
+              show={showDropdown}
+              onAddLeaveClick={() => setShow(!show)}
+              onPasteClick={() => setShowMsg(!showMsg)}
+              onAddUpdateClick={() => setShowUpdateMdl(!showUpdateMdl)}
+              onExportDataClick={handleExport}
+              handleLogout={handleLogout}
+              isSuper={isSuper}
+            />
           </div>
         </div>
       </nav>

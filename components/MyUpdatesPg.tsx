@@ -70,7 +70,8 @@ const MyUpdatesPg = () => {
   };
 
   useEffect(() => {
-    getAllUpdatesData();
+    if (user && user.role.toLowerCase() !== "employee") getAllUpdatesData();
+    else getCurrentUserUpdates();
   }, [showLoader]);
 
   return (
