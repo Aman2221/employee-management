@@ -22,7 +22,7 @@ const NavDropdown = ({
   handleLogout: () => void;
 }) => {
   const router = useRouter();
-  const userUid = JSON.parse(getCookie("user") as string);
+  const user = JSON.parse(getCookie("user") as string);
   const superuser_options = [
     { name: "add leave", onClick: onAddLeaveClick, icon: "bi-patch-plus" },
     {
@@ -65,11 +65,15 @@ const NavDropdown = ({
         <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
           <div className="flex gap-2 items-center">
             <i className="bi bi-person text-lg font-bold"></i>
-            <span className="text-lg font-bold">{userUid.username}</span>
+            <span className="text-lg font-bold">
+              {user && user?.username ? user?.username : ""}
+            </span>
           </div>
           <div className="flex gap-2 items-center">
             <i className="bi bi-envelope text-sm font-bold"></i>
-            <span className="font-medium truncate">{userUid.email}</span>
+            <span className="font-medium truncate">
+              {user && user.email ? user.email : ""}
+            </span>
           </div>
         </div>
         <ul

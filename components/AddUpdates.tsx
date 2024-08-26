@@ -24,15 +24,15 @@ const AddUpdates = ({
     assigned_by: "",
     verified_by: "",
     summary: "",
-    emp_id: user ? user.emp_id : "",
-    designation: user ? user.designation : "",
-    email: user ? user.email : "",
-    name: user ? user.username : "",
+    emp_id: user && user.emp_id ? user.emp_id : "",
+    designation: user && user.designation ? user.designation : "",
+    email: user && user.email ? user.email : "",
+    name: user && user.username ? user.username : "",
     date: moment().format("L"),
     time: moment().format("LTS"),
     created_at: Timestamp.now(),
-    uid: user ? user.uid : "",
-    added_by: user ? user.email : "",
+    uid: user && user.uid ? user.uid : "",
+    added_by: user && user.email ? user.email : "",
   });
 
   const handleInputChange = (
