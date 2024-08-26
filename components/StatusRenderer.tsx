@@ -20,11 +20,12 @@ const StatusRenderer = ({
       {isSuper ? (
         <>
           <button
-            className="text-white capitalize mt-2 bg-blue-700 font-medium rounded-sm text-xs h-6 text-center inline-flex items-center w-20 flex-center"
+            className="text-white capitalize mt-2 font-medium rounded-sm text-xs h-6 text-center inline-flex items-center w-20 flex-center"
             type="button"
             onClick={() => openStatusUpdateModal(data.status, data.id)}
           >
-            Click
+            <span className="text-lime-400">Approve</span>&nbsp;/&nbsp;
+            <span className="text-red-400">Reject</span>
           </button>
         </>
       ) : (

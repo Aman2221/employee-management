@@ -15,11 +15,13 @@ import {
   setDataToState,
   updatePermissionStatusInDB,
 } from "@/functions";
+import withOutsideClick from "@/HOC/closeModal";
 
 interface pmsInterface {
   headings: string[];
   db_data: any[];
 }
+
 const EmployeeTable = () => {
   const { showLoader, setShowLoader, callGetData } = usePmsContext();
   const [openLeaveModal, setOpenLeaveModal] = useState(false);
@@ -29,6 +31,9 @@ const EmployeeTable = () => {
     headings: [],
     db_data: [],
   });
+  const LeaveModalComp = withOutsideClick(LeaveModal, () =>
+    setOpenLeaveModal(false)
+  );
 
   const openStatusUpdateModal = (status: string, docId: string) => {
     setOpenLeaveModal(!openLeaveModal);
@@ -121,7 +126,7 @@ const EmployeeTable = () => {
               </div>
             </>
           )}
-          <LeaveModal
+          <LeaveModalComp
             show={openLeaveModal}
             setShow={setOpenLeaveModal}
             currentStatus={currentStatus}

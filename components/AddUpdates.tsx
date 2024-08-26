@@ -81,7 +81,7 @@ const AddUpdates = ({
               onClick={() => console.log(moment().format("MMMM Do YYYY"))}
               className="text-lg font-semibold text-gray-900 dark:text-white"
             >
-              Add updates
+              Add Updates
             </h3>
             <button
               onClick={() => setShow(!show)}
@@ -109,46 +109,42 @@ const AddUpdates = ({
           </div>
           <form className="p-4 md:p-5" onSubmit={handleSubmit}>
             <div className="grid gap-4 mb-4 grid-cols-2">
-              {data.updates_fields.map((item) => {
-                return (
-                  <>
-                    {item.name == "website_names" || item.name == "summary" ? (
-                      <div className="col-span-2" key={item.name}>
-                        <label
-                          htmlFor={item.label}
-                          className="capitalize block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >
-                          {item.label}
-                        </label>
-                        <textarea
-                          name={item.name}
-                          id={item.name}
-                          rows={2}
-                          onChange={handleInputChange}
-                          className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white  outline-none focus:outline-none"
-                          placeholder={item.placeholder}
-                        ></textarea>
-                      </div>
-                    ) : (
-                      <div className="col-span-1" key={item.name}>
-                        <label
-                          htmlFor={item.label}
-                          className="capitalize block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >
-                          {item.label}
-                        </label>
-                        <input
-                          name={item.name}
-                          id={item.name}
-                          onChange={handleInputChange}
-                          className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white  outline-none focus:outline-none"
-                          placeholder={item.placeholder}
-                        />
-                      </div>
-                    )}
-                  </>
-                );
-              })}
+              {data.updates_fields.map((item) =>
+                item.name == "website_names" || item.name == "summary" ? (
+                  <div className="col-span-2" key={item.name}>
+                    <label
+                      htmlFor={item.label}
+                      className="capitalize block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      {item.label}
+                    </label>
+                    <textarea
+                      name={item.name}
+                      id={item.name}
+                      rows={2}
+                      onChange={handleInputChange}
+                      className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white  outline-none focus:outline-none"
+                      placeholder={item.placeholder}
+                    ></textarea>
+                  </div>
+                ) : (
+                  <div className="col-span-1" key={item.name}>
+                    <label
+                      htmlFor={item.label}
+                      className="capitalize block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      {item.label}
+                    </label>
+                    <input
+                      name={item.name}
+                      id={item.name}
+                      onChange={handleInputChange}
+                      className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white  outline-none focus:outline-none"
+                      placeholder={item.placeholder}
+                    />
+                  </div>
+                )
+              )}
             </div>
             <div className="flex justify-end">
               <button

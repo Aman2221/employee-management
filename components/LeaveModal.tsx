@@ -78,10 +78,16 @@ const LeaveModal = ({
                   type="button"
                   onClick={() => handleStatusUpdate(item)}
                   className={`${
-                    currentStatus == item
-                      ? "text-white bg-blue-700 hover:bg-blue-800"
-                      : "text-gray-300 border-gray-600  hover:text-white bg-gray-800"
-                  }  font-medium rounded-lg text-sm px-5 py-2.5 text-center capitalize`}
+                    item == "approve" && currentStatus == "approve"
+                      ? " bg-lime-500 text-white"
+                      : item == "reject" && currentStatus == "reject"
+                      ? `bg-red-700 text-white`
+                      : `bg-gray-800 text-gray-300 ${
+                          item == "approve"
+                            ? "hover:bg-lime-500"
+                            : "hover:bg-red-700"
+                        }`
+                  } hover:text-white  font-medium rounded-lg text-sm px-5 py-2.5 text-center capitalize`}
                 >
                   {item}
                 </button>

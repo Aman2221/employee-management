@@ -1,6 +1,7 @@
+"use client";
 import { getCookie } from "@/functions";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const NavDropdown = ({
   show,
@@ -22,7 +23,11 @@ const NavDropdown = ({
   handleLogout: () => void;
 }) => {
   const router = useRouter();
-  const user = JSON.parse(getCookie("user") as string);
+  const [user, setUser] = useState({
+    email: "",
+    username: "",
+  });
+
   const superuser_options = [
     { name: "add leave", onClick: onAddLeaveClick, icon: "bi-patch-plus" },
     {
@@ -54,6 +59,11 @@ const NavDropdown = ({
     setShow(!show);
   };
 
+  useEffect(() => {
+    const tempUser = JSON.parse(getCookie("user") as string);
+    setUser(tempUser);
+  }, []);
+
   return (
     <div className="relative">
       <div
@@ -83,7 +93,7 @@ const NavDropdown = ({
           {isSuper
             ? superuser_options.map((item) => (
                 <li key={item.name} onClick={() => handleClick(item.onClick)}>
-                  <button className="block w-full text-left capitalize px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                  <button className="flex gap-2 w-full text-left capitalize px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                     <i className={`bi ${item.icon} text-sm font-bold`}></i>
                     <span>{item.name}</span>
                   </button>

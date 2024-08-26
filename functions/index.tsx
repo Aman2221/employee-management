@@ -302,9 +302,9 @@ export const dynamic_column_def = (
   const user = JSON.parse(getUser as string);
   if (user) {
     const user_role = user?.role?.toLowerCase();
-    return [
-      user_role == "hr" || user_role == "manager"
-        ? {
+    return user_role == "hr" || user_role == "manager"
+      ? [
+          {
             headerName: "Action",
             field: "action",
             cellRenderer: StatusRenderer,
@@ -317,8 +317,8 @@ export const dynamic_column_def = (
             filter: false,
             headerClass: "uppercase",
             width: 150,
-          }
-        : {
+          },
+          {
             headerName: "status",
             field: "status",
             headerClass: "uppercase",
@@ -329,8 +329,22 @@ export const dynamic_column_def = (
               params: params;
             },
           },
-    ];
+        ]
+      : [
+          {
+            headerName: "status",
+            field: "status",
+            headerClass: "uppercase",
+            sortable: true,
+            width: 140,
+            cellRenderer: CellStatusRenderer,
+            cellRendererParams: (params: any) => {
+              params: params;
+            },
+          },
+        ];
   }
+
   return "";
 };
 

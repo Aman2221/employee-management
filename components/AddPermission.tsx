@@ -3,7 +3,7 @@ import moment from "moment";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
 import { Timestamp, addDoc, collection } from "firebase/firestore";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { getCookie } from "@/functions";
 
 const AddPermission = ({
@@ -15,6 +15,7 @@ const AddPermission = ({
 }) => {
   const userUid = JSON.parse(getCookie("user") as string);
   const { setShowLoader, callGetData, setCallGetData } = usePmsContext();
+  const ref = useRef(null);
 
   const [permission, setPermission] = useState({
     name: "",

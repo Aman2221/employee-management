@@ -13,6 +13,7 @@ import { getAuth, signOut } from "firebase/auth";
 import Avatar from "./common/Avatar";
 import AddUpdates from "./AddUpdates";
 import NavDropdown from "./NavDropdown";
+import hideOverlay from "@/HOC/hideOverlay";
 
 const Nav = () => {
   const router = useRouter();
@@ -22,7 +23,7 @@ const Nav = () => {
   const [showUpdateMdl, setShowUpdateMdl] = useState(false);
   const [showMsg, setShowMsg] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-
+  const NavDropdownComp = hideOverlay(NavDropdown, setShowDropdown);
   const handleExport = async () => {
     const data = await getData();
     exportToExcel(data);
@@ -36,30 +37,6 @@ const Nav = () => {
     deleteAllCookies();
     router.push("/login");
   };
-
-  // // Example of calling the API from a form submission
-  // const handleSendMail = async () => {
-  //   //  event.preventDefault();
-
-  //   const res = await fetch("/api/send-email", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       to: "as562770@gmail.com",
-  //       subject: "Daily Update Reminder",
-  //       text: "This is a reminder to submit your daily update.",
-  //     }),
-  //   });
-
-  //   const data = await res.json();
-  //   if (res.ok) {
-  //     console.log(data.message);
-  //   } else {
-  //     console.error(data.message);
-  //   }
-  // };
 
   useEffect(() => {
     const user = JSON.parse(getCookie("user") as any);
@@ -111,7 +88,7 @@ const Nav = () => {
               name={userName}
               onClick={() => setShowDropdown(!showDropdown)}
             />
-            <NavDropdown
+            <NavDropdownComp
               setShow={setShowDropdown}
               show={showDropdown}
               onAddLeaveClick={() => setShow(!show)}
