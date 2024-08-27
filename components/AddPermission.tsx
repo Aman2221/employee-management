@@ -14,8 +14,7 @@ const AddPermission = ({
   setShow: (a: boolean) => void;
 }) => {
   const userUid = JSON.parse(getCookie("user") as string);
-  const { setShowLoader, callGetData, setCallGetData } = usePmsContext();
-  const ref = useRef(null);
+  const { setShowLoader } = usePmsContext();
 
   const [permission, setPermission] = useState({
     name: "",
@@ -58,7 +57,7 @@ const AddPermission = ({
     try {
       const docRef = await addDoc(collection(db, "permissions"), permission);
 
-      setCallGetData(!callGetData);
+      // setCallGetData(!callGetData);
     } catch (e) {
       console.error("Error adding document: ", e);
     }

@@ -23,10 +23,12 @@ interface pmsInterface {
 }
 
 const EmployeeTable = () => {
-  const { showLoader, setShowLoader, callGetData } = usePmsContext();
+  const { showLoader, setShowLoader, searchKey } = usePmsContext();
   const [openLeaveModal, setOpenLeaveModal] = useState(false);
   const [currentStatus, setCurrentStatus] = useState("");
   const [currentDocId, setCurrentDocId] = useState("");
+  const [gridApi, setGridApi] = useState<any>(null);
+
   const [pmsdata, setPmsData] = useState<pmsInterface>({
     headings: [],
     db_data: [],
@@ -93,9 +95,17 @@ const EmployeeTable = () => {
     setDataToState(tempData, setShowLoader, setPmsData);
   };
 
+  const onGridReady = (params: any) => {
+    setGridApi(params.api); // Storing the grid API for later use
+  };
+
+  useEffect(() => {
+    if (gridApi) gridApi.setGridOption("quickFilterText", searchKey);
+  }, [searchKey]);
+
   useEffect(() => {
     getData();
-  }, [callGetData]);
+  }, [showLoader]);
 
   return (
     <>
@@ -117,6 +127,8 @@ const EmployeeTable = () => {
                         rowData={pmsdata.db_data}
                         columnDefs={columnDefs as any}
                         className="dm-sans custom-cell-border"
+                        onGridReady={onGridReady}
+                        animateRows={true}
                       />
                     </div>
                   </div>

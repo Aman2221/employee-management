@@ -15,7 +15,7 @@ const PasteMessage = ({
 }) => {
   const userUid = JSON.parse(getCookie("user") as string);
   const [message, setMessage] = useState("");
-  const { setShowLoader, callGetData, setCallGetData } = usePmsContext();
+  const { setShowLoader } = usePmsContext();
 
   const handleExtractData = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,7 +47,7 @@ const PasteMessage = ({
 
     try {
       const docRef = await addDoc(collection(db, "permissions"), extractedInfo);
-      setCallGetData(!callGetData);
+      // setCallGetData(!callGetData);
     } catch (e) {
       console.error("Error adding document: ", e);
     }

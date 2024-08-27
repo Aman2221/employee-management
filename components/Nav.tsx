@@ -14,9 +14,11 @@ import Avatar from "./common/Avatar";
 import AddUpdates from "./AddUpdates";
 import NavDropdown from "./NavDropdown";
 import hideOverlay from "@/HOC/hideOverlay";
+import { usePmsContext } from "@/context";
 
 const Nav = () => {
   const router = useRouter();
+  const { setSearchKey } = usePmsContext();
   const [isSuper, setIsSuper] = useState(false);
   const [userName, setUserName] = useState("");
   const [show, setShow] = useState(false);
@@ -36,6 +38,12 @@ const Nav = () => {
     sessionStorage.clear();
     deleteAllCookies();
     router.push("/login");
+  };
+
+  const onFilterTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const filterText = event.target.value;
+    setSearchKey(filterText);
+    // if (gridApi) gridApi.setGridOption("quickFilterText", filterText);
   };
 
   useEffect(() => {
@@ -84,6 +92,14 @@ const Nav = () => {
                 ></i>
               </div>
             </div>
+            <input
+              type="text"
+              name="searchKey"
+              id="searchKey"
+              onChange={onFilterTextChange}
+              className="bg-transparent outline-none border border-gray-400 rounded-lg px-3 shadow-lg w-80"
+              placeholder="Search here..."
+            />
             <Avatar
               name={userName}
               onClick={() => setShowDropdown(!showDropdown)}
