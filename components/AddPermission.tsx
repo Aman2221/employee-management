@@ -2,35 +2,22 @@
 import moment from "moment";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
-import { Timestamp, addDoc, collection } from "firebase/firestore";
-import React, { useRef, useState } from "react";
-import { getCookie } from "@/functions";
+import { addDoc, collection } from "firebase/firestore";
+import React, { useState } from "react";
+import { freshLeave } from "@/functions";
 
 const AddPermission = ({
+  data = freshLeave(),
   show,
   setShow,
 }: {
+  data?: { [key: string]: any };
   show: boolean;
   setShow: (a: boolean) => void;
 }) => {
-  const userUid = JSON.parse(getCookie("user") as string);
   const { setShowLoader } = usePmsContext();
 
-  const [permission, setPermission] = useState({
-    name: "",
-    type: "4 Hours",
-    phone: "",
-    email: "",
-    duration: null,
-    emp_id: null,
-    reason: "",
-    date: moment().format("L"),
-    time: moment().format("LTS"),
-    created_at: Timestamp.now(),
-    status: "pending",
-    uid: userUid.uid,
-    added_by: userUid.email,
-  });
+  const [permission, setPermission] = useState(data);
 
   const handleInputChange = (
     e:
@@ -79,7 +66,7 @@ const AddPermission = ({
               onClick={() => console.log(moment().format("MMMM Do YYYY"))}
               className="text-lg font-semibold text-gray-900 dark:text-white"
             >
-              Add Leave
+              {data.name.length ? "Leave Details" : "Add Leave"}
             </h3>
             <button
               onClick={() => setShow(!show)}
@@ -118,6 +105,7 @@ const AddPermission = ({
                   type="text"
                   name="emp_id"
                   id="emp_id"
+                  disabled={data.name.length}
                   onChange={handleInputChange}
                   value={permission.emp_id as any}
                   className="bg-gray-50 border outline-none focus:outline-none border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
@@ -136,6 +124,7 @@ const AddPermission = ({
                   type="text"
                   name="name"
                   id="name"
+                  disabled={data.name.length}
                   value={permission.name}
                   onChange={handleInputChange}
                   className="bg-gray-50 border outline-none focus:outline-noneborder-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
@@ -158,6 +147,7 @@ const AddPermission = ({
                   type="number"
                   name="duration"
                   id="duration"
+                  disabled={data.name.length}
                   value={permission.duration as any}
                   onChange={handleInputChange}
                   className="bg-gray-50 border outline-none focus:outline-noneborder-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
@@ -175,6 +165,7 @@ const AddPermission = ({
                 <select
                   id="type"
                   name="type"
+                  disabled={data.name.length}
                   className="bg-gray-50 border outline-none focus:outline-noneborder-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                   value={permission.type}
                   onChange={handleInputChange}
@@ -195,6 +186,7 @@ const AddPermission = ({
                   type="tel"
                   name="phone"
                   id="phone"
+                  disabled={data.name.length}
                   value={permission.phone}
                   onChange={handleInputChange}
                   className="bg-gray-50 border outline-none focus:outline-noneborder-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
@@ -213,6 +205,7 @@ const AddPermission = ({
                   type="email"
                   name="email"
                   id="email"
+                  disabled={data.name.length}
                   onChange={handleInputChange}
                   value={permission.email}
                   className="bg-gray-50 border outline-none focus:outline-noneborder-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
@@ -230,6 +223,7 @@ const AddPermission = ({
                 <textarea
                   name="reason"
                   id="reason"
+                  disabled={data.name.length}
                   value={permission.reason}
                   rows={3}
                   onChange={handleInputChange}
@@ -238,26 +232,30 @@ const AddPermission = ({
                 ></textarea>
               </div>
             </div>
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              >
-                <svg
-                  className="me-1 -ms-1 w-5 h-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
+            {!data.name.length ? (
+              <div className="flex justify-end">
+                <button
+                  type="submit"
+                  className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                    clipRule="evenodd"
-                  ></path>
-                </svg>
-                Add Leave
-              </button>
-            </div>
+                  <svg
+                    className="me-1 -ms-1 w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                      clipRule="evenodd"
+                    ></path>
+                  </svg>
+                  Add Leave
+                </button>
+              </div>
+            ) : (
+              <></>
+            )}
           </form>
         </div>
       </div>

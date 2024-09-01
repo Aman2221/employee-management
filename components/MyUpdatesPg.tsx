@@ -8,7 +8,8 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import data from "@/JSON/data.json";
-import { getCookie, setDataToState } from "@/functions";
+import { getCookie, getUpdate, setDataToState } from "@/functions";
+import AddUpdates from "./AddUpdates";
 
 interface pmsInterface {
   headings: string[];
@@ -16,7 +17,10 @@ interface pmsInterface {
 }
 const MyUpdatesPg = () => {
   const user = JSON.parse(getCookie("user") as any);
-  const { showLoader, setShowLoader } = usePmsContext();
+  const { showLoader, setShowLoader, searchKey } = usePmsContext();
+  const [showUpdateMdl, setShowUpdateMdl] = useState(false);
+  const [gridApi, setGridApi] = useState<any>(null);
+  const [crrData, setCrrData] = useState<unknown>();
   const [updatesdata, setUpdatesData] = useState<pmsInterface>({
     headings: [],
     db_data: [],
@@ -26,6 +30,16 @@ const MyUpdatesPg = () => {
     () => data.update_column_defs,
     [updatesdata.db_data]
   );
+
+  const onGridReady = (params: any) => {
+    setGridApi(params.api); // Storing the grid API for later use
+  };
+
+  const onCellClicked = (event: any) => {
+    setCrrData(getUpdate(event.data));
+    console.log("data ", getUpdate(event.data));
+    setShowUpdateMdl(true);
+  };
 
   const getCurrentUserUpdates = async () => {
     const tempData: any = [];
@@ -70,6 +84,10 @@ const MyUpdatesPg = () => {
   };
 
   useEffect(() => {
+    if (gridApi) gridApi.setGridOption("quickFilterText", searchKey);
+  }, [searchKey]);
+
+  useEffect(() => {
     if (user && user.role.toLowerCase() !== "employee") getAllUpdatesData();
     else getCurrentUserUpdates();
   }, [showLoader]);
@@ -94,6 +112,8 @@ const MyUpdatesPg = () => {
                         rowData={updatesdata.db_data}
                         columnDefs={columnDefs as any}
                         className="dm-sans custom-cell-border"
+                        onCellClicked={onCellClicked}
+                        onGridReady={onGridReady}
                       />
                     </div>
                   </div>
@@ -101,6 +121,13 @@ const MyUpdatesPg = () => {
                   <></>
                 )}
               </div>
+              {showUpdateMdl && (
+                <AddUpdates
+                  show={showUpdateMdl}
+                  setShow={setShowUpdateMdl}
+                  data={crrData as any}
+                />
+              )}
             </>
           )}
         </>

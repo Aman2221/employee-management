@@ -1,6 +1,7 @@
 import { permissions } from "@/interfaces";
 import * as XLSX from "xlsx";
 import {
+  Timestamp,
   collection,
   doc,
   getDoc,
@@ -14,6 +15,7 @@ import { db } from "@/config/firebase";
 import { Bounce, toast } from "react-toastify";
 import cookie from "cookie";
 import CryptoJS from "crypto-js";
+import moment from "moment";
 
 export const removeKeyFromArray = (arr: any, key: keyof permissions) => {
   return arr.map((item: permissions) => {
@@ -422,4 +424,82 @@ export const setDataToState = (
     }
     setShowLoader(false);
   }, 1000);
+};
+
+export const freshLeave = () => {
+  const userUid = JSON.parse(getCookie("user") as string);
+  return {
+    name: "",
+    type: "4 Hours",
+    phone: "",
+    email: "",
+    duration: null,
+    emp_id: null,
+    reason: "",
+    date: moment().format("L"),
+    time: moment().format("LTS"),
+    created_at: Timestamp.now(),
+    status: "pending",
+    uid: userUid.uid,
+    added_by: userUid.email,
+  };
+};
+
+export const getLeave = (data: any) => {
+  return {
+    name: data.name,
+    type: data.type,
+    phone: data.phone,
+    email: data.email,
+    duration: data.duration.slice(0, 2),
+    emp_id: data.emp_id,
+    reason: data.reason,
+    date: data.date,
+    time: data.time,
+    created_at: data.created_at,
+    status: data.status,
+    uid: data.uid,
+    added_by: data.email,
+  };
+};
+
+export const freshUpdate = () => {
+  const user = JSON.parse(getCookie("user") as string);
+  return {
+    website_names: "",
+    status: "",
+    task: "",
+    assigned_by: "",
+    verified_by: "",
+    summary: "",
+    emp_id: user && user.emp_id ? user.emp_id : "",
+    designation: user && user.designation ? user.designation : "",
+    email: user && user.email ? user.email : "",
+    name: user && user.username ? user.username : "",
+    date: moment().format("L"),
+    time: moment().format("LTS"),
+    created_at: Timestamp.now(),
+    uid: user && user.uid ? user.uid : "",
+    added_by: user && user.email ? user.email : "",
+  };
+};
+
+export const getUpdate = (data: any) => {
+  return {
+    website_names: data.website_names,
+    status: data.status,
+    task: data.task,
+    assigned_by: data.assigned_by,
+    verified_by: data.verified_by,
+    summary: data.summary,
+    emp_id: data.emp_id,
+    designation: data.designation,
+    email: data.email,
+    name: data.name,
+    date: data.date,
+    time: data.time,
+    created_at: data.created_at,
+    uid: data.uid,
+    added_by: data.email,
+  };
 };

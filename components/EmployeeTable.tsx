@@ -12,10 +12,12 @@ import LeaveModal from "./LeaveModal";
 import data from "@/JSON/data.json";
 import {
   dynamic_column_def,
+  getLeave,
   setDataToState,
   updatePermissionStatusInDB,
 } from "@/functions";
 import withOutsideClick from "@/HOC/closeModal";
+import AddPermission from "./AddPermission";
 
 interface pmsInterface {
   headings: string[];
@@ -28,7 +30,8 @@ const EmployeeTable = () => {
   const [currentStatus, setCurrentStatus] = useState("");
   const [currentDocId, setCurrentDocId] = useState("");
   const [gridApi, setGridApi] = useState<any>(null);
-
+  const [crrData, setCrrData] = useState<unknown>();
+  const [showLeaveModel, setShowLeaveModel] = useState(false);
   const [pmsdata, setPmsData] = useState<pmsInterface>({
     headings: [],
     db_data: [],
@@ -99,6 +102,11 @@ const EmployeeTable = () => {
     setGridApi(params.api); // Storing the grid API for later use
   };
 
+  const onCellClicked = (event: any) => {
+    setCrrData(getLeave(event.data));
+    setShowLeaveModel(true);
+  };
+
   useEffect(() => {
     if (gridApi) gridApi.setGridOption("quickFilterText", searchKey);
   }, [searchKey]);
@@ -129,6 +137,7 @@ const EmployeeTable = () => {
                         className="dm-sans custom-cell-border"
                         onGridReady={onGridReady}
                         animateRows={true}
+                        onCellClicked={onCellClicked}
                       />
                     </div>
                   </div>
@@ -145,6 +154,13 @@ const EmployeeTable = () => {
             setCurrentStatus={setCurrentStatus}
             storeStatusToLocal={storeStatusToLocal}
           />
+          {showLeaveModel && (
+            <AddPermission
+              show={showLeaveModel}
+              setShow={setShowLeaveModel}
+              data={crrData as any}
+            />
+          )}
         </>
       )}
     </>

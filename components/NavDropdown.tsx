@@ -38,7 +38,7 @@ const NavDropdown = ({
     { name: "add update", onClick: onAddUpdateClick, icon: "bi-list-ul" },
     { name: "export data", onClick: onExportDataClick, icon: "bi-escape" },
     {
-      name: "view leaves",
+      name: "view updates",
       onClick: () => router.push("/view-updates"),
       icon: "bi-eye",
     },
