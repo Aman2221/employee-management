@@ -2,6 +2,7 @@ import { permissions } from "@/interfaces";
 import * as XLSX from "xlsx";
 import {
   Timestamp,
+  arrayUnion,
   collection,
   doc,
   getDoc,
@@ -502,4 +503,49 @@ export const getUpdate = (data: any) => {
     uid: data.uid,
     added_by: data.email,
   };
+};
+
+export const pushNotificationToDb = async (
+  docId: string,
+  status: string,
+  name: string
+) => {
+  try {
+    const docRef = doc(db, "notifications", docId);
+
+    await updateDoc(docRef, {
+      notifications: arrayUnion({
+        message: name,
+        status: status,
+        read: false,
+        timestamp: Timestamp.now(),
+      }),
+    });
+
+    SuccessToast("User notification sent");
+  } catch (error: any) {
+    ErrorToast(error.message);
+  }
+};
+
+export const markNotificationAsReadInDb = async (
+  docId: string,
+  updatedNotifications: any
+) => {
+  try {
+    const docRef = doc(db, "notifications", docId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      await updateDoc(docRef, {
+        notifications: updatedNotifications,
+      });
+
+      SuccessToast("Notification marked as read!");
+    } else {
+      console.log("Notification not found!");
+    }
+  } catch (error: any) {
+    console.error("Error updating notification:", error.message);
+  }
 };

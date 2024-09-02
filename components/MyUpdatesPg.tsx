@@ -37,7 +37,6 @@ const MyUpdatesPg = () => {
 
   const onCellClicked = (event: any) => {
     setCrrData(getUpdate(event.data));
-    console.log("data ", getUpdate(event.data));
     setShowUpdateMdl(true);
   };
 
@@ -49,7 +48,6 @@ const MyUpdatesPg = () => {
       const querySnapshot = await getDocs(userQuery);
 
       if (!querySnapshot.empty) {
-        let userData;
         querySnapshot.forEach((doc) => {
           tempData.push({
             id: doc.id,

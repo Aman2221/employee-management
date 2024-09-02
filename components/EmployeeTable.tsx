@@ -13,6 +13,7 @@ import data from "@/JSON/data.json";
 import {
   dynamic_column_def,
   getLeave,
+  pushNotificationToDb,
   setDataToState,
   updatePermissionStatusInDB,
 } from "@/functions";
@@ -58,11 +59,15 @@ const EmployeeTable = () => {
         status: status, // Update the status
       };
     }
+
+    const docId = all_data[userIndex].uid;
+    const permission_name = all_data[userIndex].reason;
     setPmsData({
       ...pmsdata,
       db_data: [...all_data],
     });
     await updatePermissionStatusInDB(currentDocId, status); //updating status in database
+    await pushNotificationToDb(docId, status, permission_name); //updating status in database
   };
 
   const columnDefs = useMemo(() => {
@@ -103,8 +108,10 @@ const EmployeeTable = () => {
   };
 
   const onCellClicked = (event: any) => {
-    setCrrData(getLeave(event.data));
-    setShowLeaveModel(true);
+    if (event.value !== undefined) {
+      setCrrData(getLeave(event.data));
+      setShowLeaveModel(true);
+    }
   };
 
   useEffect(() => {

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import AddPermission from "./AddPermission";
 import PasteMessage from "./PasteMessage";
 import {
+  ErrorToast,
   deleteAllCookies,
   exportToExcel,
   getCookie,
@@ -15,10 +16,15 @@ import AddUpdates from "./AddUpdates";
 import NavDropdown from "./NavDropdown";
 import hideOverlay from "@/HOC/hideOverlay";
 import { usePmsContext } from "@/context";
+import NavNotifications from "./NavNotifications";
+import { DocumentData, doc, getDoc } from "firebase/firestore";
+import { db } from "@/config/firebase";
 
 const Nav = () => {
   const router = useRouter();
   const { setSearchKey } = usePmsContext();
+  const [showNotice, setShowNotice] = useState(false);
+  const [notiData, setNotiData] = useState([]);
   const [isSuper, setIsSuper] = useState(false);
   const [userName, setUserName] = useState("");
   const [show, setShow] = useState(false);
@@ -26,6 +32,7 @@ const Nav = () => {
   const [showMsg, setShowMsg] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const NavDropdownComp = hideOverlay(NavDropdown, setShowDropdown);
+  const NavNotificationsComp = hideOverlay(NavNotifications, setShowNotice);
   const handleExport = async () => {
     const data = await getData();
     exportToExcel(data);
@@ -45,6 +52,31 @@ const Nav = () => {
     setSearchKey(filterText);
     // if (gridApi) gridApi.setGridOption("quickFilterText", filterText);
   };
+
+  const getNotification = async () => {
+    const user = JSON.parse(getCookie("user") as any);
+    try {
+      const docRef = doc(db, "notifications", user.uid);
+      const docSnapshot = await getDoc(docRef);
+      if (docSnapshot.exists()) {
+        let data: DocumentData | undefined = docSnapshot.data();
+        const notifications = data.notifications || [];
+
+        // Sort notifications by timestamp in descending order
+        const sortedNotifications = notifications.sort((a: any, b: any) => {
+          return b.timestamp.toMillis() - a.timestamp.toMillis();
+        });
+
+        setNotiData(sortedNotifications as any);
+      }
+    } catch (err: any) {
+      ErrorToast(err.message);
+    }
+  };
+
+  useEffect(() => {
+    if (showNotice === false) setNotiData([]);
+  }, [showNotice]);
 
   useEffect(() => {
     const user = JSON.parse(getCookie("user") as any);
@@ -75,7 +107,7 @@ const Nav = () => {
               Primasoft
             </span>
           </a>
-          <div className="flex gap-5 md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+          <div className="flex gap-5 md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse items-center">
             <div className="flex gap-5">
               <div className="flex md:hidden items-center gap-2">
                 <i
@@ -97,8 +129,15 @@ const Nav = () => {
               name="searchKey"
               id="searchKey"
               onChange={onFilterTextChange}
-              className="bg-transparent outline-none border border-gray-400 rounded-lg px-3 shadow-lg w-80"
+              className="bg-transparent outline-none border border-gray-400 rounded-lg px-3 py-2 shadow-lg w-80"
               placeholder="Search here..."
+            />
+            <NavNotificationsComp
+              show={showNotice}
+              setShow={setShowNotice}
+              data={notiData}
+              getNotifications={getNotification}
+              setNotiData={setNotiData}
             />
             <Avatar
               name={userName}
