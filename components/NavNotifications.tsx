@@ -66,6 +66,7 @@ const NavNotifications = ({
         {data.length ? (
           data.map((item) => (
             <div
+              key={item.timestamp.toMillis()}
               className="flex gap-3 cursor-pointer"
               onClick={() => onNotificationClick(item.timestamp, item.read)}
             >
@@ -80,7 +81,7 @@ const NavNotifications = ({
 
               <div className="flex flex-col flex-1">
                 <span className="text-sm font-medium capitalize">
-                  Your leave for "{item.message}" got {item.status}
+                  Your leave for &quot;{item.message}&quot; got {item.status}
                 </span>
                 <span className="text-xs font-medium text-gray-300">
                   Nov 23, 2023

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
@@ -41,11 +41,11 @@ const EmployeeTable = () => {
     setOpenLeaveModal(false)
   );
 
-  const openStatusUpdateModal = (status: string, docId: string) => {
+  const openStatusUpdateModal = useCallback((status: string, docId: string) => {
     setOpenLeaveModal(!openLeaveModal);
     setCurrentStatus(status);
     setCurrentDocId(docId);
-  };
+  }, []);
 
   const storeStatusToLocal = async (status: string) => {
     let all_data: any = pmsdata.db_data;
@@ -116,7 +116,7 @@ const EmployeeTable = () => {
 
   useEffect(() => {
     if (gridApi) gridApi.setGridOption("quickFilterText", searchKey);
-  }, [searchKey]);
+  }, [searchKey, gridApi]);
 
   useEffect(() => {
     getData();

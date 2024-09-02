@@ -83,7 +83,7 @@ const MyUpdatesPg = () => {
 
   useEffect(() => {
     if (gridApi) gridApi.setGridOption("quickFilterText", searchKey);
-  }, [searchKey]);
+  }, [searchKey, gridApi]);
 
   useEffect(() => {
     if (user && user.role.toLowerCase() !== "employee") getAllUpdatesData();
