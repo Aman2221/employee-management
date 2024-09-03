@@ -4,7 +4,13 @@ import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
 import { addDoc, collection } from "firebase/firestore";
 import React, { useState } from "react";
-import { freshLeave } from "@/functions";
+import {
+  checkAllFields,
+  checkLeaveFields,
+  extraValidation,
+  freshLeave,
+} from "@/functions";
+import json from "@/JSON/data.json";
 
 const AddPermission = ({
   data = freshLeave(),
@@ -18,6 +24,14 @@ const AddPermission = ({
   const { setShowLoader } = usePmsContext();
 
   const [permission, setPermission] = useState(data);
+  const [validations, setValidations] = useState(json.leaves_validations);
+
+  const checkValues = () => {
+    let getValidation = checkLeaveFields(permission);
+    setValidations(getValidation);
+
+    return checkAllFields(permission);
+  };
 
   const handleInputChange = (
     e:
@@ -26,25 +40,28 @@ const AddPermission = ({
       | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     let target: any = e.target;
+    let value: any = e.target.value;
+    extraValidation(target.name, value, validations, setValidations);
 
     setPermission({
       ...permission,
-      [target.name]: target.value,
+      [target.name]: value,
     });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setShow(!show);
-    setShowLoader(true);
-    addDocument();
+    let allFieldsAreValid = checkValues();
+    if (allFieldsAreValid) {
+      setShow(!show);
+      setShowLoader(true);
+      addDocument();
+    }
   };
 
   const addDocument = async () => {
     try {
       const docRef = await addDoc(collection(db, "permissions"), permission);
-
-      // setCallGetData(!callGetData);
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -99,10 +116,10 @@ const AddPermission = ({
                   htmlFor="name"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  EMP-ID
+                  EMP-ID<sup>*</sup>
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   name="emp_id"
                   id="emp_id"
                   disabled={data.name.length}
@@ -110,15 +127,21 @@ const AddPermission = ({
                   value={permission.emp_id as any}
                   className="bg-gray-50 border outline-none focus:outline-none border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                   placeholder="Employee ID"
-                  required
                 />
+                <p className="text-xs text-red-500 font-medium mt-1 ml-1">
+                  {validations.emp_id
+                    ? "Employee ID is required"
+                    : validations.isEmpId3Digit
+                    ? "Employee ID can not be more then 3 numbers"
+                    : ""}
+                </p>
               </div>
               <div className="col-span-2 sm:col-span-1">
                 <label
                   htmlFor="name"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Name
+                  Name<sup>*</sup>
                 </label>
                 <input
                   type="text"
@@ -129,8 +152,14 @@ const AddPermission = ({
                   onChange={handleInputChange}
                   className="bg-gray-50 border outline-none focus:outline-noneborder-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                   placeholder="Full name"
-                  required
                 />
+                <p className="text-xs text-red-500 font-medium mt-1 ml-1">
+                  {validations.name
+                    ? "Full name is required"
+                    : validations.isNameWithSpecialCharOrNum
+                    ? "Name should not contain multiple spaces, numbers and special characters"
+                    : ""}
+                </p>
               </div>
 
               <div className="col-span-2 sm:col-span-1">
@@ -138,7 +167,7 @@ const AddPermission = ({
                   htmlFor="price"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Duration
+                  Duration<sup>*</sup>
                   <span className="text-xs">
                     {permission.type === "4 Hours" ? "(in hours)" : "(in days)"}
                   </span>
@@ -152,15 +181,18 @@ const AddPermission = ({
                   onChange={handleInputChange}
                   className="bg-gray-50 border outline-none focus:outline-noneborder-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                   placeholder="2"
-                  required
+                  maxLength={2}
                 />
+                <p className="text-xs text-red-500 font-medium mt-1 ml-1">
+                  {validations.duration ? "Duration is required" : ""}
+                </p>
               </div>
               <div className="col-span-2 sm:col-span-1">
                 <label
                   htmlFor="type"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Leave/Permission Type
+                  Leave/Permission Type<sup>*</sup>
                 </label>
                 <select
                   id="type"
@@ -174,16 +206,19 @@ const AddPermission = ({
                   <option value="Sick">Sick</option>
                   <option value="Casual">Casual</option>
                 </select>
+                <p className="text-xs text-red-500 font-medium mt-1 ml-1">
+                  {validations.type ? "Leave/Permission Type is required" : ""}
+                </p>
               </div>
               <div className="col-span-2 sm:col-span-1">
                 <label
                   htmlFor="phone"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Emergency Contact
+                  Emergency Contact<sup>*</sup>
                 </label>
                 <input
-                  type="tel"
+                  type="number"
                   name="phone"
                   id="phone"
                   disabled={data.name.length}
@@ -191,15 +226,21 @@ const AddPermission = ({
                   onChange={handleInputChange}
                   className="bg-gray-50 border outline-none focus:outline-noneborder-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                   placeholder="Phone"
-                  required
                 />
+                <p className="text-xs text-red-500 font-medium mt-1 ml-1">
+                  {validations.phone
+                    ? "Phone is required"
+                    : validations.validPhone
+                    ? "Please enter a valid phone number"
+                    : ""}
+                </p>
               </div>
               <div className="col-span-2 sm:col-span-1">
                 <label
                   htmlFor="email"
                   className="invisible block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Emergency Contact
+                  Emergency Contact<sup>*</sup>
                 </label>
                 <input
                   type="email"
@@ -210,15 +251,21 @@ const AddPermission = ({
                   value={permission.email}
                   className="bg-gray-50 border outline-none focus:outline-noneborder-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                   placeholder="Email"
-                  required
                 />
+                <p className="text-xs text-red-500 font-medium mt-1 ml-1">
+                  {validations.email
+                    ? "Email is required"
+                    : validations.validEmail
+                    ? "Please enter a valid email"
+                    : ""}
+                </p>
               </div>
               <div className="col-span-2">
                 <label
                   htmlFor="reason"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Reason
+                  Reason<sup>*</sup>
                 </label>
                 <textarea
                   name="reason"
@@ -230,6 +277,9 @@ const AddPermission = ({
                   className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white  outline-none focus:outline-none"
                   placeholder="Reason for the leave"
                 ></textarea>
+                <p className="text-xs text-red-500 font-medium mt-1 ml-1">
+                  {validations.reason ? "Reason Type is required" : ""}
+                </p>
               </div>
             </div>
             {!data.name.length ? (

@@ -241,5 +241,26 @@
         "sortable": true,
         "width": 140
       }
-    ]
+    ],
+    "leaves_validations" : {
+      "emp_id": false,
+      "isEmpId3Digit": false,
+      "name": false,
+      "isNameWithSpecialCharOrNum": false,
+      "duration": false,
+      "type": false,
+      "phone": false,
+      "email": false,
+      "validEmail": false,
+      "validPhone": false,
+      "reason": false
+    },
+    "updates_validations" : {
+      "website_names": false,
+      "status": false,
+      "assigned_by": false,
+      "verified_by": false,
+      "task": false,
+      "summary": false
+    }
 }

@@ -4,8 +4,14 @@ import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
 import { addDoc, collection } from "firebase/firestore";
 import React, { useState } from "react";
-import { SuccessToast, freshUpdate } from "@/functions";
+import {
+  SuccessToast,
+  checkUpdateAllFields,
+  checkUpdateFields,
+  freshUpdate,
+} from "@/functions";
 import jsonData from "@/JSON/data.json";
+import { updates_inteface } from "@/interfaces";
 
 const AddUpdates = ({
   data = freshUpdate(),
@@ -19,6 +25,14 @@ const AddUpdates = ({
   const { setShowLoader } = usePmsContext();
 
   const [updates, setUpdates] = useState(data);
+  const [validations, setValidations] = useState(jsonData.updates_validations);
+
+  const checkValues = () => {
+    let getValidation = checkUpdateFields(updates);
+    setValidations(getValidation);
+
+    return checkUpdateAllFields(updates);
+  };
 
   const handleInputChange = (
     e:
@@ -26,8 +40,14 @@ const AddUpdates = ({
       | React.ChangeEvent<HTMLSelectElement>
       | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
+    console.log("updates :", updates, "data", data);
     let target: any = e.target;
-
+    let keyName = target.name;
+    // console.log(keyName, ":", target.value);
+    setValidations({
+      ...validations,
+      [keyName]: target.value.toString().length == 0,
+    });
     setUpdates({
       ...updates,
       [target.name]: target.value,
@@ -36,9 +56,14 @@ const AddUpdates = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setShow(!show);
-    setShowLoader(true);
-    addDocument();
+
+    let allFieldsAreValid = checkValues();
+    console.log("allFieldsAreValid :", allFieldsAreValid);
+    if (allFieldsAreValid) {
+      setShow(!show);
+      setShowLoader(true);
+      // addDocument();
+    }
   };
 
   const addDocument = async () => {
@@ -95,44 +120,60 @@ const AddUpdates = ({
           <form className="p-4 md:p-5" onSubmit={handleSubmit}>
             <div className="grid gap-4 mb-4 grid-cols-2">
               {jsonData.updates_fields.map((item: any) => {
-                return item.name == "website_names" ||
-                  item.name == "summary" ? (
-                  <div className="col-span-2" key={item.name}>
-                    <label
-                      htmlFor={item.label}
-                      className="capitalize block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      {item.label}
-                    </label>
-                    <textarea
-                      disabled={data.website_names.length}
-                      name={item.name}
-                      id={item.name}
-                      value={data[item.name]}
-                      rows={2}
-                      onChange={handleInputChange}
-                      className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white  outline-none focus:outline-none"
-                      placeholder={item.placeholder}
-                    ></textarea>
-                  </div>
-                ) : (
-                  <div className="col-span-1" key={item.name}>
-                    <label
-                      htmlFor={item.label}
-                      className="capitalize block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      {item.label}
-                    </label>
-                    <input
-                      value={data[item.name]}
-                      disabled={data.website_names.length}
-                      name={item.name}
-                      id={item.name}
-                      onChange={handleInputChange}
-                      className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white  outline-none focus:outline-none"
-                      placeholder={item.placeholder}
-                    />
-                  </div>
+                let keyName: keyof updates_inteface = item.name;
+                return (
+                  <>
+                    {item.name == "website_names" || item.name == "summary" ? (
+                      <div className="col-span-2" key={item.name}>
+                        <label
+                          htmlFor={item.label}
+                          className="capitalize block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >
+                          {item.label}
+                          <sup>*</sup>
+                        </label>
+                        <textarea
+                          disabled={data.website_names.length > 0}
+                          name={item.name}
+                          id={item.name}
+                          value={updates[item.name]}
+                          rows={2}
+                          onChange={handleInputChange}
+                          className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white  outline-none focus:outline-none"
+                          placeholder={item.placeholder}
+                        ></textarea>
+                        <p className="text-xs text-red-500 font-medium mt-1 ml-1">
+                          {validations[keyName]
+                            ? `${item.placeholder} is required`
+                            : ""}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="col-span-1" key={item.name}>
+                        <label
+                          htmlFor={item.label}
+                          className="capitalize block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >
+                          {item.label}
+                          <sup>*</sup>
+                        </label>
+                        <input
+                          value={updates[item.name]}
+                          disabled={data.website_names.length > 0}
+                          name={item.name}
+                          id={item.name}
+                          onChange={handleInputChange}
+                          className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white  outline-none focus:outline-none"
+                          placeholder={item.placeholder}
+                        />
+                        <p className="text-xs text-red-500 font-medium mt-1 ml-1">
+                          {validations[keyName]
+                            ? `${item.placeholder} is required`
+                            : ""}
+                        </p>
+                      </div>
+                    )}
+                  </>
                 );
               })}
             </div>

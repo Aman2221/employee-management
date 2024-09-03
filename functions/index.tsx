@@ -57,10 +57,12 @@ export const getData = async () => {
 
 export const validateEmail = (email: string) => {
   const domain = "@primasoft.ae";
-  if (!email.endsWith(domain)) {
-    return false;
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  console.log("email :", emailPattern.test(email), email.endsWith(domain));
+  if (emailPattern.test(email) && email.endsWith(domain)) {
+    return true;
   }
-  return true;
+  return false;
 };
 
 export const checkPassword = (password: string, confirm_password: string) => {
@@ -547,5 +549,108 @@ export const markNotificationAsReadInDb = async (
     }
   } catch (error: any) {
     console.error("Error updating notification:", error.message);
+  }
+};
+
+export const isNameIsValid = (name: string) => {
+  const invalidCharactersPattern = /[^a-zA-Z\s]/;
+  const multipleSpacesPattern = /\s{2,}/;
+  if (!invalidCharactersPattern.test(name)) {
+    if (!multipleSpacesPattern.test(name)) return false;
+  }
+  return true;
+};
+
+export const validatePhone = (phone: string) => {
+  const phoneNumberPattern = /^[6-9]\d{9}$/;
+  return phoneNumberPattern.test(phone);
+};
+
+export const checkAllFields = (permission: { [key: string]: string }) => {
+  return (
+    permission?.emp_id !== null &&
+    permission?.emp_id?.toString().length !== 0 &&
+    permission?.emp_id?.length > 0 &&
+    permission?.emp_id?.length === 3 &&
+    permission?.name.length > 0 &&
+    !isNameIsValid(permission?.name) &&
+    validateEmail(permission.email) &&
+    validatePhone(permission.phone) &&
+    permission?.duration?.toString().length > 0 &&
+    permission?.type.length > 0 &&
+    permission?.phone.length > 0 &&
+    permission?.email.length > 0 &&
+    permission?.reason.length > 0
+  );
+};
+
+export const checkUpdateAllFields = (updates: { [key: string]: string }) => {
+  return (
+    updates.website_names.length > 0 &&
+    updates.status.length > 0 &&
+    updates.assigned_by.length > 0 &&
+    updates.verified_by.length > 0 &&
+    updates.task.length > 0 &&
+    updates.summary.length > 0
+  );
+};
+export const checkUpdateFields = (updates: { [key: string]: string }) => {
+  return {
+    website_names: updates.website_names.length == 0,
+    status: updates.status.length == 0,
+    assigned_by: updates.assigned_by.length == 0,
+    verified_by: updates.verified_by.length == 0,
+    task: updates.task.length == 0,
+    summary: updates.summary.length == 0,
+  };
+};
+
+export const checkLeaveFields = (permission: { [key: string]: string }) => {
+  return {
+    emp_id: permission?.emp_id == null || permission?.emp_id?.length == 0,
+    isEmpId3Digit: permission?.emp_id?.length > 3,
+    name: permission.name.length == 0,
+    isNameWithSpecialCharOrNum: isNameIsValid(permission.name),
+    duration: permission.duration == null || permission?.duration?.length == 0,
+    type: permission.type.length == 0,
+    phone: permission.phone.length == 0,
+    email: permission.email.length == 0,
+    validEmail: !validateEmail(permission.email),
+    validPhone: !validatePhone(permission.phone),
+    reason: permission.reason.length == 0,
+  };
+};
+
+export const extraValidation = (
+  keyName: string,
+  value: string,
+  validations: any,
+  setValidations: (a: any) => void
+) => {
+  if (keyName == "emp_id") {
+    setValidations({
+      ...validations,
+      isEmpId3Digit: value.toString().length > 3,
+    });
+  } else if (keyName == "name") {
+    setValidations({
+      ...validations,
+      isNameWithSpecialCharOrNum: isNameIsValid(value),
+    });
+  } else if (keyName == "email") {
+    setValidations({
+      ...validations,
+      validEmail: !validateEmail(value),
+    });
+  } else if (keyName == "phone") {
+    setValidations({
+      ...validations,
+      validPhone: !validatePhone(value),
+    });
+  } else {
+    setValidations({
+      ...validations,
+      [keyName]: value.toString().length == 0,
+    });
   }
 };

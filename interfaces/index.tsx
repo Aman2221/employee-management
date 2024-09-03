@@ -14,3 +14,12 @@ export interface permissions {
   time: s;
   created_at: s;
 }
+
+export type updates_inteface = {
+  website_names: string;
+  status: string;
+  assigned_by: string;
+  verified_by: string;
+  task: string;
+  summary: string;
+};
