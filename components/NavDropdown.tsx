@@ -35,6 +35,11 @@ const NavDropdown = ({
       onClick: onPasteClick,
       icon: "bi-clipboard-check",
     },
+    {
+      name: "register user",
+      onClick: () => router.push("/register"),
+      icon: "bi-person-add",
+    },
     { name: "add update", onClick: onAddUpdateClick, icon: "bi-list-ul" },
     { name: "export data", onClick: onExportDataClick, icon: "bi-escape" },
     {
@@ -76,7 +81,11 @@ const NavDropdown = ({
           <div className="flex gap-2 items-center">
             <i className="bi bi-person text-lg font-bold"></i>
             <span className="text-lg font-bold">
-              {user && user?.username ? user?.username : ""}
+              {user && user?.username
+                ? user?.username.length > 10
+                  ? user?.username.slice(0, 10)
+                  : user?.username.slice(0, user?.username.indexOf(" "))
+                : ""}
             </span>
           </div>
           <div className="flex gap-2 items-center">

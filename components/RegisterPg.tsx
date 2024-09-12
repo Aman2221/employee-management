@@ -7,7 +7,6 @@ import {
   addUserToDB,
   checkPassword,
   deleteAllCookies,
-  setCookieOnServer,
   validateEmail,
 } from "@/functions";
 import { ToastContainer } from "react-toastify";
@@ -43,7 +42,15 @@ const RegisterPg = () => {
     event.preventDefault();
     let validEmail = validateEmail(userData.email);
     let validPassword = checkPassword(
-      userData.email,
+      userData.password,
+      userData.confirm_password
+    );
+
+    console.log(
+      "validEmail && validPassword :",
+      validEmail,
+      validPassword,
+      userData.password,
       userData.confirm_password
     );
     if (validEmail && validPassword) {
@@ -61,23 +68,19 @@ const RegisterPg = () => {
         await addUserToDB(userDoc, userData, user.uid); //adding user data to collection
         SuccessToast("User Registered Successful");
         setTimeout(() => {
-          router.push("/login");
+          router.push("/");
         }, 500);
       } catch (error) {
         ErrorToast("");
       }
     } else {
       ErrorToast(
-        validEmail
+        !validEmail
           ? "Email is not valid"
           : "Password should include one capital letter, one small letter, one special character, numbers, the length should be atleast 8 characters long and password and confirm password should be the same"
       );
     }
   };
-
-  useEffect(() => {
-    deleteAllCookies();
-  }, []);
 
   return (
     <>

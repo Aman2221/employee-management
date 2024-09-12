@@ -1,18 +1,13 @@
-import Link from "next/link";
 import React from "react";
 
 const Avatar = ({
   imgSrc = "",
   name = "",
   onClick,
-  onMouseHover,
-  onMouseOut,
 }: {
   imgSrc?: string;
   name?: string;
   onClick?: () => void;
-  onMouseHover?: () => void;
-  onMouseOut?: () => void;
 }) => {
   function getInitials() {
     let nameParts = name.trim().split(" ");

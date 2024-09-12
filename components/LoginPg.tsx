@@ -35,31 +35,31 @@ const LoginPg = () => {
 
   const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    let validEmail = validateEmail(userData.email);
-    if (validEmail) {
-      try {
-        const userCredential = await signInWithEmailAndPassword(
-          auth,
-          userData.email,
-          userData.password
-        );
+    // let validEmail = validateEmail(userData.email);
+    // if (validEmail) {
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        userData.email,
+        userData.password
+      );
 
-        const user: any = userCredential.user;
-        const encryptToken = encryptData(user.accessToken, user.uid);
-        // setUserToLocal("user", user);
-        setCookie("token", encryptToken, 7);
-        setItemToLocal("uid", user.uid);
-        await getUserDoc(user.uid);
-        SuccessToast("Login Successful");
-        setTimeout(() => {
-          router.push("/home");
-        }, 500);
-      } catch (error) {
-        ErrorToast("Please enter valid email and password");
-      }
-    } else {
-      ErrorToast("Email is not valid");
+      const user: any = userCredential.user;
+      const encryptToken = encryptData(user.accessToken, user.uid);
+      // setUserToLocal("user", user);
+      setCookie("token", encryptToken, 7);
+      setItemToLocal("uid", user.uid);
+      await getUserDoc(user.uid);
+      SuccessToast("Login Successful");
+      setTimeout(() => {
+        router.push("/home");
+      }, 500);
+    } catch (error) {
+      ErrorToast("Please enter valid email and password");
     }
+    // } else {
+    //   ErrorToast("Email is not valid");
+    // }
   };
 
   //if want to access login page even after login just remove this code

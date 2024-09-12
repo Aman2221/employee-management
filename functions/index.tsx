@@ -56,7 +56,7 @@ export const getData = async () => {
 };
 
 export const validateEmail = (email: string) => {
-  const domain = "@primasoft.ae";
+  const domain = "@primasofttechnology.com";
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   console.log("email :", emailPattern.test(email), email.endsWith(domain));
   if (emailPattern.test(email) && email.endsWith(domain)) {
@@ -67,11 +67,20 @@ export const validateEmail = (email: string) => {
 
 export const checkPassword = (password: string, confirm_password: string) => {
   const checkPasswordCompxity = isPasswordComplex(password);
+  console.log(
+    "checkPassword",
+    password === confirm_password,
+    password,
+    confirm_password,
+    "isPasswordComplex :",
+    isPasswordComplex(password)
+  );
   if (password === confirm_password && checkPasswordCompxity) {
     return true;
   }
   return false;
 };
+
 export function isPasswordComplex(password: string): boolean {
   const passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
