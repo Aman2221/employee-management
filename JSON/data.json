@@ -93,19 +93,19 @@
         "label": "Email",
         "name": "email",
         "type": "email",
-        "placeholder": "johndoe@primasoft.in"
+        "placeholder": "john@primasofttechnology.com"
       },
       {
         "label": "emplyee ID",
         "name": "emp_id",
         "type": "text",
-        "placeholder": "PS-991"
+        "placeholder": "991"
       },
       {
         "label": "phone",
         "name": "phone",
         "type": "tel",
-        "placeholder": "+91 7867565796"
+        "placeholder": "7867565796"
       },
       {
         "label": "role",

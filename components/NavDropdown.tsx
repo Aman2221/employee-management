@@ -80,12 +80,8 @@ const NavDropdown = ({
         <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
           <div className="flex gap-2 items-center">
             <i className="bi bi-person text-lg font-bold"></i>
-            <span className="text-lg font-bold">
-              {user && user?.username
-                ? user?.username.length > 10
-                  ? user?.username.slice(0, 10)
-                  : user?.username.slice(0, user?.username.indexOf(" "))
-                : ""}
+            <span className="text-lg font-bold truncate">
+              {user && user?.username ? user?.username : ""}
             </span>
           </div>
           <div className="flex gap-2 items-center">

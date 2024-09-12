@@ -18,6 +18,7 @@ import { doc } from "firebase/firestore";
 
 const RegisterPg = () => {
   const router = useRouter();
+  const [showPass, setShowPass] = useState(false);
   const [userData, setUserData] = useState({
     username: "",
     emp_id: "",
@@ -46,13 +47,6 @@ const RegisterPg = () => {
       userData.confirm_password
     );
 
-    console.log(
-      "validEmail && validPassword :",
-      validEmail,
-      validPassword,
-      userData.password,
-      userData.confirm_password
-    );
     if (validEmail && validPassword) {
       try {
         const userCredential = await createUserWithEmailAndPassword(
@@ -101,15 +95,33 @@ const RegisterPg = () => {
             <form className="space-y-4 md:space-y-6" onSubmit={handleRegister}>
               <div className=" grid grid-cols-2 gap-x-10 gap-y-5">
                 {data.register_fields.map((item) => (
-                  <div key={item.label}>
+                  <div key={item.label} className="relative">
                     <InputField
                       name={item.name}
                       placeholder={item.placeholder}
-                      type={item.type}
+                      type={
+                        item.name == "password" ||
+                        item.name == "confirm_password"
+                          ? showPass
+                            ? "text"
+                            : item.type
+                          : item.type
+                      }
                       onChange={handleInputChange}
                       label={item.label}
                       extrClasses="w-52"
                     />
+                    {item.name == "password" ||
+                    item.name == "confirm_password" ? (
+                      <i
+                        onClick={() => setShowPass(!showPass)}
+                        className={`bi ${
+                          showPass ? "bi-eye-slash" : "bi-eye"
+                        } absolute right-4 top-10 cursor-pointer`}
+                      ></i>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 ))}
               </div>
