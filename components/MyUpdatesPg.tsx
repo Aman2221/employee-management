@@ -10,12 +10,14 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import data from "@/JSON/data.json";
 import { getCookie, getUpdate, setDataToState } from "@/functions";
 import AddUpdates from "./AddUpdates";
+import useSystemTheme from "@/hooks/useSystemTheme";
 
 interface pmsInterface {
   headings: string[];
   db_data: any[];
 }
 const MyUpdatesPg = () => {
+  const systemTheme = useSystemTheme();
   const user = JSON.parse(getCookie("user") as any);
   const { showLoader, setShowLoader, searchKey } = usePmsContext();
   const [showUpdateMdl, setShowUpdateMdl] = useState(false);
@@ -105,7 +107,13 @@ const MyUpdatesPg = () => {
               <div className="mt-6 w-full animate__animated animate__fadeIn container mx-auto">
                 {updatesdata && updatesdata.db_data.length ? (
                   <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <div className="ag-theme-alpine-dark ag-grid-table overflow-y-scroll dm-sans rounded-sm">
+                    <div
+                      className={`${
+                        systemTheme == "dark"
+                          ? "ag-theme-alpine-dark"
+                          : "ag-theme-alpine"
+                      } ag-grid-table overflow-y-scroll dm-sans rounded-sm`}
+                    >
                       <AgGridReact
                         rowData={updatesdata.db_data}
                         columnDefs={columnDefs as any}

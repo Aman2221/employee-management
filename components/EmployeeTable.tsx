@@ -14,6 +14,7 @@ import {
   dynamic_column_def,
   getLeave,
   pushNotificationToDb,
+  sendEmail,
   setDataToState,
   updatePermissionStatusInDB,
 } from "@/functions";
@@ -62,6 +63,8 @@ const EmployeeTable = () => {
       };
     }
 
+    const html = `Hi ${all_data[userIndex].name}, Your leave for ${all_data[userIndex].reason} got ${status}`;
+    sendEmail("amanshivajisingh@gmail.com", "Leaves information", html);
     const docId = all_data[userIndex].uid;
     const permission_name = all_data[userIndex].reason;
     setPmsData({

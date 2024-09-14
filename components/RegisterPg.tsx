@@ -7,6 +7,7 @@ import {
   addUserToDB,
   checkPassword,
   deleteAllCookies,
+  sendEmail,
   validateEmail,
 } from "@/functions";
 import { ToastContainer } from "react-toastify";
@@ -60,6 +61,8 @@ const RegisterPg = () => {
 
         const userDoc = doc(db, "users", user.uid);
         await addUserToDB(userDoc, userData, user.uid); //adding user data to collection
+        const html = `<h1>We have created a new user for you. Use ${userData.email}, ${userData.password} this email and pasword for login</h1>`;
+        sendEmail(userData.email, "Hello there", html, "Welcome to Primasoft");
         SuccessToast("User Registered Successful");
         setTimeout(() => {
           router.push("/");

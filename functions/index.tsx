@@ -56,10 +56,13 @@ export const getData = async () => {
 };
 
 export const validateEmail = (email: string) => {
-  const domain = "@primasofttechnology.com";
+  const domain1 = "@primasofttechnology.com";
+  const domain2 = "@theswipewire.com";
+
+  const checkDomain = email.endsWith(domain1) || email.endsWith(domain2);
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  console.log("email :", emailPattern.test(email), email.endsWith(domain));
-  if (emailPattern.test(email) && email.endsWith(domain)) {
+  console.log("email :", emailPattern.test(email), checkDomain);
+  if (emailPattern.test(email) && checkDomain) {
     return true;
   }
   return false;
@@ -385,7 +388,7 @@ export const updatePermissionStatusInDB = async (
     // Update the status field in the document
     await updateDoc(docRef, { status: newStatus });
 
-    SuccessToast("Status updated!");
+    // SuccessToast("Status updated!");
     // Optionally, return true if the update was successful
     return true;
   } catch (error) {
@@ -533,7 +536,7 @@ export const pushNotificationToDb = async (
       }),
     });
 
-    SuccessToast("User notification sent");
+    SuccessToast(`Status updated and notification sent`);
   } catch (error: any) {
     ErrorToast(error.message);
   }
@@ -661,5 +664,38 @@ export const extraValidation = (
       ...validations,
       [keyName]: value.toString().length == 0,
     });
+  }
+};
+
+export const sendEmail = async (
+  email: string,
+  message: string,
+  html: string,
+  subject: string = "Applied leave update"
+) => {
+  const emailData = {
+    email,
+    subject,
+    message,
+    html,
+  };
+
+  try {
+    const res = await fetch("/api/send-email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json", // Ensure JSON header is set
+      },
+      body: JSON.stringify(emailData), // Ensure body is JSON stringified
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      SuccessToast("Email notifcation sent successfully");
+    } else {
+      console.error("Email sending failed:", data.message);
+    }
+  } catch (error) {
+    console.error("Error sending email:", error);
   }
 };
