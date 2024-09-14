@@ -22,6 +22,7 @@ import { db } from "@/config/firebase";
 
 const Nav = () => {
   const router = useRouter();
+
   const { setSearchKey } = usePmsContext();
   const [showNotice, setShowNotice] = useState(false);
   const [notiData, setNotiData] = useState([]);
@@ -80,7 +81,6 @@ const Nav = () => {
 
   useEffect(() => {
     const user = JSON.parse(getCookie("user") as any);
-
     if (user && user?.username) {
       setUserName(user.username);
       setIsSuper(user.role.toLowerCase() !== "employee");

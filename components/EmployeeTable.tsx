@@ -19,6 +19,7 @@ import {
 } from "@/functions";
 import withOutsideClick from "@/HOC/closeModal";
 import AddPermission from "./AddPermission";
+import useSystemTheme from "@/hooks/useSystemTheme";
 
 interface pmsInterface {
   headings: string[];
@@ -26,6 +27,7 @@ interface pmsInterface {
 }
 
 const EmployeeTable = () => {
+  const systemTheme = useSystemTheme();
   const { showLoader, setShowLoader, searchKey } = usePmsContext();
   const [openLeaveModal, setOpenLeaveModal] = useState(false);
   const [currentStatus, setCurrentStatus] = useState("");
@@ -137,7 +139,13 @@ const EmployeeTable = () => {
               <div className="mt-6 w-full animate__animated animate__fadeIn">
                 {pmsdata && pmsdata.db_data.length ? (
                   <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <div className="ag-theme-alpine-dark ag-grid-table overflow-y-scroll dm-sans rounded-sm">
+                    <div
+                      className={`${
+                        systemTheme == "dark"
+                          ? "ag-theme-alpine-dark"
+                          : "ag-theme-alpine"
+                      } ag-grid-table overflow-y-scroll dm-sans rounded-sm`}
+                    >
                       <AgGridReact
                         rowData={pmsdata.db_data}
                         columnDefs={columnDefs as any}

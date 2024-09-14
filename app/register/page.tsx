@@ -1,8 +1,9 @@
+import Layout from "@/components/Layout";
 import RegisterPg from "@/components/RegisterPg";
 import React from "react";
 
 const RegisterUser = () => {
-  return <RegisterPg />;
+  return <Layout>{<RegisterPg />}</Layout>;
 };
 
 export default RegisterUser;
