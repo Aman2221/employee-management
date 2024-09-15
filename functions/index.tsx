@@ -61,7 +61,7 @@ export const validateEmail = (email: string) => {
 
   const checkDomain = email.endsWith(domain1) || email.endsWith(domain2);
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  console.log("email :", emailPattern.test(email), checkDomain);
+  // console.log("email :", emailPattern.test(email), checkDomain);
   if (emailPattern.test(email) && checkDomain) {
     return true;
   }
@@ -525,20 +525,35 @@ export const pushNotificationToDb = async (
   name: string
 ) => {
   try {
+    console.log("pushNotificationToDb docId :", docId);
     const docRef = doc(db, "notifications", docId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      await updateDoc(docRef, {
+        notifications: arrayUnion({
+          message: name,
+          status: status,
+          read: false,
+          timestamp: Timestamp.now(),
+        }),
+      });
+    } else {
+      const docRef = doc(db, "notifications", docId);
 
-    await updateDoc(docRef, {
-      notifications: arrayUnion({
-        message: name,
-        status: status,
-        read: false,
-        timestamp: Timestamp.now(),
-      }),
-    });
-
+      await setDoc(docRef, {
+        notifications: [
+          {
+            message: name,
+            status: status,
+            read: false,
+            timestamp: Timestamp.now(),
+          },
+        ],
+      });
+    }
     SuccessToast(`Status updated and notification sent`);
   } catch (error: any) {
-    ErrorToast(error.message);
+    console.log(error.message);
   }
 };
 

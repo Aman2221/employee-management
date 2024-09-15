@@ -72,6 +72,7 @@ const EmployeeTable = () => {
       db_data: [...all_data],
     });
     await updatePermissionStatusInDB(currentDocId, status); //updating status in database
+
     await pushNotificationToDb(docId, status, permission_name); //updating status in database
   };
 

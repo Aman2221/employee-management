@@ -63,7 +63,7 @@ const NavNotifications = ({
           show ? "absolute" : "hidden"
         } bg-slate-700 top-14 -left-32 w-72 rounded-lg px-3 py-4 flex gap-4 flex-col animate__animated animate__fadeIn`}
       >
-        {data.length ? (
+        {data !== null && data.length ? (
           data.map((item) => (
             <div
               key={item.timestamp.toMillis()}
@@ -89,6 +89,10 @@ const NavNotifications = ({
               </div>
             </div>
           ))
+        ) : data == null ? (
+          <span className="text-center text-base font-medium">
+            No new notifications
+          </span>
         ) : (
           <Loader extClss="my-2" />
         )}

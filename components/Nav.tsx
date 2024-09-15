@@ -25,7 +25,7 @@ const Nav = () => {
 
   const { setSearchKey } = usePmsContext();
   const [showNotice, setShowNotice] = useState(false);
-  const [notiData, setNotiData] = useState([]);
+  const [notiData, setNotiData] = useState<any>([]);
   const [isSuper, setIsSuper] = useState(false);
   const [userName, setUserName] = useState("");
   const [show, setShow] = useState(false);
@@ -58,17 +58,19 @@ const Nav = () => {
     const user = JSON.parse(getCookie("user") as any);
     try {
       const docRef = doc(db, "notifications", user.uid);
+      console.log("user.uid :", user.uid);
       const docSnapshot = await getDoc(docRef);
       if (docSnapshot.exists()) {
         let data: DocumentData | undefined = docSnapshot.data();
         const notifications = data.notifications || [];
-
         // Sort notifications by timestamp in descending order
         const sortedNotifications = notifications.sort((a: any, b: any) => {
           return b.timestamp.toMillis() - a.timestamp.toMillis();
         });
 
         setNotiData(sortedNotifications as any);
+      } else {
+        setTimeout(() => setNotiData(null), 500);
       }
     } catch (err: any) {
       ErrorToast(err.message);
@@ -108,7 +110,7 @@ const Nav = () => {
             </span>
           </a>
           <div className="flex gap-5 md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse items-center">
-            <div className="flex gap-5">
+            <div className="gap-5 hidden">
               <div className="flex md:hidden items-center gap-2">
                 <i
                   onClick={() => setShow(!show)}
@@ -129,7 +131,7 @@ const Nav = () => {
               name="searchKey"
               id="searchKey"
               onChange={onFilterTextChange}
-              className="bg-transparent outline-none border border-gray-400 rounded-lg px-3 py-2 shadow-lg w-80"
+              className="bg-transparent outline-none border border-gray-400 rounded-lg px-3 py-2 shadow-lg w-80 md:flex hidden"
               placeholder="Search here..."
             />
             <NavNotificationsComp
