@@ -9,8 +9,11 @@ import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import data from "@/JSON/data.json";
 import { getCookie, getUpdate, setDataToState } from "@/functions";
-import AddUpdates from "./AddUpdates";
+const AddUpdates = dynamic(() => import("./AddUpdates"), {
+  ssr: false,
+});
 import useSystemTheme from "@/hooks/useSystemTheme";
+import dynamic from "next/dynamic";
 
 interface pmsInterface {
   headings: string[];

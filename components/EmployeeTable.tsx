@@ -1,4 +1,5 @@
 "use client";
+import dynamic from "next/dynamic";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db } from "@/config/firebase";
@@ -8,7 +9,9 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import StatusRenderer, { CellStatusRenderer } from "./StatusRenderer";
-import LeaveModal from "./LeaveModal";
+const LeaveModal = dynamic(() => import("./LeaveModal"), {
+  ssr: false,
+});
 import data from "@/JSON/data.json";
 import {
   dynamic_column_def,
@@ -19,7 +22,9 @@ import {
   updatePermissionStatusInDB,
 } from "@/functions";
 import withOutsideClick from "@/HOC/closeModal";
-import AddPermission from "./AddPermission";
+const AddPermission = dynamic(() => import("./AddPermission"), {
+  ssr: false,
+});
 import useSystemTheme from "@/hooks/useSystemTheme";
 
 interface pmsInterface {

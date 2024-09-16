@@ -2,7 +2,7 @@
 
 const withPWA = require("next-pwa")({
   dest: "public", // where the service worker is generated
-  disable: process.env.NODE_ENV === "development", // disable PWA in development mode
+  disable: process.env.NEXT_PUBLIC_DEV_ENVIROMENT === "development", // disable PWA in development mode
 });
 
 module.exports = withPWA({

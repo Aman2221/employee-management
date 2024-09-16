@@ -12,13 +12,20 @@ import {
 import { useRouter } from "next/navigation";
 import { getAuth, signOut } from "firebase/auth";
 import Avatar from "./common/Avatar";
-import AddUpdates from "./AddUpdates";
-import NavDropdown from "./NavDropdown";
+const AddUpdates = dynamic(() => import("./AddUpdates"), {
+  ssr: false,
+});
+const NavDropdown = dynamic(() => import("./NavDropdown"), {
+  ssr: false,
+});
+const NavNotifications = dynamic(() => import("./NavNotifications"), {
+  ssr: false,
+});
 import hideOverlay from "@/HOC/hideOverlay";
 import { usePmsContext } from "@/context";
-import NavNotifications from "./NavNotifications";
 import { DocumentData, doc, getDoc } from "firebase/firestore";
 import { db } from "@/config/firebase";
+import dynamic from "next/dynamic";
 
 const Nav = () => {
   const router = useRouter();

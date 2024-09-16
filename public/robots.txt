@@ -1,0 +1,13 @@
+# *
+User-agent: *
+Allow: /
+
+# *
+User-agent: *
+Disallow: /admin
+
+# Host
+Host: https://primasoft.netlify.app
+
+# Sitemaps
+Sitemap: https://primasoft.netlify.app/sitemap.xml

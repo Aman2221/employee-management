@@ -10,10 +10,9 @@ export const metadata: Metadata = {
   title: "Leaves Manager | Manage Employee Leaves Efficiently",
   description:
     "Leaves Manager is an efficient and secure platform to manage employee leave requests, approvals, and notifications.",
-  viewport: "width=device-width, initial-scale=1",
   keywords:
     "leave management, employee leave, HR tool, leave tracker, leaves manager",
-  themeColor: "#00aaff",
+
   icons: {
     icon: [
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
