@@ -95,7 +95,7 @@ const Nav = () => {
       getToken === null
     )
       router.push("/");
-  }, []);
+  }, [router]);
 
   return (
     <div>

@@ -27,7 +27,7 @@ const LeaveModal = ({
   useEffect(() => {
     const tempStatus = updateSatatusAccordingLocal(currentStatus);
     setCurrentStatus(tempStatus);
-  }, [show]);
+  }, [show, currentStatus, setCurrentStatus]);
 
   return (
     <>

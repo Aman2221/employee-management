@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
@@ -28,10 +28,7 @@ const MyUpdatesPg = () => {
     db_data: [],
   });
 
-  const columnDefs = useMemo(
-    () => data.update_column_defs,
-    [updatesdata.db_data]
-  );
+  const columnDefs = useMemo(() => data.update_column_defs, []);
 
   const onGridReady = (params: any) => {
     setGridApi(params.api); // Storing the grid API for later use
@@ -42,11 +39,11 @@ const MyUpdatesPg = () => {
     setShowUpdateMdl(true);
   };
 
-  const getCurrentUserUpdates = async () => {
+  const getCurrentUserUpdates = useCallback(async () => {
     const tempData: any = [];
     try {
       const userCollection = collection(db, "updates"); // Replace 'yourCollection' with your collection name
-      const userQuery = query(userCollection, where("uid", "==", user.uid));
+      const userQuery = query(userCollection, where("uid", "==", user?.uid));
       const querySnapshot = await getDocs(userQuery);
 
       if (!querySnapshot.empty) {
@@ -62,9 +59,9 @@ const MyUpdatesPg = () => {
       console.error("Error getting document:", error);
       return null;
     }
-  };
+  }, [setShowLoader, user?.uid]);
 
-  const getAllUpdatesData = async () => {
+  const getAllUpdatesData = useCallback(async () => {
     const tempData: any = [];
     try {
       const q = query(collection(db, "updates"), orderBy("created_at", "desc"));
@@ -81,16 +78,16 @@ const MyUpdatesPg = () => {
     }
 
     setDataToState(tempData, setShowLoader, setUpdatesData);
-  };
+  }, [setShowLoader]);
 
   useEffect(() => {
     if (gridApi) gridApi.setGridOption("quickFilterText", searchKey);
   }, [searchKey, gridApi]);
 
   useEffect(() => {
-    if (user && user.role.toLowerCase() !== "employee") getAllUpdatesData();
+    if (user && user?.role?.toLowerCase() !== "employee") getAllUpdatesData();
     else getCurrentUserUpdates();
-  }, [showLoader]);
+  }, [showLoader, getAllUpdatesData, getCurrentUserUpdates, user]);
 
   return (
     <>

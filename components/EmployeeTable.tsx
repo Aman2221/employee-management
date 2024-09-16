@@ -44,11 +44,14 @@ const EmployeeTable = () => {
     setOpenLeaveModal(false)
   );
 
-  const openStatusUpdateModal = useCallback((status: string, docId: string) => {
-    setOpenLeaveModal(!openLeaveModal);
-    setCurrentStatus(status);
-    setCurrentDocId(docId);
-  }, []);
+  const openStatusUpdateModal = useCallback(
+    (status: string, docId: string) => {
+      setOpenLeaveModal(!openLeaveModal);
+      setCurrentStatus(status);
+      setCurrentDocId(docId);
+    },
+    [openLeaveModal]
+  );
 
   const storeStatusToLocal = async (status: string) => {
     let all_data: any = pmsdata.db_data;
@@ -87,7 +90,7 @@ const EmployeeTable = () => {
     else return [...data.column_defs];
   }, [openStatusUpdateModal, pmsdata.db_data]);
 
-  const getData = async () => {
+  const getData = useCallback(async () => {
     const tempData: any = [];
     try {
       const q = query(
@@ -107,7 +110,7 @@ const EmployeeTable = () => {
     }
 
     setDataToState(tempData, setShowLoader, setPmsData);
-  };
+  }, [setShowLoader]);
 
   const onGridReady = (params: any) => {
     setGridApi(params.api); // Storing the grid API for later use
@@ -126,7 +129,7 @@ const EmployeeTable = () => {
 
   useEffect(() => {
     getData();
-  }, [showLoader]);
+  }, [showLoader, getData]);
 
   return (
     <>

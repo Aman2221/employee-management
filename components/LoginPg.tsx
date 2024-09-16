@@ -12,6 +12,7 @@ import {
 } from "@/functions";
 import { ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const LoginPg = () => {
   const router = useRouter();
@@ -71,7 +72,9 @@ const LoginPg = () => {
     <section className="">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <div className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
-          <img
+          <Image
+            width={50}
+            height={100}
             className="w-8 h-8 mr-2"
             src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
             alt="logo"

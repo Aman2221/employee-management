@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 const Avatar = ({
@@ -26,11 +27,14 @@ const Avatar = ({
   return (
     <div onClick={onClick} className="cursor-pointer">
       {imgSrc && imgSrc.length && name.length == 0 ? (
-        <img
+        <Image
+          layout="fill"
+          width={50}
+          height={100}
           className="w-10 h-10 rounded-full"
           src="/docs/images/people/profile-picture-5.jpg"
           alt="Rounded avatar"
-        ></img>
+        ></Image>
       ) : name.length ? (
         <div className="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
           <span className="font-bold text-gray-600 dark:text-gray-300 poppins">
