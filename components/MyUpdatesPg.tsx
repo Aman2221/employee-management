@@ -99,8 +99,10 @@ const MyUpdatesPg = () => {
       ) : (
         <>
           {updatesdata.db_data.length == 0 ? (
-            <div className="flex my-10 w-full justify-center items-center">
-              <h1 className="text-4xl text-center font-bold">No data</h1>
+            <div className="flex my-20 w-full justify-center items-center">
+              <h1 className="md:text-4xl text-base text-center font-bold">
+                No data available
+              </h1>
             </div>
           ) : (
             <>

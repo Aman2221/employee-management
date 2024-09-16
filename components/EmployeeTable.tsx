@@ -143,8 +143,10 @@ const EmployeeTable = () => {
       ) : (
         <>
           {pmsdata.db_data.length == 0 ? (
-            <div className="flex my-10 w-full justify-center items-center">
-              <h1 className="text-4xl text-center font-bold">No data</h1>
+            <div className="flex my-20 w-full justify-center items-center">
+              <h1 className="md:text-4xl text-base text-center font-bold">
+                No data
+              </h1>
             </div>
           ) : (
             <>
@@ -156,12 +158,12 @@ const EmployeeTable = () => {
                         systemTheme == "dark"
                           ? "ag-theme-alpine-dark"
                           : "ag-theme-alpine"
-                      } ag-grid-table overflow-y-scroll dm-sans rounded-sm`}
+                      } ag-grid-table overflow-y-scroll dm-sans rounded-sm `}
                     >
                       <AgGridReact
                         rowData={pmsdata.db_data}
                         columnDefs={columnDefs as any}
-                        className="dm-sans custom-cell-border"
+                        className="dm-sans custom-cell-border text-xs md:text-base"
                         onGridReady={onGridReady}
                         animateRows={true}
                         onCellClicked={onCellClicked}

@@ -65,7 +65,6 @@ const Nav = () => {
     const user = JSON.parse(getCookie("user") as any);
     try {
       const docRef = doc(db, "notifications", user.uid);
-      console.log("user.uid :", user.uid);
       const docSnapshot = await getDoc(docRef);
       if (docSnapshot.exists()) {
         let data: DocumentData | undefined = docSnapshot.data();
@@ -112,7 +111,7 @@ const Nav = () => {
             href="/"
             className="flex items-center space-x-3 rtl:space-x-reverse"
           >
-            <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+            <span className="self-center text-sm md:text-2xl font-semibold whitespace-nowrap dark:text-white">
               Primasoft
             </span>
           </a>

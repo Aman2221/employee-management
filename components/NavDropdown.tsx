@@ -75,7 +75,7 @@ const NavDropdown = ({
         id="dropdownDelay"
         className={`${
           show ? "block" : "hidden"
-        } z-10 absolute top-16 -left-32  animate__animated animate__fadeIn bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600`}
+        } z-10 absolute top-16 -left-44 md:-left-32  animate__animated animate__fadeIn bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600`}
       >
         <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
           <div className="flex gap-2 items-center">

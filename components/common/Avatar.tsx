@@ -36,8 +36,8 @@ const Avatar = ({
           alt="Rounded avatar"
         ></Image>
       ) : name.length ? (
-        <div className="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-          <span className="font-bold text-gray-600 dark:text-gray-300 poppins">
+        <div className="relative inline-flex items-center justify-center h-6 w-6 md:w-10 md:h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+          <span className="font-bold md:text-base text-xs text-gray-600 dark:text-gray-300 poppins">
             {nameInitials}
           </span>
         </div>

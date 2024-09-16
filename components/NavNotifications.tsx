@@ -46,7 +46,7 @@ const NavNotifications = ({
     <div className="relative">
       <div className="notifications h-full d-flex items-center justify-center ">
         <i
-          className="bi bi-bell text-2xl cursor-pointer"
+          className="bi bi-bell text-base md:text-2xl cursor-pointer"
           onClick={hanldeNotification}
         ></i>
         {/* {data && data.filter((i) => i.read == false).length > 0 ? (
@@ -61,7 +61,7 @@ const NavNotifications = ({
       <div
         className={`${
           show ? "absolute" : "hidden"
-        } bg-slate-700 top-14 -left-32 w-72 rounded-lg px-3 py-4 flex gap-4 flex-col animate__animated animate__fadeIn`}
+        } bg-slate-700 top-14 -left-44 md:-left-32 w-72 rounded-lg px-3 py-4 flex gap-4 flex-col animate__animated animate__fadeIn`}
       >
         {data !== null && data.length ? (
           data.map((item) => (

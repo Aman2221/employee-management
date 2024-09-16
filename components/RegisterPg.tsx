@@ -80,7 +80,7 @@ const RegisterPg = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center px-6 py-20 mx-auto">
+      <div className="flex flex-col items-center justify-center px-6 py-0 md:py-20 mx-auto">
         {/* <div className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
           <img
             className="w-8 h-8 mr-2"
@@ -95,7 +95,7 @@ const RegisterPg = () => {
               Register new user
             </h1>
             <form className="space-y-4 md:space-y-6" onSubmit={handleRegister}>
-              <div className=" grid grid-cols-2 gap-x-10 gap-y-5">
+              <div className=" grid grid-cols-2 md:grid-cols-2 gap-x-10 gap-y-5">
                 {data.register_fields.map((item) => (
                   <div key={item.label} className="relative">
                     <InputField
