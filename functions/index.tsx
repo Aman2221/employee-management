@@ -431,7 +431,7 @@ export const setDataToState = (
   setUpdatesData: (a: any) => void
 ) => {
   setTimeout(() => {
-    if (tempData.length) {
+    if (tempData && tempData?.length) {
       setUpdatesData({
         headings: Object.keys(tempData[0]) as string[],
         db_data: tempData,

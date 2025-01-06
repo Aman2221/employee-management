@@ -1,13 +1,13 @@
 "use client";
 import React, { useEffect, useState, useCallback } from "react";
 import UserCard from "./UserCard";
-import SearchInput from "./common/SearchInput";
+import SearchInput from "../Common/SearchInput";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db } from "@/config/firebase";
-import Loader from "./Loader";
+import Loader from "../Common/Loader";
 import { user } from "@/interfaces";
 import { motion, AnimatePresence } from "framer-motion";
-import DropDown from "./common/DropDown";
+import DropDown from "../Common/DropDown";
 
 const UpdateCard = () => {
   const [showDD, setShowDD] = useState(false);
@@ -112,7 +112,7 @@ const UpdateCard = () => {
           <div className="grid grid-cols-4 justify-between w-full gap-6">
             {usersDataDisplay?.map((item: user) => {
               return (
-                <AnimatePresence>
+                <AnimatePresence key={item.id}>
                   <motion.div
                     key={item.id}
                     className="employee-card"

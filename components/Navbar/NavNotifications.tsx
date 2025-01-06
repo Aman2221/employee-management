@@ -1,5 +1,5 @@
 import React from "react";
-import Loader from "./Loader";
+import Loader from "../Common/Loader";
 import { getCookie, markNotificationAsReadInDb } from "@/functions";
 
 const NavNotifications = ({

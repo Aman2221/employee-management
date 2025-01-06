@@ -1,5 +1,5 @@
 import HomeComp from "@/components/HomeComp";
-import Layout from "@/components/Layout";
+import Layout from "@/components/Common/Layout";
 import React from "react";
 
 const HomePg = () => {

@@ -11,7 +11,7 @@ import {
 } from "@/functions";
 import { ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
-import InputField from "./common/InputField";
+import InputField from "../Common/InputField";
 import data from "@/JSON/data.json";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc } from "firebase/firestore";

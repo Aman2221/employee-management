@@ -1,15 +1,16 @@
 "use client";
+import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
-import Loader from "./Loader";
+import Loader from "../Common/Loader";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import StatusRenderer, { CellStatusRenderer } from "./StatusRenderer";
-const LeaveModal = dynamic(() => import("./LeaveModal"), {
+const LeaveModal = dynamic(() => import("../Pop-ups/LeaveModal"), {
   ssr: false,
 });
 import data from "@/JSON/data.json";
@@ -22,7 +23,7 @@ import {
   updatePermissionStatusInDB,
 } from "@/functions";
 import withOutsideClick from "@/HOC/closeModal";
-const AddPermission = dynamic(() => import("./AddPermission"), {
+const AddPermission = dynamic(() => import("../Pop-ups/AddPermission"), {
   ssr: false,
 });
 import useSystemTheme from "@/hooks/useSystemTheme";
@@ -34,6 +35,8 @@ interface pmsInterface {
 
 const EmployeeTable = () => {
   const systemTheme = useSystemTheme();
+  const searchParams = useSearchParams();
+  const uid = searchParams.get("uid");
   const { showLoader, setShowLoader, searchKey } = usePmsContext();
   const [openLeaveModal, setOpenLeaveModal] = useState(false);
   const [currentStatus, setCurrentStatus] = useState("");
@@ -41,6 +44,7 @@ const EmployeeTable = () => {
   const [gridApi, setGridApi] = useState<any>(null);
   const [crrData, setCrrData] = useState<unknown>();
   const [showLeaveModel, setShowLeaveModel] = useState(false);
+
   const [pmsdata, setPmsData] = useState<pmsInterface>({
     headings: [],
     db_data: [],

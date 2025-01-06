@@ -1,5 +1,5 @@
-import Layout from "@/components/Layout";
-import RegisterPg from "@/components/RegisterPg";
+import Layout from "@/components/Common/Layout";
+import RegisterPg from "@/components/Auth/RegisterPg";
 import React from "react";
 
 const RegisterUser = () => {

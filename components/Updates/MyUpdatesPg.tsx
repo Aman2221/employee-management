@@ -1,15 +1,16 @@
 "use client";
+import { useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
-import Loader from "./Loader";
+import Loader from "../Common/Loader";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import data from "@/JSON/data.json";
 import { getCookie, getUpdate, setDataToState } from "@/functions";
-const AddUpdates = dynamic(() => import("./AddUpdates"), {
+const AddUpdates = dynamic(() => import("../Pop-ups/AddUpdates"), {
   ssr: false,
 });
 import useSystemTheme from "@/hooks/useSystemTheme";
@@ -21,6 +22,8 @@ interface pmsInterface {
 }
 const MyUpdatesPg = () => {
   const systemTheme = useSystemTheme();
+  const searchParams = useSearchParams();
+  const searchQuerytUid = searchParams.get("uid");
   const user = JSON.parse(getCookie("user") as any);
   const { showLoader, setShowLoader, searchKey } = usePmsContext();
   const [showUpdateMdl, setShowUpdateMdl] = useState(false);
@@ -43,20 +46,23 @@ const MyUpdatesPg = () => {
   };
 
   const getCurrentUserUpdates = useCallback(async () => {
-    const tempData: any = [];
+    const userUid = searchQuerytUid ? searchQuerytUid : user?.uid;
+
     try {
       const userCollection = collection(db, "updates"); // Replace 'yourCollection' with your collection name
-      const userQuery = query(userCollection, where("uid", "==", user?.uid));
+      const userQuery = query(userCollection, where("uid", "==", userUid));
       const querySnapshot = await getDocs(userQuery);
 
       if (!querySnapshot.empty) {
-        querySnapshot.forEach((doc) => {
-          tempData.push({
+        let tempData = querySnapshot.docs.map((doc) => {
+          return {
             id: doc.id,
             ...doc.data(),
-          });
+          };
         });
         setDataToState(tempData, setShowLoader, setUpdatesData);
+      } else {
+        setShowLoader(!showLoader);
       }
     } catch (error) {
       console.error("Error getting document:", error);
@@ -88,8 +94,12 @@ const MyUpdatesPg = () => {
   }, [searchKey, gridApi]);
 
   useEffect(() => {
-    if (user && user?.role?.toLowerCase() !== "employee") getAllUpdatesData();
-    else getCurrentUserUpdates();
+    if (searchQuerytUid) {
+      getCurrentUserUpdates();
+    } else {
+      if (user && user?.role?.toLowerCase() !== "employee") getAllUpdatesData();
+      else getCurrentUserUpdates();
+    }
   }, [showLoader, getAllUpdatesData, getCurrentUserUpdates, user]);
 
   return (

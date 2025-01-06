@@ -1,5 +1,5 @@
-import Layout from "@/components/Layout";
-import UserUpdates from "@/components/UserUpdates";
+import Layout from "@/components/Common/Layout";
+import UserUpdates from "@/components/Updates/UserUpdates";
 import React from "react";
 
 const TestPage = () => {

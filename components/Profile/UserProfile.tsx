@@ -1,7 +1,7 @@
 "use client";
 import { getCookie } from "@/functions";
 import React, { useEffect } from "react";
-import Avatar from "./common/Avatar";
+import Avatar from "../Common/Avatar";
 
 const UserProfile = () => {
   const user = JSON.parse(getCookie("user") as any);

@@ -1,5 +1,5 @@
-import Layout from "@/components/Layout";
-import UserProfile from "@/components/UserProfile";
+import Layout from "@/components/Common/Layout";
+import UserProfile from "@/components/Profile/UserProfile";
 import React from "react";
 
 const Profile = () => {

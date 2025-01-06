@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import AddPermission from "./AddPermission";
-import PasteMessage from "./PasteMessage";
+import AddPermission from "../Pop-ups/AddPermission";
+import PasteMessage from "../Pop-ups/PasteMessage";
 import {
   ErrorToast,
   deleteAllCookies,
@@ -11,8 +11,8 @@ import {
 } from "@/functions";
 import { useRouter } from "next/navigation";
 import { getAuth, signOut } from "firebase/auth";
-import Avatar from "./common/Avatar";
-const AddUpdates = dynamic(() => import("./AddUpdates"), {
+import Avatar from "../Common/Avatar";
+const AddUpdates = dynamic(() => import("../Pop-ups/AddUpdates"), {
   ssr: false,
 });
 const NavDropdown = dynamic(() => import("./NavDropdown"), {
@@ -26,7 +26,7 @@ import { usePmsContext } from "@/context";
 import { DocumentData, doc, getDoc } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import dynamic from "next/dynamic";
-import SearchInput from "./common/SearchInput";
+import SearchInput from "../Common/SearchInput";
 
 const Nav = ({ showSearchInput = true }: { showSearchInput?: boolean }) => {
   const router = useRouter();

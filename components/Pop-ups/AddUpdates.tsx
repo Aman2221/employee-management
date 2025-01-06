@@ -62,7 +62,7 @@ const AddUpdates = ({
     if (allFieldsAreValid) {
       setShow(!show);
       setShowLoader(true);
-      // addDocument();
+      addDocument();
     }
   };
 

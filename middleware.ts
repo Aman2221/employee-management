@@ -8,7 +8,7 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
 }
 
-// Define routes that should be protected
+// routes that should be protected
 export const config = {
-    matcher: ['/home', "/", "/my-updates", "/view-updates", "/register"], // Adjust paths as needed
+    matcher: ['/home', "/", "/my-updates", "/view-updates", "/register"],
 };

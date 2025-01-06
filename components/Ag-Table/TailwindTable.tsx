@@ -1,5 +1,5 @@
 import React from "react";
-import { TableDataRows } from "./EmplyeeSearch";
+import { TableDataRows } from "../Not-In-Use/EmplyeeSearch";
 import { permissions } from "@/interfaces";
 
 const TailwindTable = ({

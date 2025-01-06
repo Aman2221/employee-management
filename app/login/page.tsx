@@ -1,4 +1,4 @@
-import LoginPg from "@/components/LoginPg";
+import LoginPg from "@/components/Auth/LoginPg";
 import React from "react";
 
 const SelectLogin = () => {

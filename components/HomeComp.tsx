@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import EmployeeTable from "./EmployeeTable";
+import EmployeeTable from "./Ag-Table/EmployeeTable";
 
 const HomeComp = () => {
   return (

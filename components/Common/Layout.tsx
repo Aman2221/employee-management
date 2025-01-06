@@ -1,7 +1,7 @@
 import "animate.css";
 import React, { ReactNode } from "react";
-import HomeComp from "./HomeComp";
-import Nav from "./Nav";
+import HomeComp from "../HomeComp";
+import Nav from "../Navbar/Nav";
 import { PmsProvider } from "@/context";
 import { ToastContainer } from "react-toastify";
 import Footer from "./Footer";
