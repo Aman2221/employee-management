@@ -5,10 +5,16 @@ const Avatar = ({
   imgSrc = "",
   name = "",
   onClick,
+  extClass = "h-8 w-8",
+  fontSize = "text-xs",
+  showAnimation = false,
 }: {
   imgSrc?: string;
   name?: string;
   onClick?: () => void;
+  extClass?: string;
+  fontSize?: string;
+  showAnimation?: boolean;
 }) => {
   function getInitials() {
     let nameParts = name.trim().split(" ");
@@ -25,19 +31,27 @@ const Avatar = ({
   const nameInitials = getInitials();
 
   return (
-    <div onClick={onClick} className="cursor-pointer">
+    <div
+      onClick={onClick}
+      className={`${showAnimation && "skeleton-container"} cursor-pointer`}
+    >
       {imgSrc && imgSrc.length && name.length == 0 ? (
         <Image
-          layout="fill"
           width={50}
           height={100}
-          className="w-10 h-10 rounded-full"
-          src="/docs/images/people/profile-picture-5.jpg"
+          className={`w-10 h-10 rounded-full`}
+          src={imgSrc}
           alt="Rounded avatar"
         ></Image>
       ) : name.length ? (
-        <div className="relative inline-flex items-center justify-center h-6 w-6 md:w-10 md:h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-          <span className="font-bold md:text-base text-xs text-gray-600 dark:text-gray-300 poppins">
+        <div
+          className={`${
+            showAnimation && "skeleton"
+          }  relative inline-flex items-center justify-center ${extClass} overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600`}
+        >
+          <span
+            className={`font-bold ${fontSize} text-gray-600 dark:text-gray-300 poppins`}
+          >
             {nameInitials}
           </span>
         </div>

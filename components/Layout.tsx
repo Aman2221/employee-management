@@ -6,10 +6,16 @@ import { PmsProvider } from "@/context";
 import { ToastContainer } from "react-toastify";
 import Footer from "./Footer";
 
-const Layout = ({ children = <HomeComp /> }: { children?: ReactNode }) => {
+const Layout = ({
+  children = <HomeComp />,
+  showSearchInput = true,
+}: {
+  children?: ReactNode;
+  showSearchInput?: boolean;
+}) => {
   return (
     <PmsProvider>
-      <Nav />
+      <Nav showSearchInput={showSearchInput} />
       <div className="py-24">{children}</div>
       <Footer />
       <ToastContainer />

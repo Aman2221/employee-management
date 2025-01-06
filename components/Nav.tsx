@@ -26,8 +26,9 @@ import { usePmsContext } from "@/context";
 import { DocumentData, doc, getDoc } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import dynamic from "next/dynamic";
+import SearchInput from "./common/SearchInput";
 
-const Nav = () => {
+const Nav = ({ showSearchInput = true }: { showSearchInput?: boolean }) => {
   const router = useRouter();
 
   const { setSearchKey } = usePmsContext();
@@ -132,14 +133,10 @@ const Nav = () => {
                 ></i>
               </div>
             </div>
-            <input
-              type="text"
-              name="searchKey"
-              id="searchKey"
-              onChange={onFilterTextChange}
-              className="bg-transparent outline-none border border-gray-400 rounded-lg px-3 py-2 shadow-lg w-80 md:flex hidden"
-              placeholder="Search here..."
-            />
+            {showSearchInput && (
+              <SearchInput onInputChange={onFilterTextChange} />
+            )}
+
             <NavNotificationsComp
               show={showNotice}
               setShow={setShowNotice}

@@ -23,3 +23,18 @@ export type updates_inteface = {
   task: string;
   summary: string;
 };
+
+export interface user {
+  id: string;
+  confirm_password: string;
+  createdAt: string;
+  designation: string;
+  email: string;
+  emp_id: string | number;
+  password: string;
+  phone: string | number;
+  role: string;
+  uid: string;
+  username: string;
+  date: string;
+}
