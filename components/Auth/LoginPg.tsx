@@ -53,7 +53,7 @@ const LoginPg = () => {
       await getUserDoc(user.uid);
       SuccessToast("Login Successful");
       setTimeout(() => {
-        router.push("/home");
+        router.push("/");
       }, 500);
     } catch (error) {
       ErrorToast("Please enter valid email and password");

@@ -2,7 +2,7 @@
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
 import Loader from "../Common/Loader";
@@ -16,6 +16,7 @@ const LeaveModal = dynamic(() => import("../Pop-ups/LeaveModal"), {
 import data from "@/JSON/data.json";
 import {
   dynamic_column_def,
+  getCookie,
   getLeave,
   pushNotificationToDb,
   sendEmail,
@@ -36,7 +37,8 @@ interface pmsInterface {
 const EmployeeTable = () => {
   const systemTheme = useSystemTheme();
   const searchParams = useSearchParams();
-  const uid = searchParams.get("uid");
+  const searchQueryEmail = searchParams.get("email");
+  const user = JSON.parse(getCookie("user") as any);
   const { showLoader, setShowLoader, searchKey } = usePmsContext();
   const [openLeaveModal, setOpenLeaveModal] = useState(false);
   const [currentStatus, setCurrentStatus] = useState("");
@@ -99,27 +101,51 @@ const EmployeeTable = () => {
     else return [...data.column_defs];
   }, [openStatusUpdateModal, pmsdata.db_data]);
 
-  const getData = useCallback(async () => {
-    const tempData: any = [];
+  const getAllUsersLeaveData = useCallback(async () => {
+    let tempData: any = [];
     try {
       const q = query(
         collection(db, "permissions"),
         orderBy("created_at", "desc")
       );
       const querySnapshot = await getDocs(q);
-      querySnapshot.docs.map((doc) =>
-        tempData.push({
+      tempData = querySnapshot.docs.map((doc) => {
+        return {
           id: doc.id,
           ...doc.data(),
-        })
-      );
+        };
+      });
     } catch (e) {
       console.error("Error fetching sorted documents: ", e);
       return [];
     }
-
     setDataToState(tempData, setShowLoader, setPmsData);
   }, [setShowLoader]);
+
+  const getCurrentUserLeaves = useCallback(async () => {
+    const userUid = searchQueryEmail ? searchQueryEmail : user?.email;
+
+    try {
+      const userCollection = collection(db, "permissions"); // Replace 'yourCollection' with your collection name
+      const userQuery = query(userCollection, where("email", "==", userUid));
+      const querySnapshot = await getDocs(userQuery);
+
+      if (!querySnapshot.empty) {
+        let tempData = querySnapshot.docs.map((doc) => {
+          return {
+            id: doc.id,
+            ...doc.data(),
+          };
+        });
+        setDataToState(tempData, setShowLoader, setPmsData);
+      } else {
+        setShowLoader(!showLoader);
+      }
+    } catch (error) {
+      console.error("Error getting document:", error);
+      return null;
+    }
+  }, [setShowLoader, user?.uid]);
 
   const onGridReady = (params: any) => {
     setGridApi(params.api); // Storing the grid API for later use
@@ -137,8 +163,15 @@ const EmployeeTable = () => {
   }, [searchKey, gridApi]);
 
   useEffect(() => {
-    getData();
-  }, [showLoader, getData]);
+    console.log("searchQueryEmail :", searchQueryEmail);
+    if (searchQueryEmail) {
+      getCurrentUserLeaves();
+    } else {
+      if (user && user?.role?.toLowerCase() !== "employee")
+        getAllUsersLeaveData();
+      else getCurrentUserLeaves();
+    }
+  }, [showLoader, getAllUsersLeaveData]);
 
   return (
     <>
