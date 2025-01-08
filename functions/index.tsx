@@ -428,12 +428,19 @@ export const decryptData = (cipherText: string, secretKey: string) => {
 export const setDataToState = (
   tempData: any,
   setShowLoader: (a: boolean) => void,
-  setUpdatesData: (a: any) => void
+  setUpdatesData: (a: any) => void,
+  isSimpleTableView: boolean
 ) => {
   setTimeout(() => {
+    const detailedTableHeding = Object.keys(tempData[0]) as string[];
+    let elementsToRemove = ["id", "emp_id", "added_by", "uid", "phone", "time"];
+    const simpleTableHeads = detailedTableHeding.filter(
+      (item) => !elementsToRemove.includes(item)
+    );
+
     if (tempData && tempData?.length) {
       setUpdatesData({
-        headings: Object.keys(tempData[0]) as string[],
+        headings: isSimpleTableView ? simpleTableHeads : detailedTableHeding,
         db_data: tempData,
       });
     }

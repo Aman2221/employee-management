@@ -30,7 +30,7 @@ const TailwindTable = ({
       <tbody className="h-36 max-h-24 border border-red-500">
         <TableDataRows
           data={
-            pmsdata.filter_data.length ? pmsdata.filter_data : pmsdata.db_data
+            pmsdata?.filter_data?.length ? pmsdata.filter_data : pmsdata.db_data
           }
           headings={pmsdata.headings}
         />

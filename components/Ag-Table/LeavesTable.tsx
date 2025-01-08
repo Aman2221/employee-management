@@ -28,13 +28,15 @@ const AddPermission = dynamic(() => import("../Pop-ups/AddPermission"), {
   ssr: false,
 });
 import useSystemTheme from "@/hooks/useSystemTheme";
+import Tabs from "../Common/Tabs";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface pmsInterface {
   headings: string[];
   db_data: any[];
 }
 
-const EmployeeTable = () => {
+const LeavesTable = () => {
   const systemTheme = useSystemTheme();
   const searchParams = useSearchParams();
   const searchQueryEmail = searchParams.get("email");
@@ -46,7 +48,7 @@ const EmployeeTable = () => {
   const [gridApi, setGridApi] = useState<any>(null);
   const [crrData, setCrrData] = useState<unknown>();
   const [showLeaveModel, setShowLeaveModel] = useState(false);
-
+  const [viewType, setViewType] = useState("detailedTable");
   const [pmsdata, setPmsData] = useState<pmsInterface>({
     headings: [],
     db_data: [],
@@ -110,16 +112,22 @@ const EmployeeTable = () => {
       );
       const querySnapshot = await getDocs(q);
       tempData = querySnapshot.docs.map((doc) => {
+        const { created_at, ...allData } = doc.data();
         return {
           id: doc.id,
-          ...doc.data(),
+          ...allData,
         };
       });
     } catch (e) {
       console.error("Error fetching sorted documents: ", e);
       return [];
     }
-    setDataToState(tempData, setShowLoader, setPmsData);
+    setDataToState(
+      tempData,
+      setShowLoader,
+      setPmsData,
+      viewType == "simpleTable"
+    );
   }, [setShowLoader]);
 
   const getCurrentUserLeaves = useCallback(async () => {
@@ -132,12 +140,19 @@ const EmployeeTable = () => {
 
       if (!querySnapshot.empty) {
         let tempData = querySnapshot.docs.map((doc) => {
+          const { created_at, ...allData } = doc.data();
           return {
             id: doc.id,
-            ...doc.data(),
+            ...allData,
           };
         });
-        setDataToState(tempData, setShowLoader, setPmsData);
+
+        setDataToState(
+          tempData,
+          setShowLoader,
+          setPmsData,
+          viewType == "simpleTable"
+        );
       } else {
         setShowLoader(!showLoader);
       }
@@ -158,12 +173,17 @@ const EmployeeTable = () => {
     }
   };
 
+  const onTabChange = (tab_name: string) => {};
+
+  const onViewChange = (view: string) => {
+    setViewType(view);
+  };
+
   useEffect(() => {
     if (gridApi) gridApi.setGridOption("quickFilterText", searchKey);
   }, [searchKey, gridApi]);
 
   useEffect(() => {
-    console.log("searchQueryEmail :", searchQueryEmail);
     if (searchQueryEmail) {
       getCurrentUserLeaves();
     } else {
@@ -187,26 +207,49 @@ const EmployeeTable = () => {
             </div>
           ) : (
             <>
+              <div className="flex justify-between w-full border-b border-gray-200 dark:border-gray-700">
+                <Tabs tabs={data.updates_tabs} onTabChange={onTabChange} />
+                <div className="flex gap-4">
+                  {data.data_view_types.map((item) => (
+                    <button
+                      key={item.name}
+                      onClick={() => onViewChange(item.name)}
+                      type="button"
+                      className="text-white bg-gray-800 hover:bg-gray-900 rounded-lg text-md p-0 w-10 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700  dark:border-gray-700"
+                    >
+                      <i className={`bi ${item.icon}`}></i>
+                    </button>
+                  ))}
+                </div>
+              </div>
               <div className="mt-6 w-full animate__animated animate__fadeIn">
                 {pmsdata && pmsdata.db_data.length ? (
-                  <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <div
-                      className={`${
-                        systemTheme == "dark"
-                          ? "ag-theme-alpine-dark"
-                          : "ag-theme-alpine"
-                      } ag-grid-table overflow-y-scroll dm-sans rounded-sm `}
-                    >
-                      <AgGridReact
-                        rowData={pmsdata.db_data}
-                        columnDefs={columnDefs as any}
-                        className="dm-sans custom-cell-border text-xs md:text-base"
-                        onGridReady={onGridReady}
-                        animateRows={true}
-                        onCellClicked={onCellClicked}
-                      />
+                  <>
+                    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                      <AnimatePresence>
+                        <motion.div
+                          className={`${
+                            systemTheme == "dark"
+                              ? "ag-theme-alpine-dark"
+                              : "ag-theme-alpine"
+                          } ag-grid-table overflow-y-scroll dm-sans rounded-sm `}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <AgGridReact
+                            rowData={pmsdata.db_data}
+                            columnDefs={columnDefs as any}
+                            className="dm-sans custom-cell-border text-xs md:text-base"
+                            onGridReady={onGridReady}
+                            animateRows={true}
+                            onCellClicked={onCellClicked}
+                          />
+                        </motion.div>
+                      </AnimatePresence>
                     </div>
-                  </div>
+                  </>
                 ) : (
                   <></>
                 )}
@@ -233,4 +276,4 @@ const EmployeeTable = () => {
   );
 };
 
-export default EmployeeTable;
+export default LeavesTable;

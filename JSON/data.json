@@ -262,5 +262,55 @@
       "verified_by": false,
       "task": false,
       "summary": false
-    }
+    },
+    "leaves_tabs" : [
+      {
+        "tab_name" : "Business Analyst",
+        "icon" : ""
+      },
+      {
+        "tab_name" : "Frontned Development",
+        "icon" : ""
+      },
+      {
+        "tab_name" : "UI Testing",
+        "icon" : ""
+      },
+      {
+        "tab_name" : "Graphic Designing",
+        "icon" : ""
+      }
+    ],
+    "updates_tabs" : [
+      {
+        "tab_name" : "Sick Leave",
+        "icon" : ""
+      },
+      {
+        "tab_name" : "Casual Leave",
+        "icon" : ""
+      },
+      {
+        "tab_name" : "Welness Leave",
+        "icon" : ""
+      },
+      {
+        "tab_name" : "Permission",
+        "icon" : ""
+      }
+    ],
+    "data_view_types": [
+      {
+        "name" : "detailedTable",
+        "icon" : "bi-table"
+      },
+      {
+        "name" : "simpleTable",
+        "icon" : "bi-file-spreadsheet"
+      },
+      {
+        "name" : "cardView",
+        "icon" : "bi-card-list"
+      }
+    ]
 }
