@@ -3,11 +3,19 @@ import React, { ReactNode } from "react";
 const DropDown = ({
   show,
   setShow,
+  options = [
+    "everyone",
+    "business analyst",
+    "graphic desing",
+    "frontend",
+    "testing",
+  ],
   SelectBtnComp,
   onChange,
 }: {
   show: boolean;
   setShow: (a: boolean) => void;
+  options?: string[];
   SelectBtnComp: ReactNode;
   onChange: (a: string) => void;
 }) => {
@@ -51,13 +59,7 @@ const DropDown = ({
           className="py-2 text-sm text-gray-700 dark:text-gray-200 w-full"
           aria-labelledby="dropdownDefaultButton"
         >
-          {[
-            "everyone",
-            "business analyst",
-            "graphic desing",
-            "frontend",
-            "testing",
-          ].map((item) => (
+          {options.map((item) => (
             <li key={item} className="w-full" onClick={() => onChange(item)}>
               <button className="w-full capitalize  text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                 {item}

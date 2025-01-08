@@ -341,6 +341,7 @@ export const dynamic_column_def = (
             headerClass: "uppercase",
             sortable: true,
             width: 140,
+            filter: true,
             cellRenderer: CellStatusRenderer,
             cellRendererParams: (params: any) => {
               params: params;
@@ -428,21 +429,11 @@ export const decryptData = (cipherText: string, secretKey: string) => {
 export const setDataToState = (
   tempData: any,
   setShowLoader: (a: boolean) => void,
-  setUpdatesData: (a: any) => void,
-  isSimpleTableView: boolean
+  setUpdatesData: (a: any) => void
 ) => {
   setTimeout(() => {
-    const detailedTableHeding = Object.keys(tempData[0]) as string[];
-    let elementsToRemove = ["id", "emp_id", "added_by", "uid", "phone", "time"];
-    const simpleTableHeads = detailedTableHeding.filter(
-      (item) => !elementsToRemove.includes(item)
-    );
-
     if (tempData && tempData?.length) {
-      setUpdatesData({
-        headings: isSimpleTableView ? simpleTableHeads : detailedTableHeding,
-        db_data: tempData,
-      });
+      setUpdatesData([...tempData]);
     }
     setShowLoader(false);
   }, 1000);

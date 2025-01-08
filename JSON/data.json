@@ -19,7 +19,7 @@
             "reason" :"This is a reason 2"
         }
     ],
-    "column_defs" : [
+    "leaveDetailedColumnDefs" : [
         {
           "headerName": "emp id",
           "field": "emp_id",
@@ -35,6 +35,19 @@
           "filter": true
         },
         {
+          "headerName": "email",
+          "field": "email",
+          "headerClass": "uppercase",
+          "filter": true
+        },
+        {
+          "headerName": "phone",
+          "field": "phone",
+          "sortable": false,
+          "headerClass": "uppercase",
+          "width": 200
+        },
+        {
           "headerName": "duration",
           "field": "duration",
           "headerClass": "uppercase",
@@ -47,19 +60,6 @@
           "headerClass": "uppercase",
           "filter": true,
           "width": 210
-        },
-        {
-          "headerName": "email",
-          "field": "email",
-          "headerClass": "uppercase",
-          "filter": true
-        },
-        {
-          "headerName": "phone",
-          "field": "phone",
-          "sortable": false,
-          "headerClass": "uppercase",
-          "width": 200
         },
         {
           "headerName": "reason",
@@ -81,6 +81,50 @@
           "sortable": true,
           "width": 140
         }
+    ],
+    "leaveSimpleColumnDefs" : [
+      {
+        "headerName": "name",
+        "field": "name",
+        "headerClass": "uppercase",
+        "filter": true,
+        "width": 120
+      },
+      {
+        "headerName": "email",
+        "field": "email",
+        "headerClass": "uppercase",
+        "filter": true,
+        "width": 300
+      },
+      {
+        "headerName": "duration",
+        "field": "duration",
+        "headerClass": "uppercase",
+        "width": 120
+      },
+      {
+        "headerName": "type",
+        "field": "type",
+        "sortable": false,
+        "headerClass": "uppercase",
+        "filter": true,
+        "width": 120
+      },
+      {
+        "headerName": "date",
+        "field": "date",
+        "headerClass": "uppercase",
+        "sortable": true,
+        "width": 120
+      },
+      {
+        "headerName": "reason",
+        "field": "reason",
+        "sortable": false,
+        "headerClass": "uppercase",
+        "width": 250
+      }
     ],
     "register_fields" : [
       {
@@ -265,37 +309,41 @@
     },
     "leaves_tabs" : [
       {
-        "tab_name" : "Business Analyst",
+        "tab_name" : "business analyst",
         "icon" : ""
       },
       {
-        "tab_name" : "Frontned Development",
+        "tab_name" : "frontned development",
         "icon" : ""
       },
       {
-        "tab_name" : "UI Testing",
+        "tab_name" : "UI testing",
         "icon" : ""
       },
       {
-        "tab_name" : "Graphic Designing",
+        "tab_name" : "graphic designing",
         "icon" : ""
       }
     ],
     "updates_tabs" : [
       {
-        "tab_name" : "Sick Leave",
+        "tab_name" : "all",
         "icon" : ""
       },
       {
-        "tab_name" : "Casual Leave",
+        "tab_name" : "sick leave",
         "icon" : ""
       },
       {
-        "tab_name" : "Welness Leave",
+        "tab_name" : "casual leave",
         "icon" : ""
       },
       {
-        "tab_name" : "Permission",
+        "tab_name" : "welness leave",
+        "icon" : ""
+      },
+      {
+        "tab_name" : "permission",
         "icon" : ""
       }
     ],

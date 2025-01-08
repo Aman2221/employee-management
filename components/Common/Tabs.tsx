@@ -3,9 +3,11 @@ type Obj = { [key: string]: string };
 
 const Tabs = ({
   tabs,
+  activeTab,
   onTabChange,
 }: {
   tabs: Obj[];
+  activeTab: string;
   onTabChange: (a: string) => void;
 }) => {
   return (
@@ -18,7 +20,13 @@ const Tabs = ({
               className="me-2"
               key={item.tab_name}
             >
-              <button className="gap-2  inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group">
+              <button
+                className={`${
+                  item.tab_name == activeTab
+                    ? "text-gray-300 border-b-2  border-gray-300"
+                    : "border-transparent "
+                } gap-2 inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group capitalize`}
+              >
                 <i className="bi bi-activity"></i>
                 {item.tab_name}
               </button>
