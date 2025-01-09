@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 
 const DropDown = ({
   show,
@@ -19,6 +19,7 @@ const DropDown = ({
   SelectBtnComp: ReactNode;
   onChange: (a: string) => void;
 }) => {
+  const [activeItem, setActiveItem] = useState(options[0]);
   return (
     <div>
       {SelectBtnComp ? (
@@ -60,8 +61,19 @@ const DropDown = ({
           aria-labelledby="dropdownDefaultButton"
         >
           {options.map((item) => (
-            <li key={item} className="w-full" onClick={() => onChange(item)}>
-              <button className="w-full capitalize  text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+            <li
+              key={item}
+              className={`w-full`}
+              onClick={() => {
+                setActiveItem(item);
+                onChange(item);
+              }}
+            >
+              <button
+                className={`${
+                  activeItem == item ? "font-bold" : ""
+                } w-full capitalize text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white`}
+              >
                 {item}
               </button>
             </li>
