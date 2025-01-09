@@ -13,6 +13,7 @@ export interface permissions {
   date: s;
   time: s;
   created_at: s;
+  status: s;
 }
 
 export type updates_inteface = {
@@ -37,4 +38,26 @@ export interface user {
   uid: string;
   username: string;
   date: string;
+}
+
+export interface updates {
+  id: s;
+  website_names: s;
+  assigned_by: s;
+  emp_id: s;
+  name: s;
+  created_at: {
+    seconds: n;
+    nanoseconds: n;
+  };
+  added_by: s;
+  task: s;
+  uid: s;
+  date: s;
+  email: s;
+  designation: s;
+  status: s;
+  verified_by: s;
+  time: s;
+  summary: s;
 }

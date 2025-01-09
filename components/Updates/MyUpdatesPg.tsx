@@ -24,6 +24,8 @@ import dynamic from "next/dynamic";
 import Tabs from "../Common/Tabs";
 import DropDown from "../Common/DropDown";
 import TableViews from "../Common/TableViews";
+import { DataCardViewUpdates } from "../Ag-Table/CardView";
+import { updates } from "@/interfaces";
 
 const MyUpdatesPg = () => {
   const gridRef: any = useRef(null);
@@ -35,7 +37,8 @@ const MyUpdatesPg = () => {
   const [showUpdateMdl, setShowUpdateMdl] = useState(false);
   const [gridApi, setGridApi] = useState<any>(null);
   const [crrData, setCrrData] = useState<unknown>();
-  const [updatesdata, setUpdatesData] = useState([]);
+  const [updatesData, setUpdatesData] = useState<updates[]>([]);
+  const [updatesDataStore, setUpdatesDataStore] = useState<updates[]>([]);
   const [showDD, setShowDD] = useState(false);
   const [leaveFilter, setLeaveFilter] = useState({
     leave_type: "all",
@@ -49,7 +52,7 @@ const MyUpdatesPg = () => {
         ? data.update_column_defs
         : data.update_column_defs_simple;
     return tableColumnsDegs;
-  }, [updatesdata]);
+  }, [updatesData]);
 
   const onGridReady = (params: any) => {
     setGridApi(params.api); // Storing the grid API for later use
@@ -75,6 +78,7 @@ const MyUpdatesPg = () => {
             ...doc.data(),
           };
         });
+        // setUpdatesDataStore([...tempData]);
         setDataToState(tempData, setShowLoader, setUpdatesData);
       } else {
         setShowLoader(!showLoader);
@@ -100,22 +104,26 @@ const MyUpdatesPg = () => {
       console.error("Error fetching sorted documents: ", e);
       return [];
     }
+    setUpdatesDataStore([...tempData]);
 
     setDataToState(tempData, setShowLoader, setUpdatesData);
   }, [setShowLoader]);
 
   const onTabChange = (tab_name: string) => {
     const selectedTab = tab_name.toLowerCase();
-    if (tab_name !== "all") {
-      gridRef.current.api.setFilterModel({
-        designation: {
-          type: "equals",
-          filter: selectedTab,
-        },
-      });
-    } else {
-      gridRef.current.api.setFilterModel(null);
+    if (leaveFilter.view_type !== "cardView") {
+      if (tab_name !== "all") {
+        gridRef.current.api.setFilterModel({
+          designation: {
+            type: "equals",
+            filter: selectedTab,
+          },
+        });
+      } else {
+        gridRef.current.api.setFilterModel(null);
+      }
     }
+
     setLeaveFilter({
       ...leaveFilter,
       leave_type: tab_name,
@@ -123,16 +131,19 @@ const MyUpdatesPg = () => {
   };
 
   const onStatusChange = (status: string) => {
-    if (status !== "status(all)") {
-      gridRef.current.api.setFilterModel({
-        status: {
-          type: "equals",
-          filter: status,
-        },
-      });
-    } else {
-      gridRef.current.api.setFilterModel(null);
+    if (leaveFilter.view_type !== "cardView") {
+      if (status !== "status(all)") {
+        gridRef.current.api.setFilterModel({
+          status: {
+            type: "equals",
+            filter: status,
+          },
+        });
+      } else {
+        gridRef.current.api.setFilterModel(null);
+      }
     }
+
     setLeaveFilter({
       ...leaveFilter,
       leave_status: status,
@@ -141,7 +152,7 @@ const MyUpdatesPg = () => {
   };
 
   const onViewChange = (view: string) => {
-    setUpdatesData([...updatesdata]);
+    setUpdatesData([...updatesData]);
     setLeaveFilter({ ...leaveFilter, view_type: view });
   };
 
@@ -164,7 +175,7 @@ const MyUpdatesPg = () => {
         <Loader />
       ) : (
         <>
-          {updatesdata.length == 0 ? (
+          {updatesData.length == 0 ? (
             <div className="flex my-20 w-full justify-center items-center">
               <h1 className="md:text-4xl text-base text-center font-bold">
                 No data available
@@ -210,39 +221,51 @@ const MyUpdatesPg = () => {
                 </div>
               </div>
               <div className="mt-6 w-full animate__animated animate__fadeIn container mx-auto">
-                {updatesdata && updatesdata?.length ? (
-                  <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <div
-                      style={{
-                        width:
-                          leaveFilter.view_type !== "detailedTable"
-                            ? `${data.leaveSimpleColumnDefs.reduce(
-                                (total, col) => total + col.width,
-                                0
-                              )}px`
-                            : "100%", // Calculate total width based on column widths
-                        margin: "auto",
-                      }}
-                      className={`${
-                        systemTheme == "dark"
-                          ? "ag-theme-alpine-dark"
-                          : "ag-theme-alpine"
-                      } ag-grid-table overflow-y-scroll dm-sans rounded-sm`}
-                    >
-                      <AgGridReact
-                        ref={gridRef}
-                        rowData={updatesdata}
-                        columnDefs={getColumnDefs as any}
-                        className="dm-sans custom-cell-border"
-                        onCellClicked={onCellClicked}
-                        onGridReady={onGridReady}
-                        suppressHorizontalScroll={
-                          leaveFilter.view_type !== "detailedTable"
-                        }
-                        domLayout="autoHeight"
-                      />
-                    </div>
-                  </div>
+                {updatesData && updatesData?.length ? (
+                  <>
+                    {leaveFilter.view_type == "cardView" ? (
+                      <div className="grid grid-cols-4 gap-6">
+                        {updatesData.map((update: updates) => (
+                          <div key={update.id}>
+                            <DataCardViewUpdates update={update} />
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                        <div
+                          style={{
+                            width:
+                              leaveFilter.view_type == "simpleTable"
+                                ? `${data.leaveSimpleColumnDefs.reduce(
+                                    (total, col) => total + col.width,
+                                    0
+                                  )}px`
+                                : "100%", // Calculate total width based on column widths
+                            margin: "auto",
+                          }}
+                          className={`${
+                            systemTheme == "dark"
+                              ? "ag-theme-alpine-dark"
+                              : "ag-theme-alpine"
+                          } ag-grid-table overflow-y-scroll dm-sans rounded-sm`}
+                        >
+                          <AgGridReact
+                            ref={gridRef}
+                            rowData={updatesData}
+                            columnDefs={getColumnDefs as any}
+                            className="dm-sans custom-cell-border"
+                            onCellClicked={onCellClicked}
+                            onGridReady={onGridReady}
+                            suppressHorizontalScroll={
+                              leaveFilter.view_type == "simpleTable"
+                            }
+                            domLayout="autoHeight"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <></>
                 )}

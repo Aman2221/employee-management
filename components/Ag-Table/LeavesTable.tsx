@@ -38,6 +38,8 @@ import Tabs from "../Common/Tabs";
 import { AnimatePresence, motion } from "framer-motion";
 import TableViews from "../Common/TableViews";
 import DropDown from "../Common/DropDown";
+import DataCardView from "./CardView";
+import { permissions } from "@/interfaces";
 const LeavesTable = () => {
   const gridRef: any = useRef(null);
   const systemTheme = useSystemTheme();
@@ -52,7 +54,8 @@ const LeavesTable = () => {
   const [gridApi, setGridApi] = useState<any>(null);
   const [crrData, setCrrData] = useState<unknown>();
   const [showLeaveModel, setShowLeaveModel] = useState(false);
-  const [pmsData, setPmsData] = useState<any[]>([]);
+  const [pmsData, setPmsData] = useState<permissions[]>([]);
+  const [pmsDataStore, setPmsDataStore] = useState<permissions[]>([]);
   const [leaveFilter, setLeaveFilter] = useState({
     leave_type: "all",
     leave_status: "status(all)",
@@ -72,7 +75,7 @@ const LeavesTable = () => {
   );
 
   const storeStatusToLocal = async (status: string) => {
-    let all_data: any = pmsData;
+    let all_data: any = pmsDataStore;
 
     const userIndex = all_data.findIndex(
       (user: any) => user.id === currentDocId
@@ -89,6 +92,7 @@ const LeavesTable = () => {
     const docId = all_data[userIndex].uid;
     const permission_name = all_data[userIndex].reason;
     setPmsData(all_data);
+    setPmsDataStore(all_data);
     await updatePermissionStatusInDB(currentDocId, status); //updating status in database
 
     await pushNotificationToDb(docId, status, permission_name); //updating status in database
@@ -98,15 +102,16 @@ const LeavesTable = () => {
     const dynamic_defs = dynamic_column_def(
       StatusRenderer,
       CellStatusRenderer,
-      pmsData,
+      pmsDataStore,
       openStatusUpdateModal
     );
-    const tableColumnsDegs =
+    const tableColumnsDefs =
       leaveFilter.view_type == "detailedTable"
         ? data.leaveDetailedColumnDefs
         : data.leaveSimpleColumnDefs;
-    if (dynamic_defs) return [...tableColumnsDegs, ...dynamic_defs];
-    else return [...tableColumnsDegs];
+
+    if (dynamic_defs) return [...tableColumnsDefs, ...dynamic_defs];
+    else return [...tableColumnsDefs];
   }, [openStatusUpdateModal, pmsData]);
 
   const getAllUsersLeaveData = useCallback(async () => {
@@ -128,6 +133,7 @@ const LeavesTable = () => {
       console.error("Error fetching sorted documents: ", e);
       return [];
     }
+    setPmsDataStore(tempData);
     setDataToState(tempData, setShowLoader, setPmsData);
   }, [setShowLoader]);
 
@@ -140,14 +146,14 @@ const LeavesTable = () => {
       const querySnapshot = await getDocs(userQuery);
 
       if (!querySnapshot.empty) {
-        let tempData = querySnapshot.docs.map((doc) => {
+        let tempData: any = querySnapshot.docs.map((doc) => {
           const { created_at, ...allData } = doc.data();
           return {
             id: doc.id,
             ...allData,
           };
         });
-
+        setPmsDataStore(tempData);
         setDataToState(tempData, setShowLoader, setPmsData);
       } else {
         setShowLoader(!showLoader);
@@ -177,17 +183,22 @@ const LeavesTable = () => {
 
     const checkPermission =
       selectLeave == "permission" ? "4 Hours" : case_match.replace(/\s+/g, "");
-
-    if (tab_name !== "all") {
-      gridRef.current.api.setFilterModel({
-        type: {
-          type: "equals",
-          filter: checkPermission,
-        },
-      });
+    if (leaveFilter.view_type == "cardView") {
+      let filter = pmsDataStore.filter((item) => item.type == checkPermission);
+      setPmsData(tab_name !== "all" ? [...filter] : pmsDataStore);
     } else {
-      gridRef.current.api.setFilterModel(null);
+      if (tab_name !== "all") {
+        gridRef.current.api.setFilterModel({
+          type: {
+            type: "equals",
+            filter: checkPermission,
+          },
+        });
+      } else {
+        gridRef.current.api.setFilterModel(null);
+      }
     }
+
     setLeaveFilter({
       ...leaveFilter,
       leave_type: tab_name,
@@ -195,16 +206,25 @@ const LeavesTable = () => {
   };
 
   const onStatusChange = (status: string) => {
-    if (status !== "status(all)") {
-      gridRef.current.api.setFilterModel({
-        status: {
-          type: "equals",
-          filter: status,
-        },
+    console.log("status :", status);
+    if (leaveFilter.view_type == "cardView") {
+      let filter = pmsDataStore.filter((item) => {
+        if (item.status == status) return item;
       });
+      setPmsData(status !== "status(all)" ? [...filter] : pmsDataStore);
     } else {
-      gridRef.current.api.setFilterModel(null);
+      if (status !== "status(all)") {
+        gridRef?.current?.api.setFilterModel({
+          status: {
+            type: "equals",
+            filter: status,
+          },
+        });
+      } else {
+        gridRef.current.api.setFilterModel(null);
+      }
     }
+
     setLeaveFilter({
       ...leaveFilter,
       leave_status: status,
@@ -213,7 +233,7 @@ const LeavesTable = () => {
   };
 
   const onViewChange = (view: string) => {
-    setPmsData([...pmsData]);
+    setPmsData([...pmsDataStore]);
     setLeaveFilter({ ...leaveFilter, view_type: view });
   };
 
@@ -237,7 +257,7 @@ const LeavesTable = () => {
         <Loader />
       ) : (
         <>
-          {pmsData.length == 0 ? (
+          {pmsDataStore.length == 0 ? (
             <div className="flex my-20 w-full justify-center items-center">
               <h1 className="md:text-4xl text-base text-center font-bold">
                 No data
@@ -278,47 +298,57 @@ const LeavesTable = () => {
                 </div>
               </div>
               <div className="mt-6 w-full animate__animated animate__fadeIn">
-                {pmsData && pmsData.length ? (
+                {pmsDataStore && pmsDataStore.length ? (
                   <>
-                    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                      <AnimatePresence>
-                        <motion.div
-                          style={{
-                            width:
-                              leaveFilter.view_type !== "detailedTable"
-                                ? `${data.leaveSimpleColumnDefs.reduce(
-                                    (total, col) => total + col.width,
-                                    0
-                                  )}px`
-                                : "100%", // Calculate total width based on column widths
-                            margin: "auto",
-                          }}
-                          className={`${
-                            systemTheme == "dark"
-                              ? "ag-theme-alpine-dark"
-                              : "ag-theme-alpine"
-                          } ag-grid-table ag-theme-alpine overflow-y-scroll dm-sans rounded-sm animate__animated animate__fadeIn`}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.8 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <AgGridReact
-                            ref={gridRef}
-                            rowData={pmsData}
-                            columnDefs={getColumnDefs as any}
-                            className="dm-sans custom-cell-border text-xs"
-                            onGridReady={onGridReady}
-                            animateRows={true}
-                            onCellClicked={onCellClicked}
-                            suppressHorizontalScroll={
-                              leaveFilter.view_type !== "detailedTable"
-                            }
-                            domLayout="autoHeight"
-                          />
-                        </motion.div>
-                      </AnimatePresence>
-                    </div>
+                    {leaveFilter.view_type == "cardView" ? (
+                      <div className="grid grid-cols-4 gap-6">
+                        {pmsData.map((leave) => (
+                          <div key={leave.created_at}>
+                            <DataCardView leave={leave} />
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                        <AnimatePresence>
+                          <motion.div
+                            style={{
+                              width:
+                                leaveFilter.view_type == "simpleTable"
+                                  ? `${data.leaveSimpleColumnDefs.reduce(
+                                      (total, col) => total + col.width,
+                                      0
+                                    )}px`
+                                  : "100%", // Calculate total width based on column widths
+                              margin: "auto",
+                            }}
+                            className={`${
+                              systemTheme == "dark"
+                                ? "ag-theme-alpine-dark"
+                                : "ag-theme-alpine"
+                            } ag-grid-table ag-theme-alpine overflow-y-scroll dm-sans rounded-sm animate__animated animate__fadeIn`}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            <AgGridReact
+                              ref={gridRef}
+                              rowData={pmsDataStore}
+                              columnDefs={getColumnDefs as any}
+                              className="dm-sans custom-cell-border text-xs"
+                              onGridReady={onGridReady}
+                              animateRows={true}
+                              onCellClicked={onCellClicked}
+                              suppressHorizontalScroll={
+                                leaveFilter.view_type == "simpleTable"
+                              }
+                              domLayout="autoHeight"
+                            />
+                          </motion.div>
+                        </AnimatePresence>
+                      </div>
+                    )}
                   </>
                 ) : (
                   <></>

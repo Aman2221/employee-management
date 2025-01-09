@@ -26,13 +26,14 @@
           "sortable": true,
           "filter": true,
           "headerClass": "uppercase",
-          "width": 120
+          "width": 100
         },
         {
           "headerName": "name",
           "field": "name",
           "headerClass": "uppercase",
-          "filter": true
+          "filter": true,
+          "width": 130
         },
         {
           "headerName": "email",
@@ -59,7 +60,7 @@
           "sortable": false,
           "headerClass": "uppercase",
           "filter": true,
-          "width": 210
+          "width": 120
         },
         {
           "headerName": "reason",
@@ -95,7 +96,7 @@
         "field": "email",
         "headerClass": "uppercase",
         "filter": true,
-        "width": 300
+        "width": 200
       },
       {
         "headerName": "duration",
@@ -123,7 +124,7 @@
         "field": "reason",
         "sortable": false,
         "headerClass": "uppercase",
-        "width": 250
+        "width": 200
       }
     ],
     "register_fields" : [
@@ -292,7 +293,7 @@
         "field": "name",
         "headerClass": "uppercase",
         "filter": true,
-        "width" : 200
+        "width" : 150
       },
       {
         "headerName": "designation",
@@ -306,7 +307,7 @@
         "field": "website_names",
         "headerClass": "uppercase",
         "filter": true,
-        "width" : 300
+        "width" : 200
       },
       {
         "headerName": "status",

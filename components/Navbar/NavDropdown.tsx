@@ -30,6 +30,17 @@ const NavDropdown = ({
 
   const superuser_options = [
     { name: "add leave", onClick: onAddLeaveClick, icon: "bi-patch-plus" },
+    { name: "add update", onClick: onAddUpdateClick, icon: "bi-list-ul" },
+    {
+      name: "view updates",
+      onClick: () => router.push("/view-updates"),
+      icon: "bi-eye",
+    },
+    {
+      name: "view leaves",
+      onClick: () => router.push("/view-leaves"),
+      icon: "bi-eye",
+    },
     {
       name: "paste message",
       onClick: onPasteClick,
@@ -40,13 +51,8 @@ const NavDropdown = ({
       onClick: () => router.push("/register"),
       icon: "bi-person-add",
     },
-    { name: "add update", onClick: onAddUpdateClick, icon: "bi-list-ul" },
+
     { name: "export data", onClick: onExportDataClick, icon: "bi-escape" },
-    {
-      name: "view updates",
-      onClick: () => router.push("/view-updates"),
-      icon: "bi-eye",
-    },
   ];
 
   const normaluser_options = [
