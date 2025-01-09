@@ -286,6 +286,50 @@
         "width": 140
       }
     ],
+    "update_column_defs_simple" : [
+      {
+        "headerName": "name",
+        "field": "name",
+        "headerClass": "uppercase",
+        "filter": true,
+        "width" : 200
+      },
+      {
+        "headerName": "designation",
+        "field": "designation",
+        "headerClass": "uppercase",
+        "filter": true,
+        "width" : 150
+      },
+      {
+        "headerName": "website names",
+        "field": "website_names",
+        "headerClass": "uppercase",
+        "filter": true,
+        "width" : 300
+      },
+      {
+        "headerName": "status",
+        "field": "status",
+        "headerClass": "uppercase",
+        "filter": true,
+        "width" : 120
+      },
+      {
+        "headerName": "task",
+        "field": "task",
+        "headerClass": "uppercase",
+        "filter": true,
+        "width" : 120
+      },
+      {
+        "headerName": "date",
+        "field": "date",
+        "headerClass": "uppercase",
+        "sortable": true,
+        "width": 150
+      }
+    ],
     "leaves_validations" : {
       "emp_id": false,
       "isEmpId3Digit": false,
@@ -308,6 +352,10 @@
       "summary": false
     },
     "leaves_tabs" : [
+      {
+        "tab_name" : "all",
+        "icon" : ""
+      },
       {
         "tab_name" : "business analyst",
         "icon" : ""
