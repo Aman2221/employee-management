@@ -6,7 +6,6 @@ import React, {
   useMemo,
   useRef,
   useState,
-  Suspense,
 } from "react";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "@/config/firebase";
@@ -171,7 +170,7 @@ const MyUpdatesPg = () => {
   }, [showLoader, getAllUpdatesData, getCurrentUserUpdates, user]);
 
   return (
-    <Suspense>
+    <>
       {showLoader ? (
         <Loader />
       ) : (
@@ -282,7 +281,7 @@ const MyUpdatesPg = () => {
           )}
         </>
       )}
-    </Suspense>
+    </>
   );
 };
 

@@ -7,7 +7,6 @@ import React, {
   useMemo,
   useRef,
   useState,
-  Suspense,
 } from "react";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "@/config/firebase";
@@ -254,7 +253,7 @@ const LeavesTable = () => {
   }, [showLoader, getAllUsersLeaveData]);
 
   return (
-    <Suspense>
+    <>
       {showLoader ? (
         <Loader />
       ) : (
@@ -374,7 +373,7 @@ const LeavesTable = () => {
           )}
         </>
       )}
-    </Suspense>
+    </>
   );
 };
 

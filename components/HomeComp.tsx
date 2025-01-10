@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { Suspense } from "react";
 import LeavesTable from "./Ag-Table/LeavesTable";
 
 const HomeComp = () => {
