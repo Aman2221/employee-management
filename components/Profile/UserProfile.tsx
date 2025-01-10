@@ -1,12 +1,12 @@
 "use client";
 import { getCookie } from "@/functions";
-import React, { useEffect } from "react";
+import React from "react";
 import Avatar from "../Common/Avatar";
 
 const UserProfile = () => {
   const user = JSON.parse(getCookie("user") as any);
 
-  return (
+  return user ? (
     <div className="py-20 w-full container mx-auto flex gap-4">
       <div className="w-96 bg-slate-700 h-max min-h-max rounded-md p-8">
         <div className="w-full border-b border-gray-600 pb-2">
@@ -14,7 +14,7 @@ const UserProfile = () => {
         </div>
         <div className="mt-5 flex-center flex-col">
           <Avatar
-            name={user.username}
+            name={user?.username}
             extClass="h-32 w-32"
             fontSize="text-4xl"
           />
@@ -59,6 +59,8 @@ const UserProfile = () => {
         </div>
       </form>
     </div>
+  ) : (
+    <></>
   );
 };
 
