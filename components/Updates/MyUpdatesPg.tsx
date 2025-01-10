@@ -52,7 +52,7 @@ const MyUpdatesPg = () => {
         ? data.update_column_defs
         : data.update_column_defs_simple;
     return tableColumnsDegs;
-  }, [updatesData, leaveFilter.view_type]);
+  }, [leaveFilter.view_type]);
 
   const onGridReady = (params: any) => {
     setGridApi(params.api); // Storing the grid API for later use
@@ -167,7 +167,13 @@ const MyUpdatesPg = () => {
       if (user && user?.role?.toLowerCase() !== "employee") getAllUpdatesData();
       else getCurrentUserUpdates();
     }
-  }, [showLoader, getAllUpdatesData, getCurrentUserUpdates, user]);
+  }, [
+    showLoader,
+    getAllUpdatesData,
+    getCurrentUserUpdates,
+    user,
+    searchQuerytUid,
+  ]);
 
   return (
     <>

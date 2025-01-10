@@ -163,7 +163,7 @@ const LeavesTable = () => {
       console.error("Error getting document:", error);
       return null;
     }
-  }, [setShowLoader, user?.uid, searchQueryEmail, showLoader, user?.email]);
+  }, [setShowLoader, searchQueryEmail, showLoader, user?.email]);
 
   const onGridReady = (params: any) => {
     setGridApi(params.api); // Storing the grid API for later use
