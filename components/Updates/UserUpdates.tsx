@@ -74,7 +74,7 @@ const UpdateCard = () => {
 
   useEffect(() => {
     getUsers(); //get user details from firebase
-  }, []);
+  }, [getUsers]);
 
   return (
     <div className="container mx-auto flex items-center justify-center flex-col">

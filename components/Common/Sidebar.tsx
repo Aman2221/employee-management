@@ -83,7 +83,9 @@ const Sidebar = () => {
               href="https://flowbite.com/"
               className="flex items-center ps-2.5 mb-5"
             >
-              <img
+              <Image
+                height={20}
+                width={20}
                 src="https://flowbite.com/docs/images/logo.svg"
                 className="h-6 me-3 sm:h-7"
                 alt="Flowbite Logo"

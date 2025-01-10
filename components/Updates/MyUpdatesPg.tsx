@@ -52,7 +52,7 @@ const MyUpdatesPg = () => {
         ? data.update_column_defs
         : data.update_column_defs_simple;
     return tableColumnsDegs;
-  }, [updatesData]);
+  }, [updatesData, leaveFilter.view_type]);
 
   const onGridReady = (params: any) => {
     setGridApi(params.api); // Storing the grid API for later use
@@ -87,7 +87,7 @@ const MyUpdatesPg = () => {
       console.error("Error getting document:", error);
       return null;
     }
-  }, [setShowLoader, user?.uid]);
+  }, [setShowLoader, user?.uid, searchQuerytUid, showLoader]);
 
   const getAllUpdatesData = useCallback(async () => {
     const tempData: any = [];

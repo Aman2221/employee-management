@@ -113,7 +113,7 @@ const LeavesTable = () => {
 
     if (dynamic_defs) return [...tableColumnsDefs, ...dynamic_defs];
     else return [...tableColumnsDefs];
-  }, [openStatusUpdateModal, pmsData, leaveFilter.view_type, pmsDataStore]);
+  }, [openStatusUpdateModal, leaveFilter.view_type, pmsDataStore]);
 
   const getAllUsersLeaveData = useCallback(async () => {
     let tempData: any = [];
@@ -163,7 +163,7 @@ const LeavesTable = () => {
       console.error("Error getting document:", error);
       return null;
     }
-  }, [setShowLoader, user?.uid]);
+  }, [setShowLoader, user?.uid, searchQueryEmail, showLoader, user?.email]);
 
   const onGridReady = (params: any) => {
     setGridApi(params.api); // Storing the grid API for later use
@@ -250,7 +250,13 @@ const LeavesTable = () => {
         getAllUsersLeaveData();
       else getCurrentUserLeaves();
     }
-  }, [showLoader, getAllUsersLeaveData]);
+  }, [
+    showLoader,
+    getAllUsersLeaveData,
+    getCurrentUserLeaves,
+    searchQueryEmail,
+    user,
+  ]);
 
   return (
     <>
