@@ -16,10 +16,17 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import StatusRenderer, { CellStatusRenderer } from "./StatusRenderer";
+import data from "@/JSON/data.json";
+import useSystemTheme from "@/hooks/useSystemTheme";
+import Tabs from "../Common/Tabs";
+import { AnimatePresence, motion } from "framer-motion";
+import TableViews from "../Common/TableViews";
+import DropDown from "../Common/DropDown";
+import DataCardView from "./CardView";
+import { permissions } from "@/interfaces";
 const LeaveModal = dynamic(() => import("../Pop-ups/LeaveModal"), {
   ssr: false,
 });
-import data from "@/JSON/data.json";
 import {
   dynamic_column_def,
   getCookie,
@@ -33,13 +40,7 @@ import withOutsideClick from "@/HOC/closeModal";
 const AddPermission = dynamic(() => import("../Pop-ups/AddPermission"), {
   ssr: false,
 });
-import useSystemTheme from "@/hooks/useSystemTheme";
-import Tabs from "../Common/Tabs";
-import { AnimatePresence, motion } from "framer-motion";
-import TableViews from "../Common/TableViews";
-import DropDown from "../Common/DropDown";
-import DataCardView from "./CardView";
-import { permissions } from "@/interfaces";
+
 const LeavesTable = () => {
   const gridRef: any = useRef(null);
   const systemTheme = useSystemTheme();

@@ -4,6 +4,7 @@ import Nav from "../Navbar/Nav";
 import { PmsProvider } from "@/context";
 import { ToastContainer } from "react-toastify";
 import Footer from "./Footer";
+import Sidebar from "./Sidebar";
 
 const Layout = ({
   children = <HomeComp />,
@@ -14,10 +15,15 @@ const Layout = ({
 }) => {
   return (
     <PmsProvider>
-      <Nav showSearchInput={showSearchInput} />
-      <div className="py-24">{children}</div>
-      <Footer />
-      <ToastContainer />
+      <div className="flex w-full">
+        <Sidebar />
+        <div className="w-full">
+          <Nav showSearchInput={showSearchInput} />
+          <div className="py-14">{children}</div>
+          <Footer />
+          <ToastContainer />
+        </div>
+      </div>
     </PmsProvider>
   );
 };

@@ -6,6 +6,8 @@ interface PermissionCtx {
   setShowLoader: (a: boolean) => void;
   searchKey: string;
   setSearchKey: (a: string) => void;
+  showSidebar: boolean;
+  setShowSidebar: (a: boolean) => void;
 }
 
 // Create the context with an initial value
@@ -15,6 +17,7 @@ const PmsContext = createContext<PermissionCtx | undefined>(undefined);
 export const PmsProvider = ({ children }: { children: ReactNode }) => {
   const [showLoader, setShowLoader] = useState<boolean>(true);
   const [searchKey, setSearchKey] = useState<string>("");
+  const [showSidebar, setShowSidebar] = useState(false);
   return (
     <PmsContext.Provider
       value={{
@@ -22,6 +25,8 @@ export const PmsProvider = ({ children }: { children: ReactNode }) => {
         setShowLoader,
         searchKey,
         setSearchKey,
+        showSidebar,
+        setShowSidebar,
       }}
     >
       {children}

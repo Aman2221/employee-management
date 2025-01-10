@@ -30,8 +30,7 @@ import SearchInput from "../Common/SearchInput";
 
 const Nav = ({ showSearchInput = true }: { showSearchInput?: boolean }) => {
   const router = useRouter();
-
-  const { setSearchKey } = usePmsContext();
+  const { setSearchKey, showSidebar, setShowSidebar } = usePmsContext();
   const [showNotice, setShowNotice] = useState(false);
   const [notiData, setNotiData] = useState<any>([]);
   const [isSuper, setIsSuper] = useState(false);
@@ -105,8 +104,16 @@ const Nav = ({ showSearchInput = true }: { showSearchInput?: boolean }) => {
   }, [router]);
 
   return (
-    <div>
-      <nav className="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
+    <div className="flex relative">
+      <div className="flex items-center justify-center bg-gray-900 border-b pl-4 border-gray-600">
+        <i
+          className={`${
+            showSidebar ? "bx-x" : "bx-menu-alt-left"
+          } text-2xl bx  cursor-pointer`}
+          onClick={() => setShowSidebar(!showSidebar)}
+        ></i>
+      </div>
+      <nav className="bg-white dark:bg-gray-900 w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
         <div className="container mx-auto flex flex-wrap items-center justify-between p-4">
           <a
             href="/"
@@ -116,6 +123,7 @@ const Nav = ({ showSearchInput = true }: { showSearchInput?: boolean }) => {
               Primasoft
             </span>
           </a>
+
           <div className="flex gap-5 md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse items-center">
             <div className="gap-5 hidden">
               <div className="flex md:hidden items-center gap-2">
@@ -154,7 +162,6 @@ const Nav = ({ showSearchInput = true }: { showSearchInput?: boolean }) => {
               onAddLeaveClick={() => setShow(!show)}
               onPasteClick={() => setShowMsg(!showMsg)}
               onAddUpdateClick={() => setShowUpdateMdl(!showUpdateMdl)}
-              onExportDataClick={handleExport}
               handleLogout={handleLogout}
               isSuper={isSuper}
             />

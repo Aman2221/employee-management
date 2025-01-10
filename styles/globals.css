@@ -114,3 +114,7 @@ input[type="number"] {
     left: 100%;
   }
 }
+
+#logo-sidebar {
+  transition: 0.2s ease;
+}

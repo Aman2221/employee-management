@@ -10,7 +10,6 @@ const NavDropdown = ({
   onAddLeaveClick,
   onPasteClick,
   onAddUpdateClick,
-  onExportDataClick,
   handleLogout,
 }: {
   show: boolean;
@@ -19,7 +18,6 @@ const NavDropdown = ({
   onAddLeaveClick: () => void;
   onPasteClick: () => void;
   onAddUpdateClick: () => void;
-  onExportDataClick: () => void;
   handleLogout: () => void;
 }) => {
   const router = useRouter();
@@ -31,28 +29,28 @@ const NavDropdown = ({
   const superuser_options = [
     { name: "add leave", onClick: onAddLeaveClick, icon: "bi-patch-plus" },
     { name: "add update", onClick: onAddUpdateClick, icon: "bi-list-ul" },
-    {
-      name: "view updates",
-      onClick: () => router.push("/view-updates"),
-      icon: "bi-eye",
-    },
-    {
-      name: "view leaves",
-      onClick: () => router.push("/view-leaves"),
-      icon: "bi-eye",
-    },
+    // {
+    //   name: "view updates",
+    //   onClick: () => router.push("/view-updates"),
+    //   icon: "bi-eye",
+    // },
+    // {
+    //   name: "view leaves",
+    //   onClick: () => router.push("/view-leaves"),
+    //   icon: "bi-eye",
+    // },
     {
       name: "paste message",
       onClick: onPasteClick,
       icon: "bi-clipboard-check",
     },
-    {
-      name: "register user",
-      onClick: () => router.push("/register"),
-      icon: "bi-person-add",
-    },
+    // {
+    //   name: "register user",
+    //   onClick: () => router.push("/register"),
+    //   icon: "bi-person-add",
+    // },
 
-    { name: "export data", onClick: onExportDataClick, icon: "bi-escape" },
+    // { name: "export data", onClick: onExportDataClick, icon: "bi-escape" },
   ];
 
   const normaluser_options = [
@@ -101,23 +99,14 @@ const NavDropdown = ({
           className="py-2 text-sm text-gray-700 dark:text-gray-200"
           aria-labelledby="dropdownDelayButton"
         >
-          {isSuper
-            ? superuser_options.map((item) => (
-                <li key={item.name} onClick={() => handleClick(item.onClick)}>
-                  <button className="flex gap-2 w-full text-left capitalize px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                    <i className={`bi ${item.icon} text-sm font-bold`}></i>
-                    <span>{item.name}</span>
-                  </button>
-                </li>
-              ))
-            : normaluser_options.map((item) => (
-                <li key={item.name} onClick={() => handleClick(item.onClick)}>
-                  <button className="flex gap-2 w-full text-left capitalize px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                    <i className={`bi ${item.icon} text-sm font-bold`}></i>
-                    <span>{item.name}</span>
-                  </button>
-                </li>
-              ))}
+          {(isSuper ? superuser_options : normaluser_options).map((item) => (
+            <li key={item.name} onClick={() => handleClick(item.onClick)}>
+              <button className="flex gap-2 w-full text-left capitalize px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                <i className={`bi ${item.icon} text-sm font-bold`}></i>
+                <span>{item.name}</span>
+              </button>
+            </li>
+          ))}
         </ul>
         <div className="py-2">
           <button

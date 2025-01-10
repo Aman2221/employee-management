@@ -78,7 +78,11 @@ const UserCard = ({ data }: { data: user }) => {
                 >
                   Email
                 </td>
-                <th className="py-3 text-right">{data.email}</th>
+                <th className="py-3 text-right">
+                  {data.email.length > 20
+                    ? data.email.slice(0, 20) + "..."
+                    : data.email}
+                </th>
               </tr>
               <tr className="border-b border-gray-200 dark:border-gray-700">
                 <td
