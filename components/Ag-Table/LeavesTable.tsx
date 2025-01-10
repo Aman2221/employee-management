@@ -7,6 +7,7 @@ import React, {
   useMemo,
   useRef,
   useState,
+  Suspense,
 } from "react";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "@/config/firebase";
@@ -113,7 +114,7 @@ const LeavesTable = () => {
 
     if (dynamic_defs) return [...tableColumnsDefs, ...dynamic_defs];
     else return [...tableColumnsDefs];
-  }, [openStatusUpdateModal, pmsData]);
+  }, [openStatusUpdateModal, pmsData, leaveFilter.view_type, pmsDataStore]);
 
   const getAllUsersLeaveData = useCallback(async () => {
     let tempData: any = [];
@@ -253,7 +254,7 @@ const LeavesTable = () => {
   }, [showLoader, getAllUsersLeaveData]);
 
   return (
-    <>
+    <Suspense>
       {showLoader ? (
         <Loader />
       ) : (
@@ -373,7 +374,7 @@ const LeavesTable = () => {
           )}
         </>
       )}
-    </>
+    </Suspense>
   );
 };
 
