@@ -27,6 +27,8 @@ import { DocumentData, doc, getDoc } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import dynamic from "next/dynamic";
 import SearchInput from "../Common/SearchInput";
+import Link from "next/link";
+import Image from "next/image";
 
 const Nav = ({ showSearchInput = true }: { showSearchInput?: boolean }) => {
   const router = useRouter();
@@ -114,15 +116,15 @@ const Nav = ({ showSearchInput = true }: { showSearchInput?: boolean }) => {
         ></i>
       </div>
       <nav className="bg-white dark:bg-gray-900 w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
-        <div className="container mx-auto flex flex-wrap items-center justify-between p-4">
-          <a
-            href="/"
-            className="flex items-center space-x-3 rtl:space-x-reverse"
-          >
-            <span className="self-center text-sm md:text-2xl font-semibold whitespace-nowrap dark:text-white">
-              Primasoft
-            </span>
-          </a>
+        <div className="container mx-auto flex flex-wrap items-center justify-between py-4">
+          <Link href="/" className=" ">
+            <Image
+              src="/logo/logo.svg"
+              width={200}
+              height={20}
+              alt="primasoft logo"
+            />
+          </Link>
 
           <div className="flex gap-5 md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse items-center">
             <div className="gap-5 hidden">

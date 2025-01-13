@@ -5,6 +5,7 @@ import { PmsProvider } from "@/context";
 import { ToastContainer } from "react-toastify";
 import Footer from "./Footer";
 import Sidebar from "./Sidebar";
+import Loader from "./Loader";
 
 const Layout = ({
   children = <HomeComp />,
@@ -15,6 +16,7 @@ const Layout = ({
 }) => {
   return (
     <PmsProvider>
+      <Loader />
       <div className="flex w-full">
         <Sidebar />
         <div className="w-full">

@@ -1,13 +1,20 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { exportToExcel, getCookie, getData } from "@/functions";
+import {
+  deleteAllCookies,
+  exportToExcel,
+  getCookie,
+  getData,
+} from "@/functions";
 import Image from "next/image";
 import { usePmsContext } from "@/context";
+import Link from "next/link";
+import { getAuth, signOut } from "firebase/auth";
 
 const Sidebar = () => {
   const router = useRouter();
-  const { showSidebar, setShowSidebar } = usePmsContext();
+  const { showSidebar } = usePmsContext();
   const [isSuper, setIsSuper] = useState(false);
 
   const handleExport = async () => {
@@ -15,7 +22,21 @@ const Sidebar = () => {
     exportToExcel(data);
   };
 
+  const handleLogout = async () => {
+    const auth = getAuth();
+    await signOut(auth);
+    localStorage.clear();
+    sessionStorage.clear();
+    deleteAllCookies();
+    router.push("/login");
+  };
+
   const superuser_options = [
+    {
+      name: "home",
+      onClick: () => router.push("/"),
+      svg: "/sidebar-icons/home.svg",
+    },
     {
       name: "view updates",
       onClick: () => router.push("/view-updates"),
@@ -41,6 +62,11 @@ const Sidebar = () => {
   ];
 
   const normaluser_options = [
+    {
+      name: "home",
+      onClick: () => router.push("/"),
+      svg: "/sidebar-icons/home.svg",
+    },
     {
       name: "my leaves",
       onClick: () => router.push("/view-leaves"),
@@ -79,21 +105,14 @@ const Sidebar = () => {
       >
         <div className="h-full pt-6 overflow-y-auto bg-gray-50 dark:bg-gray-800">
           <div className="flex border-b border-slate-600">
-            <a
-              href="https://flowbite.com/"
-              className="flex items-center ps-2.5 mb-5"
-            >
+            <Link href="/" className="pb-5 pl-2 ">
               <Image
+                src="/logo/logo.svg"
+                width={200}
                 height={20}
-                width={20}
-                src="https://flowbite.com/docs/images/logo.svg"
-                className="h-6 me-3 sm:h-7"
-                alt="Flowbite Logo"
+                alt="primasoft logo"
               />
-              <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
-                Primasoft
-              </span>
-            </a>
+            </Link>
           </div>
           <ul className="space-y-2 font-medium mt-4">
             {(isSuper ? superuser_options : normaluser_options).map((item) => (
@@ -111,7 +130,7 @@ const Sidebar = () => {
           <div className="absolute w-full left-0 bottom-0 border-t border-slate-600">
             <div className="py-2">
               <button
-                onClick={() => console.log()}
+                onClick={handleLogout}
                 className="flex gap-3 items-center px-4 py-2 w-full text-left text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
               >
                 <i className="bi bi-box-arrow-right text-lg font-bold"></i>
