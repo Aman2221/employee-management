@@ -76,6 +76,7 @@ const LeavesTable = () => {
   );
 
   const storeStatusToLocal = async (status: string) => {
+    console.log("storeStatusToLocal");
     let all_data: any = pmsDataStore;
 
     const userIndex = all_data.findIndex(
@@ -113,7 +114,7 @@ const LeavesTable = () => {
 
     if (dynamic_defs) return [...tableColumnsDefs, ...dynamic_defs];
     else return [...tableColumnsDefs];
-  }, [openStatusUpdateModal, leaveFilter.view_type, pmsDataStore]);
+  }, [openStatusUpdateModal, leaveFilter.view_type]);
 
   const getAllUsersLeaveData = useCallback(async () => {
     let tempData: any = [];
@@ -207,7 +208,6 @@ const LeavesTable = () => {
   };
 
   const onStatusChange = (status: string) => {
-    console.log("status :", status);
     if (leaveFilter.view_type == "cardView") {
       let filter = pmsDataStore.filter((item) => {
         if (item.status == status) return item;
@@ -255,7 +255,6 @@ const LeavesTable = () => {
     getAllUsersLeaveData,
     getCurrentUserLeaves,
     searchQueryEmail,
-    user,
   ]);
 
   return (

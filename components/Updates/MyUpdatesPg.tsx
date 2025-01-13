@@ -167,13 +167,7 @@ const MyUpdatesPg = () => {
       if (user && user?.role?.toLowerCase() !== "employee") getAllUpdatesData();
       else getCurrentUserUpdates();
     }
-  }, [
-    showLoader,
-    getAllUpdatesData,
-    getCurrentUserUpdates,
-    user,
-    searchQuerytUid,
-  ]);
+  }, [showLoader, getAllUpdatesData, getCurrentUserUpdates, searchQuerytUid]);
 
   return (
     <>
