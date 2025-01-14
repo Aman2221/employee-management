@@ -15,7 +15,12 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import data from "@/JSON/data.json";
-import { getCookie, getUpdate, setDataToState } from "@/functions";
+import {
+  getCookie,
+  getUpdate,
+  handleOverlay,
+  setDataToState,
+} from "@/functions";
 const AddUpdates = dynamic(() => import("../Pop-ups/AddUpdates"), {
   ssr: false,
 });
@@ -26,6 +31,8 @@ import DropDown from "../Common/DropDown";
 import TableViews from "../Common/TableViews";
 import { DataCardViewUpdates } from "../Ag-Table/CardView";
 import { updates } from "@/interfaces";
+import NoDataFound from "../Common/NoDataFound";
+import hideOverlay from "@/HOC/hideOverlay";
 
 const MyUpdatesPg = () => {
   const gridRef: any = useRef(null);
@@ -40,6 +47,7 @@ const MyUpdatesPg = () => {
   const [updatesData, setUpdatesData] = useState<updates[]>([]);
   const [updatesDataStore, setUpdatesDataStore] = useState<updates[]>([]);
   const [showDD, setShowDD] = useState(false);
+  const DropdownComp = hideOverlay(DropDown, setShowDD);
   const [leaveFilter, setLeaveFilter] = useState({
     leave_type: "all",
     leave_status: "status(all)",
@@ -87,7 +95,7 @@ const MyUpdatesPg = () => {
       console.error("Error getting document:", error);
       return null;
     }
-  }, [setShowLoader, user?.uid, searchQuerytUid, showLoader]);
+  }, [setShowLoader, user?.uid, searchQuerytUid]);
 
   const getAllUpdatesData = useCallback(async () => {
     const tempData: any = [];
@@ -119,6 +127,7 @@ const MyUpdatesPg = () => {
             filter: selectedTab,
           },
         });
+        handleOverlay(gridRef);
       } else {
         gridRef.current.api.setFilterModel(null);
       }
@@ -139,6 +148,7 @@ const MyUpdatesPg = () => {
             filter: status,
           },
         });
+        handleOverlay(gridRef);
       } else {
         gridRef.current.api.setFilterModel(null);
       }
@@ -176,11 +186,7 @@ const MyUpdatesPg = () => {
       ) : (
         <>
           {updatesData.length == 0 ? (
-            <div className="flex my-20 w-full justify-center items-center">
-              <h1 className="md:text-4xl text-base text-center font-bold">
-                No data available
-              </h1>
-            </div>
+            <NoDataFound extClss="text-4xl mt-10" />
           ) : (
             <>
               <div className="flex justify-between w-full border-b border-gray-200 dark:border-gray-700 mx-auto container">
@@ -192,7 +198,8 @@ const MyUpdatesPg = () => {
                   />
                 </div>
                 <div className="flex items-start gap-6">
-                  <DropDown
+                  <DropdownComp
+                    extClass="w-32"
                     onChange={onStatusChange}
                     options={[
                       "status(all)",
@@ -261,6 +268,7 @@ const MyUpdatesPg = () => {
                               leaveFilter.view_type == "simpleTable"
                             }
                             domLayout="autoHeight"
+                            noRowsOverlayComponent={NoDataFound}
                           />
                         </div>
                       </div>

@@ -355,6 +355,7 @@ export const dynamic_column_def = (
             headerClass: "uppercase",
             sortable: true,
             width: 140,
+            filter: true,
             cellRenderer: CellStatusRenderer,
             cellRendererParams: (params: any) => {
               params: params;
@@ -480,7 +481,7 @@ export const freshUpdate = () => {
   const user = JSON.parse(getCookie("user") as string);
   return {
     website_names: "",
-    status: "",
+    status: "Completed",
     task: "",
     assigned_by: "",
     verified_by: "",
@@ -710,5 +711,15 @@ export const sendEmail = async (
     }
   } catch (error) {
     console.error("Error sending email:", error);
+  }
+};
+
+export const handleOverlay = (gridRef: any) => {
+  const rowCount = gridRef.current.api.getDisplayedRowCount();
+
+  if (rowCount === 0) {
+    gridRef.current.api.showNoRowsOverlay();
+  } else {
+    gridRef.current.api.hideOverlay();
   }
 };

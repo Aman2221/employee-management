@@ -10,5 +10,5 @@ export function middleware(req: NextRequest) {
 
 // routes that should be protected
 export const config = {
-    matcher: ['/view-leaves', "/", "/my-updates", "/view-updates", "/register", "/profile"],
+    matcher: ['/view-leaves', "/", "/my-updates", "/view-updates", "/register", "/view-profile"],
 };

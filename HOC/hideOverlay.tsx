@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, ComponentType } from "react";
 
+type obj = { [key: string]: boolean };
+
 const hideOverlay = <P extends object>(
   Component: ComponentType<P>,
   setShowSchedule: (a: boolean) => void

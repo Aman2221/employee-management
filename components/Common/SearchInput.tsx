@@ -2,8 +2,10 @@ import React from "react";
 
 const SearchInput = ({
   onInputChange,
+  placeHolder = "Search here...",
 }: {
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeHolder?: string;
 }) => {
   return (
     <div className="bg-transparent outline-none border border-gray-400 rounded-lg px-3 py-2 shadow-lg w-80 flex gap-2 items-center">
@@ -22,7 +24,7 @@ const SearchInput = ({
         id="searchKey"
         onChange={onInputChange}
         className="w-full bg-transparent outline-0"
-        placeholder="Search here..."
+        placeholder={placeHolder}
       />
     </div>
   );

@@ -1,28 +1,77 @@
 "use client";
-import { getCookie } from "@/functions";
-import React from "react";
+import { ErrorToast, getCookie } from "@/functions";
+import React, { useState, useEffect } from "react";
 import Avatar from "../Common/Avatar";
+import { useSearchParams } from "next/navigation";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
+import { db } from "@/config/firebase";
+import { user, userKeys } from "@/interfaces";
 
 const UserProfile = () => {
   const user = JSON.parse(getCookie("user") as any);
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("uid");
+  const [showLoader, setShowLoader] = useState(true);
+  const [userData, setUserData] = useState<user>();
 
-  return user ? (
-    <div className="py-20 w-full container mx-auto flex gap-4">
-      <div className="w-96 bg-slate-700 h-max min-h-max rounded-md p-8">
+  const getCurrentUserData = async () => {
+    try {
+      const userDocRef = doc(db, "users", searchQuery as string);
+      const userDocSnap: any = await getDoc(userDocRef);
+
+      if (userDocSnap.exists()) {
+        const date = new Date(
+          userDocSnap.data().createdAt.seconds * 1000
+        ).toLocaleDateString();
+        let { password, confirm_password, createdAt, ...filtered } =
+          userDocSnap.data();
+        let data = {
+          date: date,
+          ...filtered,
+        };
+        setUserData(data);
+        setShowLoader(!showLoader);
+      } else {
+        setShowLoader(!showLoader);
+      }
+    } catch (e) {
+      console.log(e);
+      ErrorToast("Can't get this user data");
+      setShowLoader(!showLoader);
+    }
+  };
+
+  useEffect(() => {
+    if (searchQuery) {
+      console.log("searchQuery", searchQuery);
+      getCurrentUserData();
+    }
+  }, []);
+
+  return userData && showLoader == false ? (
+    <div className="py-10 w-full container mx-auto flex gap-4">
+      <div className="w-96 bg-slate-900 h-max min-h-max rounded-md p-8 shadow-lg">
         <div className="w-full border-b border-gray-600 pb-2">
           <span className="text-2xl font-medium">Profile picture</span>
         </div>
         <div className="mt-5 flex-center flex-col">
           <Avatar
-            name={user?.username}
+            name={userData?.username}
             extClass="h-32 w-32"
             fontSize="text-4xl"
           />
-          <div className="grid grid-cols-2 mt-5 gap-10">
-            {[1, 2, 3].map((i) => (
+          <div className="flex flex-col mt-5 gap-4">
+            {[1, 2].map((i) => (
               <div key={i}>
                 <span className="text-sm font-semibold capitalize poppins text-gray-400">
-                  status
+                  status{" "}
                 </span>
                 <span className="bg-none bg-transparent text-gray-200 font-medium capitalize text-sm poppins">
                   Available
@@ -32,30 +81,35 @@ const UserProfile = () => {
           </div>
         </div>
       </div>
-      <form className="w-full bg-slate-700 flex flex-col rounded-md p-8">
+      <form className="w-full bg-slate-900 flex flex-col rounded-md p-8 shadow-lg">
         <div className="w-full border-b border-gray-600 pb-2">
           <span className="text-2xl font-medium">User information</span>
         </div>
         <div className="w-full  grid grid-cols-2 mt-5 gap-y-10">
-          {Object.keys(user).map((item) => (
-            <div className="flex flex-col" key={user[item]}>
-              <label
-                className="text-sm font-semibold uppercase poppins text-gray-400"
-                htmlFor=""
-              >
-                {item == "createdAt" ? "joining date" : item.replace("_", " ")}
-              </label>
-              <input
-                type="text"
-                className="bg-none bg-transparent font-bold capitalize text-2xl poppins"
-                value={
-                  item == "createdAt"
-                    ? new Date(user[item].seconds * 1000).toLocaleDateString()
-                    : user[item]
-                }
-              />
-            </div>
-          ))}
+          {Object.keys(userData)
+            .sort()
+            .map((item) => (
+              <div className="flex flex-col" key={userData[item as userKeys]}>
+                <label
+                  className="text-sm font-semibold uppercase poppins text-gray-400"
+                  htmlFor=""
+                >
+                  {item == "createdAt"
+                    ? "joining date"
+                    : item.replace("_", " ")}
+                </label>
+                <input
+                  type="text"
+                  className="bg-none bg-transparent font-bold capitalize text-2xl poppins"
+                  value={
+                    item == "createdAt"
+                      ? userData.date
+                      : userData[item as userKeys]
+                  }
+                  onChange={() => console.log("value change")}
+                />
+              </div>
+            ))}
         </div>
       </form>
     </div>

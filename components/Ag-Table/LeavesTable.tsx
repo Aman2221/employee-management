@@ -31,12 +31,15 @@ import {
   dynamic_column_def,
   getCookie,
   getLeave,
+  handleOverlay,
   pushNotificationToDb,
   sendEmail,
   setDataToState,
   updatePermissionStatusInDB,
 } from "@/functions";
 import withOutsideClick from "@/HOC/closeModal";
+import NoDataFound from "../Common/NoDataFound";
+import hideOverlay from "@/HOC/hideOverlay";
 const AddPermission = dynamic(() => import("../Pop-ups/AddPermission"), {
   ssr: false,
 });
@@ -62,6 +65,9 @@ const LeavesTable = () => {
     leave_status: "status(all)",
     view_type: "detailedTable",
   });
+
+  const DropdownComp = hideOverlay(DropDown, setShowDD);
+
   const LeaveModalComp = withOutsideClick(LeaveModal, () =>
     setOpenLeaveModal(false)
   );
@@ -76,7 +82,6 @@ const LeavesTable = () => {
   );
 
   const storeStatusToLocal = async (status: string) => {
-    console.log("storeStatusToLocal");
     let all_data: any = pmsDataStore;
 
     const userIndex = all_data.findIndex(
@@ -196,6 +201,7 @@ const LeavesTable = () => {
             filter: checkPermission,
           },
         });
+        handleOverlay(gridRef);
       } else {
         gridRef.current.api.setFilterModel(null);
       }
@@ -214,13 +220,14 @@ const LeavesTable = () => {
       });
       setPmsData(status !== "status(all)" ? [...filter] : pmsDataStore);
     } else {
-      if (status !== "status(all)") {
-        gridRef?.current?.api.setFilterModel({
+      if (status !== "status(all)" && gridRef.current) {
+        gridRef.current.api.setFilterModel({
           status: {
             type: "equals",
             filter: status,
           },
         });
+        handleOverlay(gridRef);
       } else {
         gridRef.current.api.setFilterModel(null);
       }
@@ -264,11 +271,7 @@ const LeavesTable = () => {
       ) : (
         <>
           {pmsDataStore.length == 0 ? (
-            <div className="flex my-20 w-full justify-center items-center">
-              <h1 className="md:text-4xl text-base text-center font-bold">
-                No data
-              </h1>
-            </div>
+            <NoDataFound />
           ) : (
             <>
               <div className="flex justify-between w-full border-b border-gray-200 dark:border-gray-700">
@@ -280,7 +283,8 @@ const LeavesTable = () => {
                   />
                 </div>
                 <div className="flex items-start gap-6">
-                  <DropDown
+                  <DropdownComp
+                    extClass="w-32"
                     onChange={onStatusChange}
                     options={["status(all)", "approved", "rejected", "pending"]}
                     SelectBtnComp={
@@ -350,6 +354,7 @@ const LeavesTable = () => {
                                 leaveFilter.view_type == "simpleTable"
                               }
                               domLayout="autoHeight"
+                              noRowsOverlayComponent={NoDataFound}
                             />
                           </motion.div>
                         </AnimatePresence>

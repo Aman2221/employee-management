@@ -12,6 +12,7 @@ import {
 } from "@/functions";
 import jsonData from "@/JSON/data.json";
 import { updates_inteface } from "@/interfaces";
+import DropDown from "../Common/DropDown";
 
 const AddUpdates = ({
   data = freshUpdate(),
@@ -25,6 +26,7 @@ const AddUpdates = ({
   const { setShowLoader } = usePmsContext();
 
   const [updates, setUpdates] = useState(data);
+  const [showStatusDD, setShowStatusDD] = useState(false);
   const [validations, setValidations] = useState(jsonData.updates_validations);
 
   const checkValues = () => {
@@ -58,12 +60,18 @@ const AddUpdates = ({
     e.preventDefault();
 
     let allFieldsAreValid = checkValues();
-    console.log("allFieldsAreValid :", allFieldsAreValid);
     if (allFieldsAreValid) {
       setShow(!show);
       setShowLoader(true);
       addDocument();
     }
+  };
+
+  const handleDDChange = (val: string) => {
+    setUpdates({
+      ...updates,
+      status: val,
+    });
   };
 
   const addDocument = async () => {
@@ -87,10 +95,7 @@ const AddUpdates = ({
       <div className="relative p-4 w-full max-w-md max-h-full">
         <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-            <h3
-              onClick={() => console.log(moment().format("MMMM Do YYYY"))}
-              className="text-lg font-semibold text-gray-900 dark:text-white"
-            >
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               {data.website_names.length ? "View Updates" : "Add Updates"}
             </h3>
             <button
@@ -150,27 +155,50 @@ const AddUpdates = ({
                       </div>
                     ) : (
                       <div className="col-span-1" key={item.name}>
-                        <label
-                          htmlFor={item.label}
-                          className="capitalize block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >
-                          {item.label}
-                          <sup>*</sup>
-                        </label>
-                        <input
-                          value={updates[item.name]}
-                          disabled={data.website_names.length > 0}
-                          name={item.name}
-                          id={item.name}
-                          onChange={handleInputChange}
-                          className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white  outline-none focus:outline-none"
-                          placeholder={item.placeholder}
-                        />
-                        <p className="text-xs text-red-500 font-medium mt-1 ml-1">
-                          {validations[keyName]
-                            ? `${item.placeholder} is required`
-                            : ""}
-                        </p>
+                        {item.label == "status" ? (
+                          <DropDown
+                            label={item.label}
+                            show={showStatusDD}
+                            setShow={() => setShowStatusDD(!showStatusDD)}
+                            options={["Completed", "On Going", "On Hold"]}
+                            onChange={handleDDChange}
+                            extClass="w-44"
+                            SelectBtnComp={
+                              <button
+                                type="button"
+                                onClick={() => setShowStatusDD(!showStatusDD)}
+                                className="py-2 capitalize px-4 text-sm font-medium text-gray-200 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:focus:ring-gray-700 dark:bg-gray-600 dark:text-gray-200 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-700 flex items-center gap-2 w-full justify-between"
+                              >
+                                <span>{updates.status}</span>
+                                <i className="bi bi-caret-down mt-1"></i>
+                              </button>
+                            }
+                          />
+                        ) : (
+                          <>
+                            <label
+                              htmlFor={item.label}
+                              className="capitalize block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                            >
+                              {item.label}
+                              <sup>*</sup>
+                            </label>
+                            <input
+                              value={updates[item.name]}
+                              disabled={data.website_names.length > 0}
+                              name={item.name}
+                              id={item.name}
+                              onChange={handleInputChange}
+                              className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300  dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white  outline-none focus:outline-none"
+                              placeholder={item.placeholder}
+                            />
+                            <p className="text-xs text-red-500 font-medium mt-1 ml-1">
+                              {validations[keyName]
+                                ? `${item.placeholder} is required`
+                                : ""}
+                            </p>
+                          </>
+                        )}
                       </div>
                     )}
                   </>

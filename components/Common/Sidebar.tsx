@@ -47,13 +47,16 @@ const Sidebar = () => {
       onClick: () => router.push("/view-leaves"),
       svg: "/sidebar-icons/square-box.svg",
     },
-
+    {
+      name: "my profile",
+      onClick: () => router.push("/view-profile"),
+      svg: "/sidebar-icons/user.svg",
+    },
     {
       name: "register user",
       onClick: () => router.push("/register"),
       svg: "/sidebar-icons/users.svg",
     },
-
     {
       name: "export data",
       onClick: handleExport,
@@ -76,6 +79,11 @@ const Sidebar = () => {
       name: "my updates",
       onClick: () => router.push("/view-updates"),
       svg: "/sidebar-icons/square-box.svg",
+    },
+    {
+      name: "my profile",
+      onClick: () => router.push("/view-profile"),
+      svg: "/sidebar-icons/user.svg",
     },
   ];
 
@@ -103,9 +111,9 @@ const Sidebar = () => {
         } z-40 w-64 h-screen `}
         aria-label="Sidebar"
       >
-        <div className="h-full pt-6 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+        <div className="h-full pt-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
           <div className="flex border-b border-slate-600">
-            <Link href="/" className="pb-5 pl-2 ">
+            <Link href="/" className="pb-4 pl-2 ">
               <Image
                 src="/logo/logo.svg"
                 width={200}

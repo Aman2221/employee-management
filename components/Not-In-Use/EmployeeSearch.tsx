@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const EmplyeeSearch = ({
+const EmployeeSearch = ({
   handleSearch,
   handleCategory,
   handleInputChange,
@@ -134,4 +134,4 @@ export const TableDataRows = ({
     </tr>
   ));
 };
-export default EmplyeeSearch;
+export default EmployeeSearch;

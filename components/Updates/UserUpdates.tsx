@@ -8,6 +8,8 @@ import Loader from "../Common/Loader";
 import { user } from "@/interfaces";
 import { motion, AnimatePresence } from "framer-motion";
 import DropDown from "../Common/DropDown";
+import NoDataFound from "../Common/NoDataFound";
+import hideOverlay from "@/HOC/hideOverlay";
 
 const UpdateCard = () => {
   const [showDD, setShowDD] = useState(false);
@@ -15,6 +17,7 @@ const UpdateCard = () => {
   const [usersDataDisplay, setUsersDataDisplay] = useState<user[]>([]);
   const [showLoader, setShowLoader] = useState(true);
   const [currentRole, setCurrentRole] = useState("everyone");
+  const DropdownComp = hideOverlay(DropDown, setShowDD);
 
   const onRoleFilter = (selectedRole: string) => {
     setCurrentRole(selectedRole);
@@ -31,21 +34,24 @@ const UpdateCard = () => {
 
   const onFilterTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let query = event.target.value.toLowerCase();
-    if (query.length > 3) {
-      const matching = usersData.filter((employee) =>
-        employee.username.toLowerCase().includes(query.toLowerCase())
+    if (query.length > 2) {
+      const matching = usersData.filter(
+        (employee) =>
+          employee.username.toLowerCase().includes(query.toLowerCase()) ||
+          employee.emp_id.toString().toLowerCase().includes(query.toLowerCase())
       );
 
       // Filter non-matching employees
-      const nonMatching = usersData.filter(
-        (employee) =>
-          !employee.username.toLowerCase().includes(query.toLowerCase())
-      );
+      // const nonMatching = usersData.filter(
+      //   (employee) =>
+      //     !employee.username.toLowerCase().includes(query.toLowerCase())
+      // );
 
       // Combine matching and non-matching
-      setUsersDataDisplay([...matching, ...nonMatching]);
+      // setUsersDataDisplay([...matching, ...nonMatching]);
+      setUsersDataDisplay([...matching]);
     } else {
-      setUsersDataDisplay(usersData);
+      setUsersDataDisplay([...usersData]);
     }
   };
 
@@ -77,7 +83,7 @@ const UpdateCard = () => {
   }, [getUsers]);
 
   return (
-    <div className="container mx-auto flex items-center justify-center flex-col">
+    <div className="container mx-auto flex items-center justify-center flex-col ">
       {showLoader ? (
         <Loader />
       ) : (
@@ -85,6 +91,7 @@ const UpdateCard = () => {
           <div className="updates-nav mb-10 flex justify-between items-center w-full">
             <DropDown
               onChange={onRoleFilter}
+              extClass="w-max"
               SelectBtnComp={
                 <button
                   onClick={() => setShowDD(!showDD)}
@@ -107,27 +114,34 @@ const UpdateCard = () => {
               setShow={setShowDD}
             />
 
-            <SearchInput onInputChange={onFilterTextChange} />
+            <SearchInput
+              onInputChange={onFilterTextChange}
+              placeHolder="Search by name or emp id"
+            />
           </div>
-          <div className="grid grid-cols-4 justify-between w-full gap-6">
-            {usersDataDisplay?.map((item: user) => {
-              return (
-                <AnimatePresence key={item.id}>
-                  <motion.div
-                    key={item.id}
-                    className="employee-card"
-                    layout // Enables smooth reordering animations
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <UserCard data={item} />
-                  </motion.div>
-                </AnimatePresence>
-              );
-            })}
-          </div>
+          {usersDataDisplay && usersDataDisplay.length ? (
+            <div className="grid grid-cols-4 justify-between w-full gap-6 overflow-y-scroll employee-cards-div pb-36">
+              {usersDataDisplay?.map((item: user) => {
+                return (
+                  <AnimatePresence key={item.id}>
+                    <motion.div
+                      key={item.id}
+                      className="employee-card"
+                      layout // Enables smooth reordering animations
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <UserCard data={item} />
+                    </motion.div>
+                  </AnimatePresence>
+                );
+              })}
+            </div>
+          ) : (
+            <NoDataFound extClss="text-4xl mt-10" />
+          )}
         </>
       )}
     </div>

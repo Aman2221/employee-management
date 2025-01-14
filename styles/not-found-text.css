@@ -1,0 +1,67 @@
+/* Main styles */
+.not-found-text {
+  fill: none;
+  stroke-width: 3;
+  stroke-linejoin: round;
+  stroke-dasharray: 70 330;
+  stroke-dashoffset: 0;
+  -webkit-animation: stroke 5s infinite linear;
+  animation: stroke 5s infinite linear;
+  font-family: "DM Sans";
+  stroke: red;
+}
+.not-found-text:nth-child(5n + 1) {
+  stroke: #006bff;
+  -webkit-animation-delay: -1.2s;
+  animation-delay: -1.2s;
+}
+.not-found-text:nth-child(5n + 2) {
+  stroke: #2563eb;
+  -webkit-animation-delay: -2.4s;
+  animation-delay: -2.4s;
+}
+
+.not-found-text:nth-child(5n + 3) {
+  stroke: #3572ef;
+  -webkit-animation-delay: -3.6s;
+  animation-delay: -3.6s;
+}
+@-webkit-keyframes stroke {
+  100% {
+    stroke-dashoffset: -400;
+  }
+}
+@keyframes stroke {
+  100% {
+    stroke-dashoffset: -400;
+  }
+}
+
+.shine-animation-text {
+  color: hsl(0, 0%, 98%);
+  font-weight: bold !important;
+  letter-spacing: 1px !important;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.shine-animation-text {
+  background: linear-gradient(
+    to right,
+    hsl(0, 0%, 30%) 0,
+    hsl(0, 0%, 100%) 10%,
+    hsl(0, 0%, 30%) 20%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 3s infinite linear;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 0;
+  }
+  100% {
+    background-position: 600px;
+  }
+}

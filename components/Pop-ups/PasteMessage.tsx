@@ -62,7 +62,6 @@ const PasteMessage = ({
 
   return (
     <div>
-      <button onClick={handleExtractData}>Extract Data</button>
       <div
         id="crud-modal"
         tabIndex={-1}

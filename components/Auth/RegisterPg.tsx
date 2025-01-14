@@ -15,19 +15,40 @@ import InputField from "../Common/InputField";
 import data from "@/JSON/data.json";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc } from "firebase/firestore";
+import DropDown from "../Common/DropDown";
+import hideOverlay from "@/HOC/hideOverlay";
+
+type DDStatesKeys = "role" | "designation";
+type passwords = "password" | "confirm_password";
 
 const RegisterPg = () => {
   const router = useRouter();
-  const [showPass, setShowPass] = useState(false);
+  const [showPass, setShowPass] = useState({
+    password: false,
+    confirm_password: false,
+  });
   const [userData, setUserData] = useState({
     username: "",
     emp_id: "",
     phone: "",
-    role: "",
+    role: "employee",
     email: "",
     password: "",
     confirm_password: "",
-    designation: "",
+    designation: "business analyst",
+  });
+
+  const roleOpt = ["employee", "human resource", "manager"];
+  const designationOpt = [
+    "business analyst",
+    "graphic design",
+    "frontend",
+    "testing",
+  ];
+
+  const [ddStates, setDdStates] = useState({
+    role: false,
+    designation: false,
   });
 
   const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -39,8 +60,30 @@ const RegisterPg = () => {
     });
   };
 
+  const handleDropDown = (show: boolean, key: string) => {
+    setDdStates({
+      ...ddStates,
+      [key]: show,
+    });
+  };
+
+  const handleDDChange = (value: string, key?: string) => {
+    if (key) {
+      console.log("handleDDChange :", key);
+      setUserData({
+        ...userData,
+        [key]: value,
+      });
+      setDdStates({
+        ...ddStates,
+        [key]: !ddStates[key as DDStatesKeys],
+      });
+    }
+  };
+
   const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    console.log("handleRegister called:");
     let validEmail = validateEmail(userData.email);
     let validPassword = checkPassword(
       userData.password,
@@ -78,17 +121,16 @@ const RegisterPg = () => {
     }
   };
 
+  const handleShowPass = (key: string) => {
+    setShowPass({
+      ...showPass,
+      [key]: !showPass[key as passwords],
+    });
+  };
+
   return (
     <>
       <div className="flex flex-col items-center justify-center px-6 py-0 mx-auto">
-        {/* <div className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
-          <img
-            className="w-8 h-8 mr-2"
-            src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
-            alt="logo"
-          />
-          Primasoft
-        </div> */}
         <div className="register_form bg-white rounded-lg shadow dark:border md:mt-0 xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8 w-full">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
@@ -98,31 +140,74 @@ const RegisterPg = () => {
               <div className=" grid grid-cols-2 md:grid-cols-2 gap-x-10 gap-y-5">
                 {data.register_fields.map((item) => (
                   <div key={item.label} className="relative">
-                    <InputField
-                      name={item.name}
-                      placeholder={item.placeholder}
-                      type={
-                        item.name == "password" ||
-                        item.name == "confirm_password"
-                          ? showPass
-                            ? "text"
-                            : item.type
-                          : item.type
-                      }
-                      onChange={handleInputChange}
-                      label={item.label}
-                      extrClasses="w-52"
-                    />
-                    {item.name == "password" ||
-                    item.name == "confirm_password" ? (
-                      <i
-                        onClick={() => setShowPass(!showPass)}
-                        className={`bi ${
-                          showPass ? "bi-eye-slash" : "bi-eye"
-                        } absolute right-4 top-10 cursor-pointer`}
-                      ></i>
+                    {item.label == "role" || item.label == "designation" ? (
+                      <DropDown
+                        label={item.label}
+                        show={ddStates[item.label]}
+                        setShow={() =>
+                          handleDropDown(
+                            ddStates[item.label as DDStatesKeys],
+                            item.label
+                          )
+                        }
+                        options={
+                          item.label == "role" ? roleOpt : designationOpt
+                        }
+                        onChange={handleDDChange}
+                        SelectBtnComp={
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleDropDown(
+                                !ddStates[item.label as DDStatesKeys],
+                                item.label
+                              )
+                            }
+                            className="py-2 capitalize px-4 text-sm font-medium text-gray-200 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:focus:ring-gray-700 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 flex items-center gap-2 w-full justify-between"
+                          >
+                            <span>{userData[item.label]}</span>
+                            <i className="bi bi-caret-down mt-1"></i>
+                          </button>
+                        }
+                      />
                     ) : (
-                      ""
+                      <>
+                        <InputField
+                          name={item.name}
+                          placeholder={item.placeholder}
+                          type={
+                            item.name == "password" && showPass.password
+                              ? item.type
+                              : item.name == "confirm_password" &&
+                                showPass.confirm_password
+                              ? item.type
+                              : "text"
+                          }
+                          onChange={handleInputChange}
+                          label={
+                            item.label == "employee id"
+                              ? item.label + "3 digit number"
+                              : item.label
+                          }
+                          extrClasses="w-52"
+                        />
+                        {item.name == "password" ||
+                        item.name == "confirm_password" ? (
+                          <i
+                            onClick={() => handleShowPass(item.name)}
+                            className={`bi ${
+                              item.name == "password" && showPass.password
+                                ? "bi-eye-slash"
+                                : item.name == "confirm_password" &&
+                                  showPass.confirm_password
+                                ? "bi-eye-slash"
+                                : "bi-eye"
+                            } absolute right-4 top-10 cursor-pointer`}
+                          ></i>
+                        ) : (
+                          ""
+                        )}
+                      </>
                     )}
                   </div>
                 ))}

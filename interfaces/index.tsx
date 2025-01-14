@@ -28,7 +28,6 @@ export type updates_inteface = {
 export interface user {
   id: string;
   confirm_password: string;
-  createdAt: string;
   designation: string;
   email: string;
   emp_id: string | number;
@@ -38,7 +37,22 @@ export interface user {
   uid: string;
   username: string;
   date: string;
+  createdAt: string;
 }
+
+export type userKeys =
+  | "id"
+  | "confirm_password"
+  | "createdAt"
+  | "designation"
+  | "email"
+  | "emp_id"
+  | "password"
+  | "phone"
+  | "role"
+  | "uid"
+  | "username"
+  | "date";
 
 export interface updates {
   id: s;

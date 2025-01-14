@@ -118,3 +118,10 @@ input[type="number"] {
 #logo-sidebar {
   transition: 0.2s ease;
 }
+
+.employee-cards-div {
+  height: 80vh;
+}
+.employee-cards-div::-webkit-scrollbar {
+  width: 10px;
+}

@@ -141,7 +141,7 @@
         "placeholder": "john@primasofttechnology.com"
       },
       {
-        "label": "emplyee ID",
+        "label": "employee ID",
         "name": "emp_id",
         "type": "text",
         "placeholder": "991"
@@ -192,19 +192,19 @@
       },
       {
         "name" : "assigned_by",
-        "label" : "assigned by",
-        "type" : "text",
+        "label" : "assigned by(email)",
+        "type" : "email",
         "placeholder" : "Assigned By"
       },
       {
         "name" : "verified_by",
-        "label" : "verified by",
-        "type" : "text",
+        "label" : "verified by(email)",
+        "type" : "email",
         "placeholder" : "Verified By"
       },
       {
         "name" : "task",
-        "label" : "taks",
+        "label" : "task",
         "type" : "text",
         "placeholder" : "Task"
       },
