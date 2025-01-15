@@ -337,6 +337,7 @@
       "name": false,
       "isNameWithSpecialCharOrNum": false,
       "duration": false,
+      "durationLimit": false,
       "type": false,
       "phone": false,
       "email": false,
@@ -408,6 +409,21 @@
       {
         "name" : "cardView",
         "icon" : "bi-card-list"
+      }
+    ],
+    "timeSlot" : [
+      { "name": "startTime", "label": "Start time", "type" : "time" },
+      {
+        "name": "endTime",
+        "label": "End time","type" : "time" 
+      }
+    ],
+    "dateSlot" : [
+      { "name": "startDate", "label": "Start date", "type" : "date"  },
+      {
+        "name": "endDate",
+        "label": "End date",
+        "type" : "date" 
       }
     ]
 }

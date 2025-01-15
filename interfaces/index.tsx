@@ -75,3 +75,8 @@ export interface updates {
   time: s;
   summary: s;
 }
+
+export type slotType = {
+  startTime: string;
+  endTime: string;
+};

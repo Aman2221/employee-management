@@ -60,6 +60,7 @@ export const validateEmail = (email: string) => {
   const domain2 = "@theswipewire.com";
 
   const checkDomain = email.endsWith(domain1) || email.endsWith(domain2);
+  console.log("checkDomain :", checkDomain);
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   // console.log("email :", emailPattern.test(email), checkDomain);
   if (emailPattern.test(email) && checkDomain) {
@@ -444,10 +445,10 @@ export const freshLeave = () => {
   const userUid = JSON.parse(getCookie("user") as string);
   return {
     name: "",
-    type: "4 Hours",
+    type: "permission",
     phone: "",
     email: "",
-    duration: null,
+    duration: "",
     emp_id: null,
     reason: "",
     date: moment().format("L"),
@@ -638,6 +639,7 @@ export const checkLeaveFields = (permission: { [key: string]: string }) => {
     name: permission.name.length == 0,
     isNameWithSpecialCharOrNum: isNameIsValid(permission.name),
     duration: permission.duration == null || permission?.duration?.length == 0,
+    durationLimit: parseInt(permission.duration) > 10,
     type: permission.type.length == 0,
     phone: permission.phone.length == 0,
     email: permission.email.length == 0,
@@ -722,4 +724,9 @@ export const handleOverlay = (gridRef: any) => {
   } else {
     gridRef.current.api.hideOverlay();
   }
+};
+
+export const controleText = (text: string, limit: number = 20) => {
+  if (text.length > limit) return text.slice(0, limit) + "...";
+  else return text;
 };

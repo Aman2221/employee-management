@@ -2,6 +2,7 @@ import React from "react";
 import Avatar from "../Common/Avatar";
 import { permissions, updates } from "@/interfaces";
 import { AnimatePresence, motion } from "framer-motion";
+import { controleText } from "@/functions";
 
 const DataCardViewLeaves = ({ leave }: { leave: permissions }) => {
   return (
@@ -38,7 +39,7 @@ const DataCardViewLeaves = ({ leave }: { leave: permissions }) => {
                 : leave.email.slice(0, 20) + "..."}
             </h6>
             <span className="capitalize mt-1 text-xs text-gray-500 dark:text-gray-400">
-              {leave.reason} / {leave.status}
+              {controleText(leave.reason, 15)} / {leave.status}
             </span>
           </div>
         </div>
@@ -77,12 +78,10 @@ export const DataCardViewUpdates = ({ update }: { update: updates }) => {
               {update.name}
             </h5>
             <h6 className="mb-1 text-base text-gray-300 ">
-              {update.email.length < 20
-                ? update.email
-                : update.email.slice(0, 20) + "..."}
+              {controleText(update.email, 20)}
             </h6>
             <span className="capitalize mt-1 text-xs text-gray-500 dark:text-gray-400">
-              {update.task}
+              {controleText(update.task, 15)}
             </span>
           </div>
         </div>

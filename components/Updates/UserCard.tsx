@@ -5,6 +5,7 @@ import { user } from "@/interfaces";
 import { useRouter } from "next/navigation";
 import DropDown from "../Common/DropDown";
 import hideOverlay from "@/HOC/hideOverlay";
+import { controleText } from "@/functions";
 
 const UserCard = ({ data }: { data: user }) => {
   const router = useRouter();
@@ -103,9 +104,7 @@ const UserCard = ({ data }: { data: user }) => {
                   data-tooltip-id="email-tooltip"
                   data-tooltip-content={data.email}
                 >
-                  {data.email.length > 20
-                    ? data.email.slice(0, 20) + "..."
-                    : data.email}
+                  {controleText(data.email, 20)}
                 </th>
               </tr>
               <tr className="border-b border-gray-200 dark:border-gray-700">

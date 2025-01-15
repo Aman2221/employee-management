@@ -5,12 +5,16 @@ import { usePmsContext } from "@/context";
 import { addDoc, collection } from "firebase/firestore";
 import React, { useState } from "react";
 import {
+  SuccessToast,
   checkAllFields,
   checkLeaveFields,
   extraValidation,
   freshLeave,
 } from "@/functions";
 import json from "@/JSON/data.json";
+import DropDown from "../Common/DropDown";
+import LeaveDuration from "../Ag-Table/LeaveDuration";
+import { slotType } from "@/interfaces";
 
 const AddPermission = ({
   data = freshLeave(),
@@ -22,9 +26,10 @@ const AddPermission = ({
   setShow: (a: boolean) => void;
 }) => {
   const { setShowLoader } = usePmsContext();
-
+  const [showPermissionDD, setPermissionDD] = useState(false);
   const [permission, setPermission] = useState(data);
   const [validations, setValidations] = useState(json.leaves_validations);
+  const [showTimeSlot, setShowTimeSlot] = useState(true);
 
   const checkValues = () => {
     let getValidation = checkLeaveFields(permission);
@@ -41,12 +46,24 @@ const AddPermission = ({
   ) => {
     let target: any = e.target;
     let value: any = e.target.value;
+    let durationVal: number = permission.type == "permission" ? 4 : 10;
     extraValidation(target.name, value, validations, setValidations);
-
-    setPermission({
-      ...permission,
-      [target.name]: value,
-    });
+    if (target.name == "duration" && parseInt(value) > durationVal) {
+      setValidations({
+        ...validations,
+        durationLimit: parseInt(value) > durationVal,
+      });
+    } else {
+      setValidations({
+        ...validations,
+        durationLimit:
+          target.name == "duration" ? parseInt(value) > durationVal : false,
+      });
+      setPermission({
+        ...permission,
+        [target.name]: value,
+      });
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -62,9 +79,28 @@ const AddPermission = ({
   const addDocument = async () => {
     try {
       const docRef = await addDoc(collection(db, "permissions"), permission);
+      SuccessToast(
+        permission.type == "permission" ? "Permission added" : "Leave Added"
+      );
     } catch (e) {
       console.error("Error adding document: ", e);
     }
+  };
+
+  const handleLeaveType = (type: string) => {
+    setPermission({
+      ...permission,
+      type,
+    });
+    setPermissionDD(!showPermissionDD);
+  };
+
+  const handleSaveSlot = (slot: slotType) => {
+    Object.keys(slot).forEach(
+      (i: string) => (permission[i] = slot[i as keyof slotType])
+    );
+
+    console.log("slot :", permission);
   };
 
   return (
@@ -116,7 +152,8 @@ const AddPermission = ({
                   htmlFor="name"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  EMP-ID<sup>*</sup>
+                  EMP-ID (3 digit)
+                  <sup>*</sup>
                 </label>
                 <input
                   type="number"
@@ -169,7 +206,9 @@ const AddPermission = ({
                 >
                   Duration<sup>*</sup>
                   <span className="text-xs">
-                    {permission.type === "4 Hours" ? "(in hours)" : "(in days)"}
+                    {permission.type === "permission"
+                      ? "(in hours)"
+                      : "(in days)"}
                   </span>
                 </label>
                 <input
@@ -184,28 +223,47 @@ const AddPermission = ({
                   maxLength={2}
                 />
                 <p className="text-xs text-red-500 font-medium mt-1 ml-1">
-                  {validations.duration ? "Duration is required" : ""}
+                  {validations.duration
+                    ? "Duration is required"
+                    : validations.durationLimit
+                    ? permission.type == "permission"
+                      ? "Duration can not be more then 4 hours"
+                      : "Duration can not be more then 10"
+                    : ""}
                 </p>
               </div>
-              <div className="col-span-2 sm:col-span-1">
-                <label
-                  htmlFor="type"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Leave/Permission Type<sup>*</sup>
-                </label>
-                <select
-                  id="type"
-                  name="type"
-                  disabled={data.name.length}
-                  className="bg-gray-50 border outline-none focus:outline-noneborder-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                  value={permission.type}
-                  onChange={handleInputChange}
-                >
-                  <option value="4 Hours">4 Hours</option>
-                  <option value="Sick">Sick</option>
-                  <option value="Casual">Casual</option>
-                </select>
+
+              <div className="col-span-2 sm:col-span-1 relative">
+                {showTimeSlot && permission.duration.length > 0 && (
+                  <LeaveDuration
+                    slotTypeData={
+                      permission.type == "permission"
+                        ? json.timeSlot
+                        : json.dateSlot
+                    }
+                    show={showTimeSlot}
+                    handleSave={handleSaveSlot}
+                  />
+                )}
+                <DropDown
+                  label={"Leave/Permission Type"}
+                  show={showPermissionDD}
+                  setShow={setPermissionDD}
+                  options={["permission", "sick", "casual"]}
+                  extClass="w-44"
+                  SelectBtnComp={
+                    <button
+                      type="button"
+                      onClick={() => setPermissionDD(!showPermissionDD)}
+                      className="py-2 capitalize px-4 text-sm font-medium text-gray-200 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:focus:ring-gray-700 dark:bg-gray-600 dark:text-gray-200 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-700 flex items-center gap-2 w-full justify-between"
+                    >
+                      <span>{permission.type}</span>
+                      <i className="bi bi-caret-down mt-1"></i>
+                    </button>
+                  }
+                  onChange={handleLeaveType}
+                />
+
                 <p className="text-xs text-red-500 font-medium mt-1 ml-1">
                   {validations.type ? "Leave/Permission Type is required" : ""}
                 </p>

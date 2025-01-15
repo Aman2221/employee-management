@@ -125,3 +125,7 @@ input[type="number"] {
 .employee-cards-div::-webkit-scrollbar {
   width: 10px;
 }
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  color: white !important; /* Change this to your desired color */
+}

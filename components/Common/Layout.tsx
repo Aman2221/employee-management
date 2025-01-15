@@ -6,6 +6,7 @@ import { ToastContainer } from "react-toastify";
 import Footer from "./Footer";
 import Sidebar from "./Sidebar";
 import Loader from "./Loader";
+import "animate.css";
 
 const Layout = ({
   children = <HomeComp />,

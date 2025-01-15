@@ -182,6 +182,11 @@ const LeavesTable = () => {
     }
   };
 
+  const onCardClick = (leaveData: permissions) => {
+    setCrrData(leaveData);
+    setShowLeaveModel(true);
+  };
+
   const onTabChange = (tab_name: string) => {
     const selectLeave = tab_name.replace("leave", "");
 
@@ -189,7 +194,9 @@ const LeavesTable = () => {
       selectLeave.slice(0, 1).toLocaleUpperCase() + selectLeave.slice(1);
 
     const checkPermission =
-      selectLeave == "permission" ? "4 Hours" : case_match.replace(/\s+/g, "");
+      selectLeave == "permission"
+        ? "permission"
+        : case_match.replace(/\s+/g, "");
     if (leaveFilter.view_type == "cardView") {
       let filter = pmsDataStore.filter((item) => item.type == checkPermission);
       setPmsData(tab_name !== "all" ? [...filter] : pmsDataStore);
@@ -313,7 +320,10 @@ const LeavesTable = () => {
                     {leaveFilter.view_type == "cardView" ? (
                       <div className="grid grid-cols-4 gap-6">
                         {pmsData.map((leave) => (
-                          <div key={leave.created_at}>
+                          <div
+                            key={leave.created_at}
+                            onClick={() => onCardClick(leave)}
+                          >
                             <DataCardView leave={leave} />
                           </div>
                         ))}

@@ -71,6 +71,11 @@ const MyUpdatesPg = () => {
     setShowUpdateMdl(true);
   };
 
+  const onCardClick = (data: updates) => {
+    setCrrData(data);
+    setShowUpdateMdl(true);
+  };
+
   const getCurrentUserUpdates = useCallback(async () => {
     const userUid = searchQuerytUid ? searchQuerytUid : user?.uid;
 
@@ -233,7 +238,10 @@ const MyUpdatesPg = () => {
                     {leaveFilter.view_type == "cardView" ? (
                       <div className="grid grid-cols-4 gap-6">
                         {updatesData.map((update: updates) => (
-                          <div key={update.id}>
+                          <div
+                            key={update.id}
+                            onClick={() => onCardClick(update)}
+                          >
                             <DataCardViewUpdates update={update} />
                           </div>
                         ))}

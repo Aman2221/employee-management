@@ -11,10 +11,12 @@ import Image from "next/image";
 import { usePmsContext } from "@/context";
 import Link from "next/link";
 import { getAuth, signOut } from "firebase/auth";
+import withOutsideClick from "@/HOC/closeModal";
+import hideOverlay from "@/HOC/hideOverlay";
 
 const Sidebar = () => {
   const router = useRouter();
-  const { showSidebar } = usePmsContext();
+  const { showSidebar, setShowSidebar } = usePmsContext();
   const [isSuper, setIsSuper] = useState(false);
 
   const handleExport = async () => {
