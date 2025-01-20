@@ -98,12 +98,9 @@ const UserCard = ({ data }: { data: user }) => {
                   Email
                 </td>
                 <th className="py-3 text-right w-full flex justify-end">
-                  <CustomTooltip
-                    children={<>{controleText(data.email, 20)}</>}
-                    content={data.email}
-                    id={data.id}
-                    className=""
-                  />
+                  <CustomTooltip content={data.email} id={data.id}>
+                    {controleText(data.email, 20)}
+                  </CustomTooltip>
                 </th>
               </tr>
               <tr className="border-b border-gray-200 dark:border-gray-700">

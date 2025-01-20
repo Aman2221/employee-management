@@ -46,13 +46,9 @@ const NavNotifications = ({
   return (
     <div className="relative">
       <div className="notifications h-full d-flex items-center justify-center ">
-        <CustomTooltip
-          children={
-            <i className="bi bi-bell text-base md:text-2xl cursor-pointer"></i>
-          }
-          onClick={hanldeNotification}
-          content="Notifications"
-        />
+        <CustomTooltip onClick={hanldeNotification} content="Notifications">
+          <i className="bi bi-bell text-base md:text-2xl cursor-pointer"></i>
+        </CustomTooltip>
 
         {/* {data && data.filter((i) => i.read == false).length > 0 ? (
           <span

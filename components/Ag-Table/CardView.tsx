@@ -35,18 +35,14 @@ const DataCardViewLeaves = ({ leave }: { leave: permissions }) => {
               {leave.name}
             </h5>
             <h6 className="mb-1 text-base text-gray-300">
-              <CustomTooltip
-                children={controleText(leave.email, 20)}
-                content={leave.email}
-                id="email-tooltip"
-              />
+              <CustomTooltip content={leave.email} id="email-tooltip">
+                {controleText(leave.email, 20)}
+              </CustomTooltip>
             </h6>
             <span className="capitalize mt-1 text-xs text-gray-500 dark:text-gray-400">
-              <CustomTooltip
-                children={controleText(leave.reason, 15)}
-                content={leave.reason}
-                id="reason-tooltip"
-              />
+              <CustomTooltip content={leave.reason} id="reason-tooltip">
+                {controleText(leave.reason, 15)}
+              </CustomTooltip>
               / {leave.status}
             </span>
           </div>
@@ -86,18 +82,14 @@ export const DataCardViewUpdates = ({ update }: { update: updates }) => {
               {update.name}
             </h5>
             <h6 className="mb-1 text-base text-gray-300 ">
-              <CustomTooltip
-                children={controleText(update.email, 20)}
-                content={update.email}
-                id="email-tooltip"
-              />
+              <CustomTooltip content={update.email} id="email-tooltip">
+                {controleText(update.email, 20)}
+              </CustomTooltip>
             </h6>
             <span className="capitalize mt-1 text-xs text-gray-500 dark:text-gray-400">
-              <CustomTooltip
-                children={controleText(update.task, 15)}
-                content={update.email}
-                id="update-tooltip"
-              />
+              <CustomTooltip content={update.email} id="update-tooltip">
+                {controleText(update.task, 15)}
+              </CustomTooltip>
             </span>
           </div>
         </div>
