@@ -720,6 +720,45 @@ export const sendEmail = async (
   }
 };
 
+export const sendStatusEmail = async (
+  userName: string,
+  leaveType: string,
+  startDate: string,
+  endDate: string,
+  date: string,
+  status: string,
+  emailTo: string
+) => {
+  const emailData = {
+    userName,
+    leaveType,
+    startDate,
+    endDate,
+    date,
+    status,
+    emailTo,
+  };
+
+  try {
+    const res = await fetch("/api/send-notification", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json", // Ensure JSON header is set
+      },
+      body: JSON.stringify(emailData), // Ensure body is JSON stringified
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      SuccessToast("Email notifcation sent successfully");
+    } else {
+      console.error("Email sending failed:", data.message);
+    }
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
+};
+
 export const handleOverlay = (gridRef: any) => {
   const rowCount = gridRef.current.api.getDisplayedRowCount();
 
@@ -758,3 +797,7 @@ export const fetchEmployeeByEmpId = async (emp_id: string) => {
   }
   return data[0];
 };
+
+export function capitalizeFirstLetter(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}

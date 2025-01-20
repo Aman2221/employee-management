@@ -2,7 +2,7 @@
 import { slotType } from "@/interfaces";
 import React, { useState } from "react";
 import json from "@/JSON/data.json";
-import moment from "moment";
+
 type obj = { [key: string]: string };
 
 const LeaveDuration = ({

@@ -132,25 +132,12 @@ const RegisterPg = () => {
     });
   };
 
-  const handleSendMail = async () => {
-    console.log("send mail");
-    await sendEmail(
-      "Aman Singh",
-      "Aman@123",
-      "amanshivaji@primasofttechnology.com",
-      "Welcome to Primasoft"
-    );
-  };
-
   return (
     <>
       <div className="flex flex-col items-center justify-center px-6 py-0 mx-auto">
         <div className="register_form bg-white rounded-lg shadow dark:border md:mt-0 xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8 w-full">
-            <h1
-              onClick={handleSendMail}
-              className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white"
-            >
+            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Register new user
             </h1>
             <form className="space-y-4 md:space-y-6" onSubmit={handleRegister}>

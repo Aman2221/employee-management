@@ -16,21 +16,30 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
         const body = result?.value ? Buffer.from(result.value).toString() : '';
 
         // Parse the body as JSON
-        const { userName, userRole, email, subject } = JSON.parse(body);
+        const { userName, leaveType, startDate, endDate, date, status, emailTo } = JSON.parse(body);
 
         const emailPath = path.join(process.cwd(), "emails", "notification_email.html");
-        const htmlTemplate = fs.readFileSync(emailPath, "utf-8");
+        let htmlTemplate = fs.readFileSync(emailPath, "utf-8");
 
 
 
         // Replace placeholders in the HTML template
-        const customizedHtml = htmlTemplate
-            .replace("[User's First Name]", userName)
-            .replace("[User's Full Name]", userName)
-            .replace("[User Role]", userRole)
-            .replace("[User Email]", email)
 
-        if (!email || !subject) {
+        let checkLeaveType = htmlTemplate;
+        if (leaveType.toLowerCase() == "permission") {
+            checkLeaveType = htmlTemplate.replace("Start Date:", "Start Time").replace("End Date", "End Time");
+        }
+        let leaveName = leaveType.toLowerCase() == "permission" ? leaveType : leaveType + "leave";
+        const customizedHtml = checkLeaveType
+            .replace("[User's Full Name]", userName)
+            .replace("[Leave Type]", leaveType)
+            .replace("[Start Date]", startDate)
+            .replace("[End Date]", endDate)
+            .replace("[Applied On]", date)
+            .replace("[Leave Name]", leaveName)
+            .replaceAll("[Status]", status);
+
+        if (!emailTo || !userName) {
             return NextResponse.json({ message: 'Email, subject, and message are required' }, { status: 400 });
         }
 
@@ -45,8 +54,8 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
 
             const mailOptions = {
                 from: process.env.NEXT_PUBLIC_EMAIL_USER,
-                to: email,
-                subject: subject,
+                to: emailTo,
+                subject: "Your Leave/Permission Request Update",
                 html: customizedHtml
             };
 

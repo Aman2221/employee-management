@@ -16,11 +16,8 @@ export async function POST(request: NextRequest) {
 
         // Parse the body as JSON
         const { userName, userPassword, email, subject } = JSON.parse(body);
-        console.log({ userName, userPassword, email, subject });
         const emailPath = path.join(process.cwd(), "emails", "welcome_email.html");
         const htmlTemplate = await fs.readFileSync(emailPath, "utf-8");
-        console.log("htmlTemplate :", htmlTemplate);
-        console.log(process.env.NEXT_PUBLIC_EMAIL_USER, process.env.NEXT_PUBLIC_EMAIL_PASS);
 
         // Replace placeholders in the HTML template
         const customizedHtml = htmlTemplate

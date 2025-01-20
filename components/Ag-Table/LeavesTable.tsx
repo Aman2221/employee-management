@@ -25,11 +25,13 @@ const LeaveModal = dynamic(() => import("../Pop-ups/LeaveModal"), {
   ssr: false,
 });
 import {
+  capitalizeFirstLetter,
   dynamic_column_def,
   getCookie,
   getLeave,
   handleOverlay,
   pushNotificationToDb,
+  sendStatusEmail,
   setDataToState,
   updatePermissionStatusInDB,
 } from "@/functions";
@@ -52,7 +54,7 @@ const LeavesTable = () => {
   const [currentStatus, setCurrentStatus] = useState("");
   const [currentDocId, setCurrentDocId] = useState("");
   const [gridApi, setGridApi] = useState<any>(null);
-  const [crrData, setCrrData] = useState<unknown>();
+  const [crrData, setCrrData] = useState<permissions | any>();
   const [showLeaveModel, setShowLeaveModel] = useState(false);
   const [pmsData, setPmsData] = useState<permissions[]>([]);
   const [pmsDataStore, setPmsDataStore] = useState<permissions[]>([]);
@@ -88,8 +90,19 @@ const LeavesTable = () => {
       };
     }
 
-    const html = `Hi ${all_data[userIndex].name}, Your leave for ${all_data[userIndex].reason} got ${status}`;
-    // sendEmail("amanshivajisingh@gmail.com", "Leaves information", html);
+    await sendStatusEmail(
+      all_data[userIndex].name,
+      capitalizeFirstLetter(all_data[userIndex].type),
+      all_data[userIndex].start_date
+        ? all_data[userIndex].start_date
+        : all_data[userIndex].start_time,
+      all_data[userIndex].end_date
+        ? all_data[userIndex].end_date
+        : all_data[userIndex].end_time,
+      all_data[userIndex].date,
+      capitalizeFirstLetter(all_data[userIndex].status),
+      all_data[userIndex].email
+    );
     const docId = all_data[userIndex].uid;
     const permission_name = all_data[userIndex].reason;
     setPmsData(all_data);
@@ -181,7 +194,7 @@ const LeavesTable = () => {
     setShowLeaveModel(true);
   };
 
-  const onTabChange = (tab_name: string) => {
+  const onTabChange = async (tab_name: string) => {
     const selectLeave = tab_name.replace("leave", "");
 
     const case_match =
