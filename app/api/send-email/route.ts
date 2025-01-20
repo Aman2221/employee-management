@@ -1,14 +1,13 @@
 // app/api/send-email/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
-import { NextApiResponse } from 'next';
 import nodemailer from 'nodemailer';
 import fs from "fs";
 import path from "path";
 // Note: Next.js does not have built-in support to disable body parsing in the `app` directory like in the `pages` directory.
 // You need to manually handle the request body parsing.
 
-export async function POST(request: NextRequest, response: NextApiResponse) {
+export async function POST(request: NextRequest) {
     try {
         // Read the request body stream
         const reader = request.body?.getReader();
@@ -17,11 +16,11 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
 
         // Parse the body as JSON
         const { userName, userPassword, email, subject } = JSON.parse(body);
-
+        console.log({ userName, userPassword, email, subject });
         const emailPath = path.join(process.cwd(), "emails", "welcome_email.html");
         const htmlTemplate = await fs.readFileSync(emailPath, "utf-8");
-
-
+        console.log("htmlTemplate :", htmlTemplate);
+        console.log(process.env.NEXT_PUBLIC_EMAIL_USER, process.env.NEXT_PUBLIC_EMAIL_PASS);
 
         // Replace placeholders in the HTML template
         const customizedHtml = htmlTemplate
@@ -47,7 +46,6 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
                 from: process.env.NEXT_PUBLIC_EMAIL_USER,
                 to: email,
                 subject: subject,
-                text: "Welcome to our platform!", // Plain text fallback
                 html: customizedHtml
             };
 
@@ -55,6 +53,7 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
             const info = await transporter.sendMail(mailOptions);
             return NextResponse.json({ message: 'Email sent' }, { status: 200 });
         } catch (error) {
+            console.log("error", error)
             return NextResponse.json({ message: 'Error sending email' }, { status: 405 });
         }
     }

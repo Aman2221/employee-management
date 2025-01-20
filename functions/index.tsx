@@ -689,13 +689,13 @@ export const extraValidation = (
 
 export const sendEmail = async (
   userName: string,
-  password: string,
+  userPassword: string,
   email: string,
   subject: string
 ) => {
   const emailData = {
     userName,
-    password,
+    userPassword,
     email,
     subject,
   };
@@ -736,7 +736,6 @@ export const controleText = (text: string, limit: number = 20) => {
 };
 
 export const fetchEmployeeByEmpId = async (emp_id: string) => {
-  console.log("emp_id :", emp_id);
   let data: any = [];
   const employeeCollection = collection(db, "users");
 
