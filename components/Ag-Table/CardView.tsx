@@ -34,20 +34,20 @@ const DataCardViewLeaves = ({ leave }: { leave: permissions }) => {
             <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
               {leave.name}
             </h5>
-            <h6 className="mb-1 text-base text-gray-300 ">
+            <h6 className="mb-1 text-base text-gray-300">
               <CustomTooltip
-                children={<>{controleText(leave.email, 20)}</>}
+                children={<span>{controleText(leave.email, 20)}</span>}
                 content={leave.email}
                 id="email-tooltip"
               />
             </h6>
             <span className="capitalize mt-1 text-xs text-gray-500 dark:text-gray-400">
               <CustomTooltip
-                children={<>{controleText(leave.reason, 15)}</>}
+                children={<span>{controleText(leave.reason, 15)}</span>}
                 content={leave.reason}
                 id="reason-tooltip"
               />
-              {} / {leave.status}
+              / {leave.status}
             </span>
           </div>
         </div>
@@ -87,14 +87,14 @@ export const DataCardViewUpdates = ({ update }: { update: updates }) => {
             </h5>
             <h6 className="mb-1 text-base text-gray-300 ">
               <CustomTooltip
-                children={<>{controleText(update.email, 20)}</>}
+                children={<span>{controleText(update.email, 20)}</span>}
                 content={update.email}
                 id="email-tooltip"
               />
             </h6>
             <span className="capitalize mt-1 text-xs text-gray-500 dark:text-gray-400">
               <CustomTooltip
-                children={<>{controleText(update.task, 15)}</>}
+                children={<span>{controleText(update.task, 15)}</span>}
                 content={update.email}
                 id="update-tooltip"
               />

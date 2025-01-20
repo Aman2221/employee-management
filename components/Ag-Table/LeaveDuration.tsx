@@ -55,7 +55,7 @@ const LeaveDuration = ({
     >
       <div className="w-max mx-auto grid grid-cols-2 gap-4 mb-2">
         {slotTypeData.map((i: obj) => (
-          <div>
+          <div key={i.label}>
             <label
               htmlFor={i.label}
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
