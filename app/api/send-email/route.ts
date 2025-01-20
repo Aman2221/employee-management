@@ -38,13 +38,13 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
-                    user: process.env.EMAIL_USER,
-                    pass: process.env.EMAIL_PASS,
+                    user: process.env.NEXT_PUBLIC_EMAIL_USER,
+                    pass: process.env.NEXT_PUBLIC_EMAIL_PASS,
                 },
             });
 
             const mailOptions = {
-                from: process.env.EMAIL_USER,
+                from: process.env.NEXT_PUBLIC_EMAIL_USER,
                 to: email,
                 subject: subject,
                 text: "Welcome to our platform!", // Plain text fallback
