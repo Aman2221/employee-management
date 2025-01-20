@@ -16,7 +16,7 @@ const DataCardViewLeaves = ({ leave }: { leave: permissions }) => {
         transition={{ duration: 0.3 }}
       >
         <div className="flex w-full absolute -top-5 justify-between px-6">
-          <span className="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg ">
+          <span className="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg capitalize">
             {leave.type}
           </span>
           <span className="py-2 px-4 ms-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 ">
@@ -36,14 +36,14 @@ const DataCardViewLeaves = ({ leave }: { leave: permissions }) => {
             </h5>
             <h6 className="mb-1 text-base text-gray-300">
               <CustomTooltip
-                children={<span>{controleText(leave.email, 20)}</span>}
+                children={controleText(leave.email, 20)}
                 content={leave.email}
                 id="email-tooltip"
               />
             </h6>
             <span className="capitalize mt-1 text-xs text-gray-500 dark:text-gray-400">
               <CustomTooltip
-                children={<span>{controleText(leave.reason, 15)}</span>}
+                children={controleText(leave.reason, 15)}
                 content={leave.reason}
                 id="reason-tooltip"
               />
@@ -87,14 +87,14 @@ export const DataCardViewUpdates = ({ update }: { update: updates }) => {
             </h5>
             <h6 className="mb-1 text-base text-gray-300 ">
               <CustomTooltip
-                children={<span>{controleText(update.email, 20)}</span>}
+                children={controleText(update.email, 20)}
                 content={update.email}
                 id="email-tooltip"
               />
             </h6>
             <span className="capitalize mt-1 text-xs text-gray-500 dark:text-gray-400">
               <CustomTooltip
-                children={<span>{controleText(update.task, 15)}</span>}
+                children={controleText(update.task, 15)}
                 content={update.email}
                 id="update-tooltip"
               />

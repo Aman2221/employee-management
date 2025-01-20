@@ -16,7 +16,7 @@ const CustomTooltip = ({
   className?: string;
   place?: string | any;
   onClick?: () => void;
-  children: ReactNode;
+  children: ReactNode | string;
 }) => {
   return (
     <button

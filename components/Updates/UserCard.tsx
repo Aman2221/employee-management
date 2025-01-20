@@ -4,14 +4,12 @@ import Avatar from "../Common/Avatar";
 import { user } from "@/interfaces";
 import { useRouter } from "next/navigation";
 import DropDown from "../Common/DropDown";
-import hideOverlay from "@/HOC/hideOverlay";
 import { controleText } from "@/functions";
 import CustomTooltip from "../Common/Tooltip";
 
 const UserCard = ({ data }: { data: user }) => {
   const router = useRouter();
   const [showDD, setShowDD] = useState(false);
-  const DropdownComp = hideOverlay(DropDown, setShowDD);
 
   const handleViewUpdates = () => {
     router.push(`/view-updates?uid=${data.uid}`);
