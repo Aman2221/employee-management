@@ -3,6 +3,7 @@ import Avatar from "../Common/Avatar";
 import { permissions, updates } from "@/interfaces";
 import { AnimatePresence, motion } from "framer-motion";
 import { controleText } from "@/functions";
+import CustomTooltip from "../Common/Tooltip";
 
 const DataCardViewLeaves = ({ leave }: { leave: permissions }) => {
   return (
@@ -34,12 +35,19 @@ const DataCardViewLeaves = ({ leave }: { leave: permissions }) => {
               {leave.name}
             </h5>
             <h6 className="mb-1 text-base text-gray-300 ">
-              {leave.email.length < 20
-                ? leave.email
-                : leave.email.slice(0, 20) + "..."}
+              <CustomTooltip
+                children={<>{controleText(leave.email, 20)}</>}
+                content={leave.email}
+                id="email-tooltip"
+              />
             </h6>
             <span className="capitalize mt-1 text-xs text-gray-500 dark:text-gray-400">
-              {controleText(leave.reason, 15)} / {leave.status}
+              <CustomTooltip
+                children={<>{controleText(leave.reason, 15)}</>}
+                content={leave.reason}
+                id="reason-tooltip"
+              />
+              {} / {leave.status}
             </span>
           </div>
         </div>
@@ -78,10 +86,18 @@ export const DataCardViewUpdates = ({ update }: { update: updates }) => {
               {update.name}
             </h5>
             <h6 className="mb-1 text-base text-gray-300 ">
-              {controleText(update.email, 20)}
+              <CustomTooltip
+                children={<>{controleText(update.email, 20)}</>}
+                content={update.email}
+                id="email-tooltip"
+              />
             </h6>
             <span className="capitalize mt-1 text-xs text-gray-500 dark:text-gray-400">
-              {controleText(update.task, 15)}
+              <CustomTooltip
+                children={<>{controleText(update.task, 15)}</>}
+                content={update.email}
+                id="update-tooltip"
+              />
             </span>
           </div>
         </div>

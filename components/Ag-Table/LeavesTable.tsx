@@ -18,10 +18,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import StatusRenderer, { CellStatusRenderer } from "./StatusRenderer";
 import data from "@/JSON/data.json";
 import useSystemTheme from "@/hooks/useSystemTheme";
-import Tabs from "../Common/Tabs";
 import { AnimatePresence, motion } from "framer-motion";
-import TableViews from "../Common/TableViews";
-import DropDown from "../Common/DropDown";
 import DataCardView from "./CardView";
 import { permissions } from "@/interfaces";
 const LeaveModal = dynamic(() => import("../Pop-ups/LeaveModal"), {
@@ -39,7 +36,7 @@ import {
 } from "@/functions";
 import withOutsideClick from "@/HOC/closeModal";
 import NoDataFound from "../Common/NoDataFound";
-import hideOverlay from "@/HOC/hideOverlay";
+import LeaveFilters from "../Common/DataFilters";
 const AddPermission = dynamic(() => import("../Pop-ups/AddPermission"), {
   ssr: false,
 });
@@ -65,8 +62,6 @@ const LeavesTable = () => {
     leave_status: "status(all)",
     view_type: "detailedTable",
   });
-
-  const DropdownComp = hideOverlay(DropDown, setShowDD);
 
   const LeaveModalComp = withOutsideClick(LeaveModal, () =>
     setOpenLeaveModal(false)
@@ -95,7 +90,7 @@ const LeavesTable = () => {
     }
 
     const html = `Hi ${all_data[userIndex].name}, Your leave for ${all_data[userIndex].reason} got ${status}`;
-    sendEmail("amanshivajisingh@gmail.com", "Leaves information", html);
+    // sendEmail("amanshivajisingh@gmail.com", "Leaves information", html);
     const docId = all_data[userIndex].uid;
     const permission_name = all_data[userIndex].reason;
     setPmsData(all_data);
@@ -281,43 +276,28 @@ const LeavesTable = () => {
             <NoDataFound />
           ) : (
             <>
-              <div className="flex justify-between w-full border-b border-gray-200 dark:border-gray-700">
-                <div>
-                  <Tabs
-                    tabs={data.updates_tabs}
-                    onTabChange={onTabChange}
-                    activeTab={leaveFilter.leave_type}
-                  />
-                </div>
-                <div className="flex items-start gap-6">
-                  <DropdownComp
-                    extClass="w-32"
-                    onChange={onStatusChange}
-                    options={["status(all)", "approved", "rejected", "pending"]}
-                    SelectBtnComp={
-                      <button
-                        onClick={() => setShowDD(!showDD)}
-                        className="py-2 capitalize px-4 text-sm font-medium text-gray-200 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 flex items-center gap-2"
-                      >
-                        <span>{leaveFilter.leave_status}</span>
-                        <i className="bi bi-caret-down mt-1"></i>
-                      </button>
-                    }
-                    show={showDD}
-                    setShow={setShowDD}
-                  />
-
-                  <TableViews
-                    onChange={onViewChange}
-                    views={data.data_view_types}
-                    activeView={leaveFilter.view_type}
-                  />
-                </div>
-              </div>
-              <div className="mt-6 w-full animate__animated animate__fadeIn">
-                {pmsDataStore && pmsDataStore.length ? (
-                  <>
-                    {leaveFilter.view_type == "cardView" ? (
+              <LeaveFilters
+                updates_tabs={data.updates_tabs}
+                onTabChange={onTabChange}
+                leave_type={leaveFilter.leave_type}
+                onStatusChange={onStatusChange}
+                showDD={showDD}
+                setShowDD={setShowDD}
+                leave_status={leaveFilter.leave_status}
+                onViewChange={onViewChange}
+                data_view_types={data.data_view_types}
+                view_type={leaveFilter.view_type}
+                dropDownmOtps={[
+                  "status(all)",
+                  "approved",
+                  "rejected",
+                  "pending",
+                ]}
+              />
+              {pmsData.length ? (
+                <div className="mt-6 w-full animate__animated animate__fadeIn">
+                  {pmsDataStore && pmsDataStore.length ? (
+                    leaveFilter.view_type == "cardView" ? (
                       <div className="grid grid-cols-4 gap-6">
                         {pmsData.map((leave) => (
                           <div
@@ -369,14 +349,17 @@ const LeavesTable = () => {
                           </motion.div>
                         </AnimatePresence>
                       </div>
-                    )}
-                  </>
-                ) : (
-                  <></>
-                )}
-              </div>
+                    )
+                  ) : (
+                    <></>
+                  )}
+                </div>
+              ) : (
+                <NoDataFound extClss="mt-20 text-4xl" />
+              )}
             </>
           )}
+
           <LeaveModalComp
             show={openLeaveModal}
             setShow={setOpenLeaveModal}

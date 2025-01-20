@@ -16,10 +16,10 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
         const body = result?.value ? Buffer.from(result.value).toString() : '';
 
         // Parse the body as JSON
-        const { userName, userPassword, email, subject } = JSON.parse(body);
+        const { userName, userRole, email, subject } = JSON.parse(body);
 
-        const emailPath = path.join(process.cwd(), "emails", "welcome_email.html");
-        const htmlTemplate = await fs.readFileSync(emailPath, "utf-8");
+        const emailPath = path.join(process.cwd(), "emails", "notification_email.html");
+        const htmlTemplate = fs.readFileSync(emailPath, "utf-8");
 
 
 
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
         const customizedHtml = htmlTemplate
             .replace("[User's First Name]", userName)
             .replace("[User's Full Name]", userName)
-            .replace("[User Password]", userPassword)
+            .replace("[User Role]", userRole)
             .replace("[User Email]", email)
 
         if (!email || !subject) {
@@ -38,16 +38,15 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
-                    user: process.env.EMAIL_USER,
-                    pass: process.env.EMAIL_PASS,
+                    user: process.env.NEXT_PUBLIC_EMAIL_USER,
+                    pass: process.env.NEXT_PUBLIC_EMAIL_PASS,
                 },
             });
 
             const mailOptions = {
-                from: process.env.EMAIL_USER,
+                from: process.env.NEXT_PUBLIC_EMAIL_USER,
                 to: email,
                 subject: subject,
-                text: "Welcome to our platform!", // Plain text fallback
                 html: customizedHtml
             };
 

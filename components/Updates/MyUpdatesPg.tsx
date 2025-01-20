@@ -26,13 +26,10 @@ const AddUpdates = dynamic(() => import("../Pop-ups/AddUpdates"), {
 });
 import useSystemTheme from "@/hooks/useSystemTheme";
 import dynamic from "next/dynamic";
-import Tabs from "../Common/Tabs";
-import DropDown from "../Common/DropDown";
-import TableViews from "../Common/TableViews";
 import { DataCardViewUpdates } from "../Ag-Table/CardView";
 import { updates } from "@/interfaces";
 import NoDataFound from "../Common/NoDataFound";
-import hideOverlay from "@/HOC/hideOverlay";
+import LeaveFilters from "../Common/DataFilters";
 
 const MyUpdatesPg = () => {
   const gridRef: any = useRef(null);
@@ -47,7 +44,6 @@ const MyUpdatesPg = () => {
   const [updatesData, setUpdatesData] = useState<updates[]>([]);
   const [updatesDataStore, setUpdatesDataStore] = useState<updates[]>([]);
   const [showDD, setShowDD] = useState(false);
-  const DropdownComp = hideOverlay(DropDown, setShowDD);
   const [leaveFilter, setLeaveFilter] = useState({
     leave_type: "all",
     leave_status: "status(all)",
@@ -136,6 +132,11 @@ const MyUpdatesPg = () => {
       } else {
         gridRef.current.api.setFilterModel(null);
       }
+    } else {
+      let filter = updatesDataStore.filter(
+        (item) => item.designation.toLowerCase() == selectedTab
+      );
+      setUpdatesData(tab_name !== "all" ? [...filter] : updatesDataStore);
     }
 
     setLeaveFilter({
@@ -157,6 +158,12 @@ const MyUpdatesPg = () => {
       } else {
         gridRef.current.api.setFilterModel(null);
       }
+    } else {
+      let filter = updatesDataStore.filter((item) => {
+        if (item.status == status) return item;
+      });
+      console.log("filter :", filter);
+      setUpdatesData(status !== "status(all)" ? [...filter] : updatesDataStore);
     }
 
     setLeaveFilter({
@@ -190,102 +197,88 @@ const MyUpdatesPg = () => {
         <Loader />
       ) : (
         <>
-          {updatesData.length == 0 ? (
+          {updatesDataStore.length == 0 ? (
             <NoDataFound extClss="text-4xl mt-10" />
           ) : (
             <>
-              <div className="flex justify-between w-full border-b border-gray-200 dark:border-gray-700 mx-auto container">
-                <div>
-                  <Tabs
-                    tabs={data.leaves_tabs}
-                    onTabChange={onTabChange}
-                    activeTab={leaveFilter.leave_type}
-                  />
-                </div>
-                <div className="flex items-start gap-6">
-                  <DropdownComp
-                    extClass="w-32"
-                    onChange={onStatusChange}
-                    options={[
-                      "status(all)",
-                      "Completed",
-                      "On Going",
-                      "On Hold",
-                    ]}
-                    SelectBtnComp={
-                      <button
-                        onClick={() => setShowDD(!showDD)}
-                        className="py-2 capitalize px-4 text-sm font-medium text-gray-200 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 flex items-center gap-2"
-                      >
-                        <span>{leaveFilter.leave_status}</span>
-                        <i className="bi bi-caret-down mt-1"></i>
-                      </button>
-                    }
-                    show={showDD}
-                    setShow={setShowDD}
-                  />
-
-                  <TableViews
-                    onChange={onViewChange}
-                    views={data.data_view_types}
-                    activeView={leaveFilter.view_type}
-                  />
-                </div>
-              </div>
-              <div className="mt-6 w-full animate__animated animate__fadeIn container mx-auto">
-                {updatesData && updatesData?.length ? (
-                  <>
-                    {leaveFilter.view_type == "cardView" ? (
-                      <div className="grid grid-cols-4 gap-6">
-                        {updatesData.map((update: updates) => (
-                          <div
-                            key={update.id}
-                            onClick={() => onCardClick(update)}
-                          >
-                            <DataCardViewUpdates update={update} />
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                        <div
-                          style={{
-                            width:
-                              leaveFilter.view_type == "simpleTable"
-                                ? `${data.leaveSimpleColumnDefs.reduce(
-                                    (total, col) => total + col.width,
-                                    0
-                                  )}px`
-                                : "100%", // Calculate total width based on column widths
-                            margin: "auto",
-                          }}
-                          className={`${
-                            systemTheme == "dark"
-                              ? "ag-theme-alpine-dark"
-                              : "ag-theme-alpine"
-                          } ag-grid-table overflow-y-scroll dm-sans rounded-sm`}
-                        >
-                          <AgGridReact
-                            ref={gridRef}
-                            rowData={updatesData}
-                            columnDefs={getColumnDefs as any}
-                            className="dm-sans custom-cell-border"
-                            onCellClicked={onCellClicked}
-                            onGridReady={onGridReady}
-                            suppressHorizontalScroll={
-                              leaveFilter.view_type == "simpleTable"
-                            }
-                            domLayout="autoHeight"
-                            noRowsOverlayComponent={NoDataFound}
-                          />
+              <LeaveFilters
+                updates_tabs={data.leaves_tabs}
+                onTabChange={onTabChange}
+                leave_type={leaveFilter.leave_type}
+                onStatusChange={onStatusChange}
+                showDD={showDD}
+                setShowDD={setShowDD}
+                leave_status={leaveFilter.leave_status}
+                onViewChange={onViewChange}
+                data_view_types={data.data_view_types}
+                view_type={leaveFilter.view_type}
+                dropDownmOtps={[
+                  "status(all)",
+                  "Completed",
+                  "On Going",
+                  "On Hold",
+                ]}
+                extClass="mx-auto container"
+              />
+              {updatesData.length ? (
+                <div className="mt-6 w-full animate__animated animate__fadeIn container mx-auto">
+                  {updatesData && updatesData?.length ? (
+                    <>
+                      {leaveFilter.view_type == "cardView" ? (
+                        <div className="grid grid-cols-4 gap-6">
+                          {updatesData.map((update: updates) => (
+                            <div
+                              key={update.id}
+                              onClick={() => onCardClick(update)}
+                            >
+                              <DataCardViewUpdates update={update} />
+                            </div>
+                          ))}
                         </div>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <></>
-                )}
-              </div>
+                      ) : (
+                        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                          <div
+                            style={{
+                              width:
+                                leaveFilter.view_type == "simpleTable"
+                                  ? `${data.leaveSimpleColumnDefs.reduce(
+                                      (total, col) => total + col.width,
+                                      0
+                                    )}px`
+                                  : "100%", // Calculate total width based on column widths
+                              margin: "auto",
+                            }}
+                            className={`${
+                              systemTheme == "dark"
+                                ? "ag-theme-alpine-dark"
+                                : "ag-theme-alpine"
+                            } ag-grid-table overflow-y-scroll dm-sans rounded-sm`}
+                          >
+                            <AgGridReact
+                              ref={gridRef}
+                              rowData={updatesData}
+                              columnDefs={getColumnDefs as any}
+                              className="dm-sans custom-cell-border"
+                              onCellClicked={onCellClicked}
+                              onGridReady={onGridReady}
+                              suppressHorizontalScroll={
+                                leaveFilter.view_type == "simpleTable"
+                              }
+                              domLayout="autoHeight"
+                              noRowsOverlayComponent={NoDataFound}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+              ) : (
+                <NoDataFound extClss="mt-20 text-4xl" />
+              )}
+
               {showUpdateMdl && (
                 <AddUpdates
                   show={showUpdateMdl}

@@ -1,6 +1,7 @@
 import React from "react";
 import Loader from "../Common/Loader";
 import { getCookie, markNotificationAsReadInDb } from "@/functions";
+import CustomTooltip from "../Common/Tooltip";
 
 const NavNotifications = ({
   show,
@@ -45,10 +46,14 @@ const NavNotifications = ({
   return (
     <div className="relative">
       <div className="notifications h-full d-flex items-center justify-center ">
-        <i
-          className="bi bi-bell text-base md:text-2xl cursor-pointer"
+        <CustomTooltip
+          children={
+            <i className="bi bi-bell text-base md:text-2xl cursor-pointer"></i>
+          }
           onClick={hanldeNotification}
-        ></i>
+          content="Notifications"
+        />
+
         {/* {data && data.filter((i) => i.read == false).length > 0 ? (
           <span
             className={`h-2 w-2 rounded-full border bg-red-400  absolute right-0 top-1`}

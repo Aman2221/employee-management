@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import DropDown from "../Common/DropDown";
 import hideOverlay from "@/HOC/hideOverlay";
 import { controleText } from "@/functions";
+import CustomTooltip from "../Common/Tooltip";
 
 const UserCard = ({ data }: { data: user }) => {
   const router = useRouter();
@@ -68,7 +69,7 @@ const UserCard = ({ data }: { data: user }) => {
               {data.username}
             </h5>
 
-            <span className="text-sm text-gray-500 dark:text-gray-400">
+            <span className="text-sm text-gray-500 dark:text-gray-400 capitalize">
               {data.designation}
             </span>
             <div className="flex mt-3 ">
@@ -91,20 +92,20 @@ const UserCard = ({ data }: { data: user }) => {
         <div className="relative overflow-x-auto  w-full mt-4 px-4">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <tbody>
-              <tr className="border-b border-gray-200 dark:border-gray-700">
+              <tr className="border-b border-gray-200 dark:border-gray-700 ">
                 <td
                   scope="row"
                   className="py-3 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800"
                 >
                   Email
                 </td>
-
-                <th
-                  className="py-3 text-right"
-                  data-tooltip-id="email-tooltip"
-                  data-tooltip-content={data.email}
-                >
-                  {controleText(data.email, 20)}
+                <th className="py-3 text-right w-full flex justify-end">
+                  <CustomTooltip
+                    children={<>{controleText(data.email, 20)}</>}
+                    content={data.email}
+                    id={data.id}
+                    className=""
+                  />
                 </th>
               </tr>
               <tr className="border-b border-gray-200 dark:border-gray-700">

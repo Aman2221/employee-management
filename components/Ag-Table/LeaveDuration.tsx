@@ -1,21 +1,37 @@
 "use client";
 import { slotType } from "@/interfaces";
 import React, { useState } from "react";
-
+import json from "@/JSON/data.json";
+import moment from "moment";
 type obj = { [key: string]: string };
+
 const LeaveDuration = ({
   show,
-  slotTypeData,
   handleSave,
+  type,
 }: {
   show: boolean;
-  slotTypeData: any;
   handleSave: (a: slotType) => void;
+  type: string;
 }) => {
-  const [data, setData] = useState({
-    startTime: "00:00",
-    endTime: "00:00",
-  });
+  const now = new Date();
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const currentTime = `${hours}:${minutes}`;
+
+  const slotTypeData = type == "permission" ? json.timeSlot : json.dateSlot;
+  const keyData =
+    type == "permission"
+      ? {
+          start_time: currentTime,
+          end_time: currentTime,
+        }
+      : {
+          start_date: new Date().toISOString().split("T")[0],
+          end_date: new Date().toISOString().split("T")[0],
+        };
+
+  const [data, setData] = useState(keyData);
 
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
     const target: any = e.target;
@@ -26,14 +42,12 @@ const LeaveDuration = ({
     });
   };
 
-  const handleSubmit = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
+  const handleSubmit = () => {
     handleSave(data);
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
+    <div
       id="dropdownTimepicker"
       className={`z-10 ${
         show ? "absolute" : "hidden"
@@ -73,6 +87,7 @@ const LeaveDuration = ({
                 id={i.name}
                 className="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 value={data[i.name as keyof slotType]}
+                defaultValue={data[i.name as keyof slotType]}
                 onChange={handleChange}
                 required
               />
@@ -83,14 +98,14 @@ const LeaveDuration = ({
       <div className="flex justify-end w-full">
         <button
           id="saveTimeButton"
-          type="submit"
+          type="button"
           onClick={handleSubmit}
           className="text-blue-700 dark:text-blue-500 text-sm font-semibold border rounded px-1 mt-1 border-gray-400"
         >
           Save
         </button>
       </div>
-    </form>
+    </div>
   );
 };
 

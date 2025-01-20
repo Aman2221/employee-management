@@ -363,7 +363,7 @@
         "icon" : ""
       },
       {
-        "tab_name" : "frontned development",
+        "tab_name" : "frontend",
         "icon" : ""
       },
       {
@@ -412,16 +412,16 @@
       }
     ],
     "timeSlot" : [
-      { "name": "startTime", "label": "Start time", "type" : "time" },
+      { "name": "start_time", "label": "Start time", "type" : "time" },
       {
-        "name": "endTime",
+        "name": "end_time",
         "label": "End time","type" : "time" 
       }
     ],
     "dateSlot" : [
-      { "name": "startDate", "label": "Start date", "type" : "date"  },
+      { "name": "start_date", "label": "Start date", "type" : "date"  },
       {
-        "name": "endDate",
+        "name": "end_date",
         "label": "End date",
         "type" : "date" 
       }

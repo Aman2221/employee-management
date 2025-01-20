@@ -11,6 +11,7 @@ import {
   query,
   setDoc,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { Bounce, toast } from "react-toastify";
@@ -633,6 +634,9 @@ export const checkUpdateFields = (updates: { [key: string]: string }) => {
 };
 
 export const checkLeaveFields = (permission: { [key: string]: string }) => {
+  // if (permission.type == "permission") {
+  //   return permission.start_time == "";
+  // }
   return {
     emp_id: permission?.emp_id == null || permission?.emp_id?.length == 0,
     isEmpId3Digit: permission?.emp_id?.length > 3,
@@ -684,16 +688,16 @@ export const extraValidation = (
 };
 
 export const sendEmail = async (
+  userName: string,
+  password: string,
   email: string,
-  message: string,
-  html: string,
-  subject: string = "Applied leave update"
+  subject: string
 ) => {
   const emailData = {
+    userName,
+    password,
     email,
     subject,
-    message,
-    html,
   };
 
   try {
@@ -729,4 +733,29 @@ export const handleOverlay = (gridRef: any) => {
 export const controleText = (text: string, limit: number = 20) => {
   if (text.length > limit) return text.slice(0, limit) + "...";
   else return text;
+};
+
+export const fetchEmployeeByEmpId = async (emp_id: string) => {
+  console.log("emp_id :", emp_id);
+  let data: any = [];
+  const employeeCollection = collection(db, "users");
+
+  const q = query(employeeCollection, where("emp_id", "==", emp_id));
+
+  // Execute the query
+  const querySnapshot = await getDocs(q);
+
+  if (!querySnapshot.empty) {
+    querySnapshot.forEach((doc) => {
+      const { username, phone, email } = doc.data();
+      data.push({
+        name: username,
+        phone,
+        email,
+      });
+    });
+  } else {
+    console.log("No matching documents found.");
+  }
+  return data[0];
 };

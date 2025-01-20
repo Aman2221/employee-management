@@ -76,7 +76,9 @@ export interface updates {
   summary: s;
 }
 
-export type slotType = {
-  startTime: string;
-  endTime: string;
-};
+export interface slotType {
+  start_time?: string | undefined;
+  end_time?: string | undefined;
+  start_date?: string | undefined;
+  end_date?: string | undefined;
+}

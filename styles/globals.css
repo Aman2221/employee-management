@@ -129,3 +129,11 @@ input[type="number"] {
 input[type="date"]::-webkit-calendar-picker-indicator {
   color: white !important; /* Change this to your desired color */
 }
+
+.modal-bg {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.react-tooltip {
+  z-index: 99 !important;
+}

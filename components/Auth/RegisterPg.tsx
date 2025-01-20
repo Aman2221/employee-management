@@ -16,7 +16,6 @@ import data from "@/JSON/data.json";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc } from "firebase/firestore";
 import DropDown from "../Common/DropDown";
-import hideOverlay from "@/HOC/hideOverlay";
 
 type DDStatesKeys = "role" | "designation";
 type passwords = "password" | "confirm_password";
@@ -83,7 +82,6 @@ const RegisterPg = () => {
 
   const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("handleRegister called:");
     let validEmail = validateEmail(userData.email);
     let validPassword = checkPassword(
       userData.password,
@@ -103,13 +101,19 @@ const RegisterPg = () => {
 
         const userDoc = doc(db, "users", user.uid);
         await addUserToDB(userDoc, userData, user.uid); //adding user data to collection
-        const html = `<h1>We have created a new user for you. Use ${userData.email}, ${userData.password} this email and pasword for login</h1>`;
-        sendEmail(userData.email, "Hello there", html, "Welcome to Primasoft");
+
+        sendEmail(
+          userData.username,
+          userData.password,
+          userData.email,
+          "Welcome to Primasoft"
+        );
         SuccessToast("User Registered Successful");
         setTimeout(() => {
           router.push("/");
         }, 500);
-      } catch (error) {
+      } catch (error: any) {
+        console.log("error :", error.message);
         ErrorToast("");
       }
     } else {
@@ -243,7 +247,7 @@ const RegisterPg = () => {
                 type="submit"
                 className="w-full text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
-                Sign in
+                Register
               </button>
             </form>
           </div>

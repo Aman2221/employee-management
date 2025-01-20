@@ -1,20 +1,23 @@
 "use client";
-import moment from "moment";
+import { Tooltip } from "react-tooltip";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
 import { addDoc, collection } from "firebase/firestore";
 import React, { useState } from "react";
 import {
+  ErrorToast,
   SuccessToast,
   checkAllFields,
   checkLeaveFields,
   extraValidation,
+  fetchEmployeeByEmpId,
   freshLeave,
 } from "@/functions";
 import json from "@/JSON/data.json";
 import DropDown from "../Common/DropDown";
 import LeaveDuration from "../Ag-Table/LeaveDuration";
 import { slotType } from "@/interfaces";
+import CustomTooltip from "../Common/Tooltip";
 
 const AddPermission = ({
   data = freshLeave(),
@@ -30,6 +33,7 @@ const AddPermission = ({
   const [permission, setPermission] = useState(data);
   const [validations, setValidations] = useState(json.leaves_validations);
   const [showTimeSlot, setShowTimeSlot] = useState(true);
+  const [isSlotSelected, setIsSlotSelected] = useState(false);
 
   const checkValues = () => {
     let getValidation = checkLeaveFields(permission);
@@ -38,7 +42,7 @@ const AddPermission = ({
     return checkAllFields(permission);
   };
 
-  const handleInputChange = (
+  const handleInputChange = async (
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLSelectElement>
@@ -48,6 +52,12 @@ const AddPermission = ({
     let value: any = e.target.value;
     let durationVal: number = permission.type == "permission" ? 4 : 10;
     extraValidation(target.name, value, validations, setValidations);
+    if (target.name == "emp_id" && value.toString().length == 3) {
+      const temp = await fetchEmployeeByEmpId(value.toString());
+      if (temp) {
+        Object.keys(temp).forEach((i) => (permission[i] = temp[i]));
+      }
+    }
     if (target.name == "duration" && parseInt(value) > durationVal) {
       setValidations({
         ...validations,
@@ -70,9 +80,17 @@ const AddPermission = ({
     e.preventDefault();
     let allFieldsAreValid = checkValues();
     if (allFieldsAreValid) {
-      setShow(!show);
-      setShowLoader(true);
-      addDocument();
+      if (isSlotSelected) {
+        setShow(!show);
+        setShowLoader(true);
+        addDocument();
+      } else {
+        ErrorToast(
+          permission.type == "permission"
+            ? "Please select both the start and end dates for your leave period"
+            : "Please select both the start and end times for your leave period"
+        );
+      }
     }
   };
 
@@ -93,14 +111,16 @@ const AddPermission = ({
       type,
     });
     setPermissionDD(!showPermissionDD);
+    setShowTimeSlot(true);
   };
 
   const handleSaveSlot = (slot: slotType) => {
-    Object.keys(slot).forEach(
-      (i: string) => (permission[i] = slot[i as keyof slotType])
-    );
-
-    console.log("slot :", permission);
+    setPermission({
+      ...permission,
+      ...slot,
+    });
+    setIsSlotSelected(true);
+    setShowTimeSlot(!showTimeSlot);
   };
 
   return (
@@ -110,40 +130,40 @@ const AddPermission = ({
       aria-hidden="true"
       className={`${
         show ? "flex" : "hidden"
-      } animate__animated animate__fadeInDown overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full`}
+      } animate__animated animate__fadeInDown overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-full max-h-full modal-bg`}
     >
       <div className="relative p-4 w-full max-w-md max-h-full">
         <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-            <h3
-              onClick={() => console.log(moment().format("MMMM Do YYYY"))}
-              className="text-lg font-semibold text-gray-900 dark:text-white"
-            >
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               {data.name.length ? "Leave Details" : "Add Leave"}
             </h3>
-            <button
-              onClick={() => setShow(!show)}
-              type="button"
+            <CustomTooltip
               className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-              data-modal-toggle="crud-modal"
-            >
-              <svg
-                className="w-3 h-3"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 14 14"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                />
-              </svg>
-              <span className="sr-only">Close modal</span>
-            </button>
+              onClick={() => setShow(!show)}
+              children={
+                <>
+                  <svg
+                    className="w-3 h-3"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 14 14"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                    />
+                  </svg>
+                  <span className="sr-only">Close modal</span>
+                </>
+              }
+              id="slot-tooltip"
+              content="Close modal"
+            />
           </div>
           <form className="p-4 md:p-5" onSubmit={handleSubmit}>
             <div className="grid gap-4 mb-4 grid-cols-2">
@@ -199,7 +219,7 @@ const AddPermission = ({
                 </p>
               </div>
 
-              <div className="col-span-2 sm:col-span-1">
+              <div className="col-span-2 sm:col-span-1 relative">
                 <label
                   htmlFor="price"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -222,6 +242,22 @@ const AddPermission = ({
                   placeholder="2"
                   maxLength={2}
                 />
+                {permission.duration.toString().length > 0 && (
+                  <div className="absolute right-2 top-10">
+                    <CustomTooltip
+                      className="text-white text-sm absolute  font-bold "
+                      onClick={() => setShowTimeSlot(!showTimeSlot)}
+                      children={<i className="bi bi-calendar-range"></i>}
+                      id="slot-tooltip"
+                      content={
+                        permission.type == "permission"
+                          ? "Select time"
+                          : "Select date"
+                      }
+                    />
+                  </div>
+                )}
+
                 <p className="text-xs text-red-500 font-medium mt-1 ml-1">
                   {validations.duration
                     ? "Duration is required"
@@ -236,11 +272,7 @@ const AddPermission = ({
               <div className="col-span-2 sm:col-span-1 relative">
                 {showTimeSlot && permission.duration.length > 0 && (
                   <LeaveDuration
-                    slotTypeData={
-                      permission.type == "permission"
-                        ? json.timeSlot
-                        : json.dateSlot
-                    }
+                    type={permission.type}
                     show={showTimeSlot}
                     handleSave={handleSaveSlot}
                   />
@@ -268,6 +300,7 @@ const AddPermission = ({
                   {validations.type ? "Leave/Permission Type is required" : ""}
                 </p>
               </div>
+
               <div className="col-span-2 sm:col-span-1">
                 <label
                   htmlFor="phone"
