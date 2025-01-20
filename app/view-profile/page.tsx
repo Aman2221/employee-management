@@ -1,9 +1,13 @@
 import Layout from "@/components/Common/Layout";
 import UserProfile from "@/components/Profile/UserProfile";
-import React from "react";
+import React, { Suspense } from "react";
 
 const Profile = () => {
-  return <Layout>{<UserProfile />}</Layout>;
+  return (
+    <Suspense>
+      <Layout>{<UserProfile />}</Layout>
+    </Suspense>
+  );
 };
 
 export default Profile;

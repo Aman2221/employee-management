@@ -30,7 +30,6 @@ import {
   getLeave,
   handleOverlay,
   pushNotificationToDb,
-  sendEmail,
   setDataToState,
   updatePermissionStatusInDB,
 } from "@/functions";

@@ -1,8 +1,12 @@
 import Layout from "@/components/Common/Layout";
-import React from "react";
+import React, { Suspense } from "react";
 
 const TestPage = () => {
-  return <Layout showSearchInput={false}></Layout>;
+  return (
+    <Suspense>
+      <Layout showSearchInput={false}></Layout>
+    </Suspense>
+  );
 };
 
 export default TestPage;
