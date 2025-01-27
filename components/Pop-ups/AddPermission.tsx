@@ -1,5 +1,4 @@
 "use client";
-import { Tooltip } from "react-tooltip";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
 import { addDoc, collection } from "firebase/firestore";
@@ -11,6 +10,7 @@ import {
   checkLeaveFields,
   extraValidation,
   fetchEmployeeByEmpId,
+  fetchEmpLeavesByType,
   freshLeave,
 } from "@/functions";
 import json from "@/JSON/data.json";
@@ -18,6 +18,7 @@ import DropDown from "../Common/DropDown";
 import LeaveDuration from "../Ag-Table/LeaveDuration";
 import { slotType } from "@/interfaces";
 import CustomTooltip from "../Common/Tooltip";
+import LeaveBalanceStatus from "./LeaveBalanceStatus";
 
 const AddPermission = ({
   data = freshLeave(),
@@ -34,12 +35,20 @@ const AddPermission = ({
   const [validations, setValidations] = useState(json.leaves_validations);
   const [showTimeSlot, setShowTimeSlot] = useState(true);
   const [isSlotSelected, setIsSlotSelected] = useState(false);
+  const [showBalance, setShowBalance] = useState({
+    show: false,
+    leave_balance: 0,
+  }); //this state help to show and hide the leave balance of employee
 
   const checkValues = () => {
     let getValidation = checkLeaveFields(permission);
     setValidations(getValidation);
 
     return checkAllFields(permission);
+  };
+
+  const resetPermission = () => {
+    setPermission(data);
   };
 
   const handleInputChange = async (
@@ -108,17 +117,46 @@ const AddPermission = ({
   const handleLeaveType = (type: string) => {
     setPermission({
       ...permission,
-      type,
+      type: type.toLowerCase(),
     });
     setPermissionDD(!showPermissionDD);
     setShowTimeSlot(true);
   };
 
-  const handleSaveSlot = (slot: slotType) => {
+  //This function fetches number of leave type taken by the current employee
+  const fetchAllLeaves = async () => {
+    const totalLeaves = await fetchEmpLeavesByType(
+      permission?.emp_id,
+      permission?.type
+    );
+
+    setShowBalance({
+      show: true,
+      leave_balance: permission.leaves[permission.type] - totalLeaves,
+    });
+
+    setTimeout(() => {
+      setShowBalance({
+        ...showBalance,
+        leave_balance: permission.leaves[permission.type] - totalLeaves,
+        show: false,
+      });
+    }, 3500);
+  };
+
+  const hideLeaveAlert = () => {
+    setShowBalance({
+      ...showBalance,
+      show: !showBalance.show,
+    });
+  };
+
+  const handleSaveSlot = async (slot: slotType) => {
     setPermission({
       ...permission,
       ...slot,
     });
+    await fetchAllLeaves();
     setIsSlotSelected(true);
     setShowTimeSlot(!showTimeSlot);
   };
@@ -275,6 +313,7 @@ const AddPermission = ({
                     type={permission.type}
                     show={showTimeSlot}
                     handleSave={handleSaveSlot}
+                    duration={permission.duration}
                   />
                 )}
                 <DropDown
@@ -301,6 +340,15 @@ const AddPermission = ({
                 </p>
               </div>
 
+              {showBalance.show && (
+                <LeaveBalanceStatus
+                  leave_balance={showBalance.leave_balance}
+                  type={permission.type}
+                  leaves={permission.leaves}
+                  hideLeaveAlert={hideLeaveAlert}
+                />
+              )}
+
               <div className="col-span-2 sm:col-span-1">
                 <label
                   htmlFor="phone"
@@ -326,6 +374,7 @@ const AddPermission = ({
                     : ""}
                 </p>
               </div>
+
               <div className="col-span-2 sm:col-span-1">
                 <label
                   htmlFor="email"
@@ -374,7 +423,25 @@ const AddPermission = ({
               </div>
             </div>
             {!data.name.length ? (
-              <div className="flex justify-end">
+              <div className="flex justify-between">
+                <button
+                  type="button"
+                  onClick={resetPermission}
+                  className="text-white inline-flex items-center bg-red-700 hover:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 "
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    className="me-1 -ms-1 w-5 h-5 "
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                  </svg>
+                  Clear form
+                </button>
                 <button
                   type="submit"
                   className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

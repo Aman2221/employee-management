@@ -3,21 +3,14 @@ import { ErrorToast, getCookie } from "@/functions";
 import React, { useState, useEffect } from "react";
 import Avatar from "../Common/Avatar";
 import { useSearchParams } from "next/navigation";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { user, userKeys } from "@/interfaces";
 
 const UserProfile = () => {
   const user = JSON.parse(getCookie("user") as any);
   const searchParams = useSearchParams();
-  const searchQuery = searchParams.get("uid");
+  const searchQuery = searchParams.size ? searchParams.get("uid") : user?.uid;
   const [showLoader, setShowLoader] = useState(true);
   const [userData, setUserData] = useState<user>();
 
@@ -49,8 +42,8 @@ const UserProfile = () => {
   };
 
   useEffect(() => {
+    console.log("searchParams :", searchParams.size);
     if (searchQuery) {
-      console.log("searchQuery", searchQuery);
       getCurrentUserData();
     }
   }, []);
@@ -67,18 +60,16 @@ const UserProfile = () => {
             extClass="h-32 w-32"
             fontSize="text-4xl"
           />
-          <div className="flex flex-col mt-5 gap-4">
-            {[1, 2].map((i) => (
-              <div key={i}>
-                <span className="text-sm font-semibold capitalize poppins text-gray-400">
-                  status{" "}
-                </span>
-                <span className="bg-none bg-transparent text-gray-200 font-medium capitalize text-sm poppins">
-                  Available
-                </span>
-              </div>
-            ))}
-          </div>
+          {userData?.leaves && (
+            <div className="flex flex-col mt-5 gap-4">
+              <span className="bg-none bg-transparent text-gray-200 font-medium capitalize text-sm poppins">
+                Sick Leave : {userData?.leaves.sick}
+              </span>
+              <span className="bg-none bg-transparent text-gray-200 font-medium capitalize text-sm poppins">
+                Casual Leave : {userData?.leaves.casual}
+              </span>
+            </div>
+          )}
         </div>
       </div>
       <form className="w-full bg-slate-900 flex flex-col rounded-md p-8 shadow-lg">
@@ -87,6 +78,7 @@ const UserProfile = () => {
         </div>
         <div className="w-full  grid grid-cols-2 mt-5 gap-y-10">
           {Object.keys(userData)
+            .filter((i) => i !== "leaves")
             .sort()
             .map((item) => (
               <div className="flex flex-col" key={userData[item as userKeys]}>

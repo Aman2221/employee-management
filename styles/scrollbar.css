@@ -1,0 +1,29 @@
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px; /* Slim width for the scrollbar */
+  height: 6px; /* Slim height for horizontal scrollbars */
+}
+
+::-webkit-scrollbar-track {
+  background: #555; /* Light gray background for the track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333; /* Dark gray color for the scrollbar thumb */
+  border-radius: 4px; /* Rounded corners for the scrollbar thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Slightly darker gray when hovered */
+}
+
+/* Hide scrollbar arrows */
+::-webkit-scrollbar-button {
+  display: none; /* Hides the up and down (or left and right) arrows */
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin; /* Slim scrollbar */
+  scrollbar-color: #333 #9ca3af; /* Dark gray thumb, light gray track */
+}

@@ -36,7 +36,7 @@ body {
 }
 
 .dm-sans {
-  font-family: "DM Sans", sans-serif;
+  font-family: "DM Sans", sans-serif !important;
   font-optical-sizing: auto;
   font-style: normal;
 }
@@ -121,11 +121,20 @@ input[type="number"] {
 
 .employee-cards-div {
   height: 80vh;
+  scrollbar-width: none;
 }
-.employee-cards-div::-webkit-scrollbar {
-  width: 10px;
+.scrollbar-width-none {
+  scrollbar-width: none;
+}
+.pdf-iframe,
+.h-75vh {
+  height: 75vh;
 }
 
+.faq-questions,
+.events-card {
+  height: 65vh;
+}
 input[type="date"]::-webkit-calendar-picker-indicator {
   color: white !important; /* Change this to your desired color */
 }
@@ -136,4 +145,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .react-tooltip {
   z-index: 99 !important;
+}
+
+.event-card {
+  box-shadow: 0px 0px 25px rgba(255, 255, 255, 0.2);
 }

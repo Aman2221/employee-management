@@ -425,6 +425,267 @@
         "label": "End date",
         "type" : "date" 
       }
+    ],
+    "faqs" : [
+      {
+        "question": "How can I apply for a leave?",
+        "answer": "To apply for a leave, log in to your account, navigate to the 'Apply Leave' section, fill out the leave application form, and click 'Submit'."
+      },
+      {
+        "question": "Can I cancel or modify my leave application after submission?",
+        "answer": "Yes, you can cancel or modify your leave application before it is approved by the manager. Go to 'My Leaves' and select the leave you want to cancel or edit."
+      },
+      {
+        "question": "How do I check my leave balance?",
+        "answer": "You can check your leave balance on the 'Leave Balance' page, which displays the remaining leaves for each leave type."
+      },
+      {
+        "question": "What happens if my leave request is rejected?",
+        "answer": "If your leave request is rejected, you will receive a notification via email or in-app, and the leave will not be deducted from your balance."
+      },
+      {
+        "question": "Can I apply for multiple leaves at once?",
+        "answer": "Yes, you can apply for multiple leaves by specifying the leave dates and types in the 'Apply Leave' form."
+      },
+      {
+        "question": "How do I know if my leave is approved?",
+        "answer": "You will receive an email notification and an in-app notification once your leave is approved by the manager."
+      },
+      {
+        "question": "What is the difference between planned and unplanned leaves?",
+        "answer": "Planned leaves are those you apply for in advance, while unplanned leaves are typically for emergencies and require immediate approval."
+      },
+      {
+        "question": "Can I view my leave history?",
+        "answer": "Yes, you can view your leave history in the 'My Leaves' section, where all past leave applications and their statuses are listed."
+      },
+      {
+        "question": "Who can approve or reject my leave request?",
+        "answer": "Your leave request is approved or rejected by your assigned manager or supervisor. You can see their name in the approval flow."
+      },
+      {
+        "question": "What should I do if I face issues with the leave application process?",
+        "answer": "If you encounter any issues, you can contact the HR team or use the 'Support' section in the app to raise a ticket."
+      }
+    ],
+      "holidays": [
+        {
+          "slNo": 1,
+          "holidayName": "New Year",
+          "date": "2025-01-01",
+          "day": "Wednesday",
+          "doublePay": true
+        },
+        {
+          "slNo": 2,
+          "holidayName": "Eid Al Fitr",
+          "dates": [
+            {"date": "2025-03-31", "day": "Monday"},
+            {"date": "2025-04-01", "day": "Tuesday"},
+            {"date": "2025-04-02", "day": "Wednesday"}
+          ],
+          "doublePay": true
+        },
+        {
+          "slNo": 3,
+          "holidayName": "Arafat Day",
+          "date": "2025-06-05",
+          "day": "Thursday",
+          "doublePay": true
+        },
+        {
+          "slNo": 4,
+          "holidayName": "Eid Al Adha",
+          "dates": [
+            {"date": "2025-06-06", "day": "Friday"},
+            {"date": "2025-06-07", "day": "Saturday"}
+          ],
+          "doublePay": true
+        },
+        {
+          "slNo": 5,
+          "holidayName": "Islamic New Year",
+          "date": "2025-06-26",
+          "day": "Thursday",
+          "doublePay": true
+        },
+        {
+          "slNo": 6,
+          "holidayName": "Prophet Muhammed's Birthday",
+          "date": "2025-09-04",
+          "day": "Thursday",
+          "doublePay": true
+        },
+        {
+          "slNo": 7,
+          "holidayName": "National Holiday",
+          "dates": [
+            {"date": "2025-12-01", "day": "Monday"},
+            {"date": "2025-12-02", "day": "Tuesday"},
+            {"date": "2025-12-03", "day": "Wednesday"}
+          ],
+          "doublePay": true
+        }
+      ],
+    "events" : [
+      {
+        "img_src": "/img/event.jpeg",
+        "category": "Music",
+        "description": "A night of mesmerizing music performances by top artists.",
+        "date": "2025-02-14",
+        "name": "Valentine's Music Night",
+        "activities": [
+          {
+            "name": "Opening Performance",
+            "description": "A soulful acoustic set to start the evening.",
+            "start_time": "6:00 PM",
+            "end_time": "7:00 PM"
+          },
+          {
+            "name": "Main Event",
+            "description": "Live band performance with top hits.",
+            "start_time": "7:30 PM",
+            "end_time": "9:30 PM"
+          }
+        ],
+        "start_time": "2025-02-14T18:00:00",
+        "end_time": "2025-02-14T21:30:00",
+        "note": "Get there early to grab a good seat!"
+      },
+      {
+        "img_src": "/img/football.webp",
+        "category": "Sports",
+        "description": "A thrilling 5-a-side football tournament.",
+        "date": "2025-03-10",
+        "name": "Spring Football Cup",
+        "activities": [
+          {
+            "name": "Team Registration",
+            "description": "Register your team and prepare for the matches.",
+            "start_time": "8:00 AM",
+            "end_time": "9:00 AM"
+          },
+          {
+            "name": "Quarterfinal Matches",
+            "description": "The top teams compete to secure their spot in the semis.",
+            "start_time": "10:00 AM",
+            "end_time": "12:00 PM"
+          },
+          {
+            "name": "Final Match",
+            "description": "The best teams face off for the championship.",
+            "start_time": "3:00 PM",
+            "end_time": "4:30 PM"
+          }
+        ],
+        "start_time": "2025-03-10T08:00:00",
+        "end_time": "2025-03-10T16:30:00",
+        "note": "Make sure to arrive on time for your team registration."
+      },
+      {
+        "img_src": "/img/expo.jpeg",
+        "category": "Tech",
+        "description": "A showcase of the latest trends and innovations in technology.",
+        "date": "2025-04-20",
+        "name": "Tech Expo 2025",
+        "activities": [
+          {
+            "name": "Keynote Speech",
+            "description": "Insights into the future of AI and robotics.",
+            "start_time": "9:00 AM",
+            "end_time": "10:00 AM"
+          },
+          {
+            "name": "Tech Demos",
+            "description": "Hands-on experience with the latest gadgets.",
+            "start_time": "10:30 AM",
+            "end_time": "1:00 PM"
+          },
+          {
+            "name": "Panel Discussion",
+            "description": "Experts discuss the impact of technology on society.",
+            "start_time": "2:00 PM",
+            "end_time": "3:30 PM"
+          }
+        ],
+        "start_time": "2025-04-20T09:00:00",
+        "end_time": "2025-04-20T15:30:00",
+        "note": "Registration starts at 8:30 AM. Don't miss out on the demos!"
+      },
+      {
+        "img_src": "/img/art.jpeg",
+        "category": "Art",
+        "description": "An exhibition showcasing artworks from emerging artists.",
+        "date": "2025-05-05",
+        "name": "Modern Art Gallery",
+        "activities": [
+          {
+            "name": "Exhibition Opening",
+            "description": "A guided tour through the featured artworks.",
+            "start_time": "10:00 AM",
+            "end_time": "11:30 AM"
+          },
+          {
+            "name": "Live Painting Session",
+            "description": "Watch artists create masterpieces in real-time.",
+            "start_time": "1:00 PM",
+            "end_time": "3:00 PM"
+          },
+          {
+            "name": "Art Auction",
+            "description": "Bid on exclusive artworks to support local talent.",
+            "start_time": "4:00 PM",
+            "end_time": "6:00 PM"
+          }
+        ],
+        "start_time": "2025-05-05T10:00:00",
+        "end_time": "2025-05-05T18:00:00",
+        "note": "Bring your art-loving friends for an exciting day."
+      },
+      {
+        "img_src": "/img/food.jpg",
+        "category": "Food",
+        "description": "A festival celebrating culinary delights from around the world.",
+        "date": "2025-06-15",
+        "name": "Global Food Festival",
+        "activities": [
+          {
+            "name": "Cooking Demonstrations",
+            "description": "Chefs showcase their signature dishes.",
+            "start_time": "11:00 AM",
+            "end_time": "1:00 PM"
+          },
+          {
+            "name": "Food Tasting",
+            "description": "Sample flavors from different cuisines.",
+            "start_time": "1:30 PM",
+            "end_time": "3:30 PM"
+          },
+          {
+            "name": "Live Music & Food Pairing",
+            "description": "Enjoy live performances paired with delectable food.",
+            "start_time": "5:00 PM",
+            "end_time": "7:00 PM"
+          }
+        ],
+        "start_time": "2025-06-15T11:00:00",
+        "end_time": "2025-06-15T19:00:00",
+        "note": "Come hungry and bring your friends for an unforgettable experience!"
+      }
+    ],
+    "user_leaves" : [
+      {
+        "name" : "casual",
+        "placeholder" : "Number of casual leave",
+        "type" : "number",
+        "label" : "casual leave"
+      },
+      {
+        "name" : "sick",
+        "placeholder" : "Number of sick leave",
+        "type" : "number",
+        "label" : "sick leave"
+      }
     ]
 }
 

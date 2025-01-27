@@ -6,7 +6,7 @@ const Loader = ({ extClss = "my-48" }: { extClss?: string }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 2000); // Simulate loading time
+    const timer = setTimeout(() => setLoading(false), 1500); // Simulate loading time
 
     return () => clearTimeout(timer);
   }, []);

@@ -2,6 +2,10 @@ type s = string;
 type b = boolean;
 type n = number;
 
+export interface Obj {
+  [key: string]: string;
+}
+
 export interface permissions {
   emp_id: n;
   name: s;
@@ -38,6 +42,22 @@ export interface user {
   username: string;
   date: string;
   createdAt: string;
+  leaves: user_leave_data;
+}
+
+export interface freshUserInterface {
+  username: s;
+  emp_id: s;
+  phone: s;
+  role: s;
+  email: s;
+  password: s;
+  confirm_password: s;
+  designation: s;
+  leaves: {
+    casual: number;
+    sick: number;
+  };
 }
 
 export type userKeys =
@@ -82,3 +102,36 @@ export interface slotType {
   start_date?: string | undefined;
   end_date?: string | undefined;
 }
+
+export interface holiday {
+  slNo: s;
+  dates: Obj[];
+  holidayName: s;
+  date: s;
+  day: s;
+  doublePay: boolean;
+}
+
+type event_activities = {
+  name: s;
+  description: s;
+  start_time: s;
+  end_time: s;
+};
+
+export interface eventInterface {
+  img_src: s;
+  category: s;
+  description: string;
+  date: s;
+  name: s;
+  start_time: s;
+  end_time: s;
+  note: s;
+  activities: event_activities[];
+}
+
+export type user_leave_data = {
+  sick: number;
+  casual: number;
+};

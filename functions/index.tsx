@@ -1,4 +1,4 @@
-import { permissions } from "@/interfaces";
+import { freshUserInterface, permissions } from "@/interfaces";
 import * as XLSX from "xlsx";
 import {
   Timestamp,
@@ -257,7 +257,7 @@ export const getItemFromSession = () => {
 
 export const addUserToDB = async (
   userDoc: any,
-  userData: { [key: string]: string },
+  userData: freshUserInterface,
   uid: string
 ) => {
   await setDoc(userDoc, {
@@ -450,7 +450,7 @@ export const freshLeave = () => {
     phone: "",
     email: "",
     duration: "",
-    emp_id: null,
+    emp_id: "",
     reason: "",
     date: moment().format("L"),
     time: moment().format("LTS"),
@@ -785,11 +785,12 @@ export const fetchEmployeeByEmpId = async (emp_id: string) => {
 
   if (!querySnapshot.empty) {
     querySnapshot.forEach((doc) => {
-      const { username, phone, email } = doc.data();
+      const { username, phone, email, leaves } = doc.data();
       data.push({
         name: username,
         phone,
         email,
+        leaves,
       });
     });
   } else {
@@ -798,6 +799,73 @@ export const fetchEmployeeByEmpId = async (emp_id: string) => {
   return data[0];
 };
 
+export const fetchEmpLeavesByType = async (
+  emp_id: string,
+  leave_type: string
+) => {
+  let data: any = [];
+  const employeeCollection = collection(db, "permissions");
+
+  const q = query(
+    employeeCollection,
+    where("emp_id", "==", emp_id),
+    where("type", "==", leave_type.toLowerCase())
+  );
+
+  // Execute the query
+  const querySnapshot = await getDocs(q);
+
+  if (!querySnapshot.empty) {
+    querySnapshot.forEach((doc) => {
+      data.push(doc.data());
+    });
+  } else {
+    console.log("No matching documents found.");
+  }
+  let sum = 0;
+  data.forEach((item: any) => {
+    sum += parseInt(item["duration"]);
+    return sum;
+  });
+  return sum;
+};
+
 export function capitalizeFirstLetter(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+export const deleteUser = async (uid: string) => {
+  try {
+    const response = await fetch("/api/delete-user", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ uid, docId: uid }),
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+      SuccessToast(result.message);
+    } else {
+      console.log("result :", result);
+      ErrorToast(result.error);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    ErrorToast("An error occurred while deleting the user.");
+  }
+};
+
+export const freshUser = {
+  username: "",
+  emp_id: "",
+  phone: "",
+  role: "employee",
+  email: "",
+  password: "",
+  confirm_password: "",
+  designation: "business analyst",
+  leaves: {
+    casual: 12,
+    sick: 6,
+  },
+};

@@ -6,6 +6,7 @@ import {
   SuccessToast,
   addUserToDB,
   checkPassword,
+  freshUser,
   sendEmail,
   validateEmail,
 } from "@/functions";
@@ -16,6 +17,8 @@ import data from "@/JSON/data.json";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc } from "firebase/firestore";
 import DropDown from "../Common/DropDown";
+import { freshUserInterface, user_leave_data } from "@/interfaces";
+import CustomLeave from "../Pop-ups/CustomLeave";
 
 type DDStatesKeys = "role" | "designation";
 type passwords = "password" | "confirm_password";
@@ -26,17 +29,8 @@ const RegisterPg = () => {
     password: false,
     confirm_password: false,
   });
-  const [userData, setUserData] = useState({
-    username: "",
-    emp_id: "",
-    phone: "",
-    role: "employee",
-    email: "",
-    password: "",
-    confirm_password: "",
-    designation: "business analyst",
-  });
-
+  const [userData, setUserData] = useState<freshUserInterface>(freshUser);
+  const [showCtmLeave, setShowCtmLeave] = useState(false);
   const roleOpt = ["employee", "human resource", "manager"];
   const designationOpt = [
     "business analyst",
@@ -123,6 +117,13 @@ const RegisterPg = () => {
           : "Password should include one capital letter, one small letter, one special character, numbers, the length should be atleast 8 characters long and password and confirm password should be the same"
       );
     }
+  };
+
+  const handleUserLeaves = (data: user_leave_data) => {
+    setUserData({
+      ...userData,
+      leaves: data,
+    });
   };
 
   const handleShowPass = (key: string) => {
@@ -215,6 +216,35 @@ const RegisterPg = () => {
                     )}
                   </div>
                 ))}
+
+                <div>
+                  <label
+                    htmlFor={"leaves"}
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white capitalize"
+                  >
+                    user leaves
+                  </label>
+                  <button
+                    className="capitalize w-full border border-gray-600 bg-gray-700 text-base rounded-lg
+                  py-2"
+                    type="button"
+                  >
+                    set default
+                  </button>
+                </div>
+                <div>
+                  <label htmlFor={"leaves"} className="invisible opacity-0">
+                    sfsadf
+                  </label>
+                  <button
+                    className="capitalize w-full border border-gray-600 bg-gray-700 text-base rounded-lg
+                  py-2"
+                    type="button"
+                    onClick={() => setShowCtmLeave(!showCtmLeave)}
+                  >
+                    select custom
+                  </button>
+                </div>
               </div>
 
               <div className="flex items-center justify-between">
@@ -253,6 +283,9 @@ const RegisterPg = () => {
           </div>
         </div>
       </div>
+      {showCtmLeave && (
+        <CustomLeave show={showCtmLeave} setShow={setShowCtmLeave} />
+      )}
       <ToastContainer />
     </>
   );

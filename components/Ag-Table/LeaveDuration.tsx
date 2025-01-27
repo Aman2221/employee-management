@@ -1,6 +1,6 @@
 "use client";
 import { slotType } from "@/interfaces";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import json from "@/JSON/data.json";
 
 type obj = { [key: string]: string };
@@ -9,26 +9,36 @@ const LeaveDuration = ({
   show,
   handleSave,
   type,
+  duration,
 }: {
   show: boolean;
   handleSave: (a: slotType) => void;
   type: string;
+  duration: number;
 }) => {
   const now = new Date();
   const hours = String(now.getHours()).padStart(2, "0");
   const minutes = String(now.getMinutes()).padStart(2, "0");
+  const twoHoursLater = new Date(now.getTime() + duration * 60 * 60 * 1000); // Add 2 hours in milliseconds
+  const endHours = String(twoHoursLater.getHours()).padStart(2, "0");
+  const endMinutes = String(twoHoursLater.getMinutes()).padStart(2, "0");
+
   const currentTime = `${hours}:${minutes}`;
+  const endTime = `${endHours}:${endMinutes}`;
+  const duration24x = 24 * duration;
 
   const slotTypeData = type == "permission" ? json.timeSlot : json.dateSlot;
   const keyData =
     type == "permission"
       ? {
           start_time: currentTime,
-          end_time: currentTime,
+          end_time: endTime,
         }
       : {
           start_date: new Date().toISOString().split("T")[0],
-          end_date: new Date().toISOString().split("T")[0],
+          end_date: new Date(now.getTime() + duration24x * 60 * 60 * 1000)
+            .toISOString()
+            .split("T")[0],
         };
 
   const [data, setData] = useState(keyData);
@@ -45,6 +55,10 @@ const LeaveDuration = ({
   const handleSubmit = () => {
     handleSave(data);
   };
+
+  useEffect(() => {
+    setData(keyData);
+  }, [type]);
 
   return (
     <div

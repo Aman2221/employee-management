@@ -6,11 +6,18 @@ import { useRouter } from "next/navigation";
 import DropDown from "../Common/DropDown";
 import { controleText } from "@/functions";
 import CustomTooltip from "../Common/Tooltip";
+import hideOverlay from "@/HOC/hideOverlay";
 
-const UserCard = ({ data }: { data: user }) => {
+const UserCard = ({
+  data,
+  handleDeleteUser,
+}: {
+  data: user;
+  handleDeleteUser: (a: string) => void;
+}) => {
   const router = useRouter();
   const [showDD, setShowDD] = useState(false);
-
+  const DropdownComp = hideOverlay(DropDown, setShowDD);
   const handleViewUpdates = () => {
     router.push(`/view-updates?uid=${data.uid}`);
   };
@@ -19,17 +26,21 @@ const UserCard = ({ data }: { data: user }) => {
     router.push(`/view-leaves?email=${data.email}`);
   };
 
-  const handleChange = (val: string) => {
+  const handleChange = async (val: string) => {
+    setShowDD(!showDD);
     if (val == "view profile") router.push(`/view-profile?uid=${data.uid}`);
+    else if (val == "delete user") {
+      await handleDeleteUser(data.uid);
+    }
   };
 
   return (
     <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <div className="flex justify-end px-4 pt-2">
-        <DropDown
+        <DropdownComp
           show={showDD}
           setShow={() => setShowDD(!showDD)}
-          options={["view profile"]}
+          options={["view profile", "leave balance", "delete user"]}
           extClass="w-max"
           SelectBtnComp={
             <button

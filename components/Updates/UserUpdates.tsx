@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import DropDown from "../Common/DropDown";
 import NoDataFound from "../Common/NoDataFound";
 import hideOverlay from "@/HOC/hideOverlay";
+import { deleteUser } from "@/functions";
 
 const UpdateCard = () => {
   const [showDD, setShowDD] = useState(false);
@@ -78,6 +79,13 @@ const UpdateCard = () => {
     }
   }, []);
 
+  const handleDeleteUser = async (uid: string) => {
+    const newData = usersData.filter((i) => i.id !== uid);
+    setUsersDataDisplay([...newData]);
+    setUsersData([...newData]);
+    await deleteUser(uid);
+  };
+
   useEffect(() => {
     getUsers(); //get user details from firebase
   }, [getUsers]);
@@ -89,7 +97,7 @@ const UpdateCard = () => {
       ) : (
         <>
           <div className="updates-nav mb-10 flex justify-between items-center w-full">
-            <DropDown
+            <DropdownComp
               onChange={onRoleFilter}
               extClass="w-max"
               SelectBtnComp={
@@ -133,7 +141,10 @@ const UpdateCard = () => {
                       exit={{ opacity: 0, scale: 0.8 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <UserCard data={item} />
+                      <UserCard
+                        handleDeleteUser={handleDeleteUser}
+                        data={item}
+                      />
                     </motion.div>
                   </AnimatePresence>
                 );

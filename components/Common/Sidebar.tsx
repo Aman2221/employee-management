@@ -11,8 +11,6 @@ import Image from "next/image";
 import { usePmsContext } from "@/context";
 import Link from "next/link";
 import { getAuth, signOut } from "firebase/auth";
-import withOutsideClick from "@/HOC/closeModal";
-import hideOverlay from "@/HOC/hideOverlay";
 
 const Sidebar = () => {
   const router = useRouter();
@@ -64,6 +62,36 @@ const Sidebar = () => {
       onClick: handleExport,
       svg: "/sidebar-icons/sign-in.svg",
     },
+    {
+      name: "upcoming event's",
+      onClick: () => router.push("/upcoming-events"),
+      svg: "/sidebar-icons/events.svg",
+    },
+    {
+      name: "upcoming holiday's",
+      onClick: () => router.push("/upcoming-holidays"),
+      svg: "/sidebar-icons/upcoming-holidays.svg",
+    },
+    {
+      name: "Leave Policy",
+      onClick: () => router.push("/leave-policy"),
+      svg: "/sidebar-icons/file.svg",
+    },
+    {
+      name: "travel & expenses",
+      onClick: () => router.push("/travel-and-expenses"),
+      svg: "/sidebar-icons/file-fill.svg",
+    },
+    {
+      name: "FAQ's",
+      onClick: () => router.push("/faqs"),
+      svg: "/sidebar-icons/FAQ.svg",
+    },
+    {
+      name: "settings",
+      onClick: () => router.push("/settings"),
+      svg: "/sidebar-icons/settings.svg",
+    },
   ];
 
   const normaluser_options = [
@@ -86,6 +114,36 @@ const Sidebar = () => {
       name: "my profile",
       onClick: () => router.push("/view-profile"),
       svg: "/sidebar-icons/user.svg",
+    },
+    {
+      name: "upcoming event's",
+      onClick: () => router.push("/upcoming-events"),
+      svg: "/sidebar-icons/events.svg",
+    },
+    {
+      name: "upcoming holiday's",
+      onClick: () => router.push("/upcoming-holidays"),
+      svg: "/sidebar-icons/upcoming-holidays.svg",
+    },
+    {
+      name: "Leave Policy",
+      onClick: () => router.push("/leave-policy"),
+      svg: "/sidebar-icons/file.svg",
+    },
+    {
+      name: "travel & expenses",
+      onClick: () => router.push("/travel-and-expenses"),
+      svg: "/sidebar-icons/file-fill.svg",
+    },
+    {
+      name: "FAQ's",
+      onClick: () => router.push("/faqs"),
+      svg: "/sidebar-icons/FAQ.svg",
+    },
+    {
+      name: "settings",
+      onClick: () => router.push("/settings"),
+      svg: "/sidebar-icons/settings.svg",
     },
   ];
 
