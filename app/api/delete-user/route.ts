@@ -3,12 +3,13 @@ import admin from "firebase-admin";
 
 // Initialize Firebase Admin SDK if not already initialized
 if (!admin.apps.length) {
-    const serviceAccountKey = JSON.parse(
-        Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_KEY as string, 'base64').toString('utf-8')
+    const base64Key = process.env.FIREBASE_SERVICE_ACCOUNT_KEY as string;
+    const serviceAccount = JSON.parse(
+        Buffer.from(base64Key, "base64").toString("utf-8")
     );
 
     admin.initializeApp({
-        credential: admin.credential.cert(serviceAccountKey),
+        credential: admin.credential.cert(serviceAccount),
     });
 }
 
