@@ -6,6 +6,9 @@ import { ToastContainer } from "react-toastify";
 import Footer from "./Footer";
 import Sidebar from "./Sidebar";
 import Loader from "./Loader";
+import "react-toastify/dist/ReactToastify.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
+import "react-tooltip/dist/react-tooltip.css";
 import "animate.css";
 
 const Layout = ({

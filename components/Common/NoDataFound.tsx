@@ -1,5 +1,6 @@
 import React from "react";
 import "@/styles/not-found-text.css";
+
 const NoDataFound = ({
   shine = true,
   text = "no results found",

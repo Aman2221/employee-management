@@ -1,8 +1,6 @@
 import React, { FormEvent, useState } from "react";
 import InputField from "../Common/InputField";
 import json from "@/JSON/data.json";
-import { ErrorToast } from "@/functions";
-import { user_leave_data } from "@/interfaces";
 
 const CustomLeave = ({
   show,
@@ -17,20 +15,12 @@ const CustomLeave = ({
   });
 
   const handleInput = (e: FormEvent<HTMLInputElement>) => {
-    let target: any = e.target;
-    let key: any = target.name;
+    const target = e.target as HTMLInputElement;
+    let key: string = target.name;
     setLeaveData({
       ...leaveData,
       [key]: target.value,
     });
-  };
-
-  const handleSave = () => {
-    if (leaveData.sick !== null && leaveData.casual !== null) {
-      setShow(!show);
-    } else {
-      ErrorToast("All fields are required and should be valid");
-    }
   };
 
   return (
@@ -90,7 +80,7 @@ const CustomLeave = ({
           <div className="flex justify-end px-4 pb-4 ">
             <button
               type="button"
-              onClick={handleSave}
+              onClick={() => setShow(!show)}
               className="border border-blue-500 text-sm rounded-lg py-2 px-4"
             >
               Save

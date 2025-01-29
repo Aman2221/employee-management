@@ -1,19 +1,19 @@
 "use client";
-import moment from "moment";
+import React, { useState } from "react";
+import DropDown from "../Common/DropDown";
+import CustomTooltip from "../Common/Tooltip";
+import jsonData from "@/JSON/data.json";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
 import { addDoc, collection } from "firebase/firestore";
-import React, { useState } from "react";
+import { updates_inteface } from "@/interfaces";
+import { freshUpdate } from "../../DefaultData";
 import {
+  ErrorToast,
   SuccessToast,
   checkUpdateAllFields,
   checkUpdateFields,
-  freshUpdate,
 } from "@/functions";
-import jsonData from "@/JSON/data.json";
-import { updates_inteface } from "@/interfaces";
-import DropDown from "../Common/DropDown";
-import CustomTooltip from "../Common/Tooltip";
 
 const AddUpdates = ({
   data = freshUpdate(),
@@ -43,10 +43,8 @@ const AddUpdates = ({
       | React.ChangeEvent<HTMLSelectElement>
       | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    console.log("updates :", updates, "data", data);
-    let target: any = e.target;
+    const target = e.target as HTMLInputElement;
     let keyName = target.name;
-    // console.log(keyName, ":", target.value);
     setValidations({
       ...validations,
       [keyName]: target.value.toString().length == 0,
@@ -59,7 +57,6 @@ const AddUpdates = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     let allFieldsAreValid = checkValues();
     if (allFieldsAreValid) {
       setShow(!show);
@@ -77,8 +74,11 @@ const AddUpdates = ({
 
   const addDocument = async () => {
     try {
-      const docRef = await addDoc(collection(db, "updates"), updates);
-      SuccessToast("Updates added");
+      await addDoc(collection(db, "updates"), updates)
+        .then(() => {
+          SuccessToast("Updates added to database");
+        })
+        .catch((e) => ErrorToast(e.message));
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -105,7 +105,6 @@ const AddUpdates = ({
               id="slot-tooltip"
               content="Close modal"
             >
-              {" "}
               <>
                 <svg
                   className="w-3 h-3"

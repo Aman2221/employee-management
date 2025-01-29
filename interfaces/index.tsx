@@ -1,23 +1,29 @@
-type s = string;
-type b = boolean;
-type n = number;
+export type s = string;
+export type b = boolean;
+export type n = number;
 
 export interface Obj {
   [key: string]: string;
 }
 
 export interface permissions {
-  emp_id: n;
-  name: s;
-  duration: n;
-  type: s;
-  email: s;
-  phone: s;
-  reason: s;
-  date: s;
-  time: s;
-  created_at: s;
-  status: s;
+  id?: s;
+  emp_id?: n;
+  name?: s;
+  duration?: n;
+  type?: s;
+  email?: s;
+  phone?: s;
+  reason?: s;
+  date?: s;
+  time?: s;
+  created_at?: s;
+  status?: s;
+  start_date?: s;
+  end_date?: s;
+  start_time?: s;
+  end_time?: s;
+  uid?: s;
 }
 
 export type updates_inteface = {
@@ -43,6 +49,7 @@ export interface user {
   date: string;
   createdAt: string;
   leaves: user_leave_data;
+  accessToken: string;
 }
 
 export interface freshUserInterface {
@@ -135,3 +142,36 @@ export type user_leave_data = {
   sick: number;
   casual: number;
 };
+
+export type Timestamp = {
+  seconds: n;
+  nanoseconds: n;
+};
+
+export interface notificationsInterface {
+  read: b;
+  timestamp: Timestamp;
+  message: s;
+  status: s;
+}
+
+export type status = "pending" | "rejected" | "approved";
+
+export type params = {
+  value: status;
+};
+
+export interface leaveInterface {
+  emp_id: b;
+  isEmpId3Digit: b;
+  name: b;
+  isNameWithSpecialCharOrNum: b;
+  duration: b;
+  durationLimit: b;
+  type: b;
+  phone: b;
+  email: b;
+  validEmail: b;
+  validPhone: b;
+  reason: b;
+}

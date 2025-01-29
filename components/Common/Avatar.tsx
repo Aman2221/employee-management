@@ -16,7 +16,7 @@ const Avatar = ({
   fontSize?: string;
   showAnimation?: boolean;
 }) => {
-  function getInitials() {
+  const getInitials = () => {
     let nameParts = name.trim().split(" ");
     if (nameParts.length >= 2) {
       let firstNameInitial = nameParts[0][0].toUpperCase();
@@ -26,7 +26,7 @@ const Avatar = ({
     } else {
       return name.slice(0, 1);
     }
-  }
+  };
 
   const nameInitials = getInitials();
 

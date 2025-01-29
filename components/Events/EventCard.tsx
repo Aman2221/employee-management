@@ -1,8 +1,8 @@
-import { controleText } from "@/functions";
-import { eventInterface } from "@/interfaces";
 import moment from "moment";
 import Link from "next/link";
 import React from "react";
+import { controleText } from "@/functions";
+import { eventInterface } from "@/interfaces";
 
 const EventCard = ({ event }: { event: eventInterface }) => {
   return (

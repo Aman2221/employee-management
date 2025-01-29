@@ -1,7 +1,7 @@
 "use client";
-import { ErrorToast, getCookie } from "@/functions";
 import React, { useState, useEffect } from "react";
 import Avatar from "../Common/Avatar";
+import { ErrorToast, getCookie } from "@/functions";
 import { useSearchParams } from "next/navigation";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/config/firebase";
@@ -35,14 +35,12 @@ const UserProfile = () => {
         setShowLoader(!showLoader);
       }
     } catch (e) {
-      console.log(e);
       ErrorToast("Can't get this user data");
       setShowLoader(!showLoader);
     }
   };
 
   useEffect(() => {
-    console.log("searchParams :", searchParams.size);
     if (searchQuery) {
       getCurrentUserData();
     }
@@ -98,7 +96,6 @@ const UserProfile = () => {
                       ? userData.date
                       : userData[item as userKeys]
                   }
-                  onChange={() => console.log("value change")}
                 />
               </div>
             ))}

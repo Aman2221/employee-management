@@ -1,19 +1,18 @@
+import { Obj } from "@/interfaces";
 import React from "react";
-
-type obj = { [key: string]: string };
 
 const TableViews = ({
   views,
   activeView,
   onChange,
 }: {
-  views: obj[];
+  views: Obj[];
   activeView: string;
   onChange: (a: string) => void;
 }) => {
   return (
     <div className="flex gap-4">
-      {views.map((item: obj) => (
+      {views.map((item: Obj) => (
         <button
           key={item.name}
           onClick={() => onChange(item.name)}

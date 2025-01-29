@@ -1,6 +1,23 @@
 "use client";
-import { useSearchParams } from "next/navigation";
+import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS
+import "ag-grid-community/styles/ag-theme-alpine.css";
 import dynamic from "next/dynamic";
+import DataCardView from "./CardView";
+import Loader from "../Common/Loader";
+import data from "@/JSON/data.json";
+import useSystemTheme from "@/hooks/useSystemTheme";
+import withOutsideClick from "@/HOC/closeModal";
+import NoDataFound from "../Common/NoDataFound";
+import DataFilters from "../Common/DataFilters";
+import { AgGridReact } from "ag-grid-react";
+import StatusRenderer, { CellStatusRenderer } from "./StatusRenderer";
+import { AnimatePresence, motion } from "framer-motion";
+import { useSearchParams } from "next/navigation";
+import { permissions, s, updates } from "@/interfaces";
+import { CellClickedEvent } from "ag-grid-community";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import { db } from "@/config/firebase";
+import { usePmsContext } from "@/context";
 import React, {
   useCallback,
   useEffect,
@@ -8,43 +25,28 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
-import { db } from "@/config/firebase";
-import { usePmsContext } from "@/context";
-import Loader from "../Common/Loader";
-import { AgGridReact } from "ag-grid-react";
-import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS
-import "ag-grid-community/styles/ag-theme-alpine.css";
-import StatusRenderer, { CellStatusRenderer } from "./StatusRenderer";
-import data from "@/JSON/data.json";
-import useSystemTheme from "@/hooks/useSystemTheme";
-import { AnimatePresence, motion } from "framer-motion";
-import DataCardView from "./CardView";
-import { permissions } from "@/interfaces";
-const LeaveModal = dynamic(() => import("../Pop-ups/LeaveModal"), {
-  ssr: false,
-});
 import {
   capitalizeFirstLetter,
   dynamic_column_def,
   getCookie,
   getLeave,
+  handleCatchError,
   handleOverlay,
+  handleStatusEmail,
   pushNotificationToDb,
-  sendStatusEmail,
-  setDataToState,
   updatePermissionStatusInDB,
 } from "@/functions";
-import withOutsideClick from "@/HOC/closeModal";
-import NoDataFound from "../Common/NoDataFound";
-import LeaveFilters from "../Common/DataFilters";
+
+const LeaveModal = dynamic(() => import("../Pop-ups/LeaveModal"), {
+  ssr: false,
+});
 const AddPermission = dynamic(() => import("../Pop-ups/AddPermission"), {
   ssr: false,
 });
 
 const LeavesTable = () => {
-  const gridRef: any = useRef(null);
-  const systemTheme = useSystemTheme();
+  const gridRef = useRef<AgGridReact | null>(null);
+  const systemTheme = useSystemTheme(); //For getting user theme
   const searchParams = useSearchParams();
   const searchQueryEmail = searchParams.get("email");
   const user = JSON.parse(getCookie("user") as any);
@@ -68,7 +70,7 @@ const LeavesTable = () => {
     setOpenLeaveModal(false)
   );
 
-  const openStatusUpdateModal: any = useCallback(
+  const openStatusUpdateModal: (a: s, b: s) => void = useCallback(
     (status: string, docId: string) => {
       setOpenLeaveModal(!openLeaveModal);
       setCurrentStatus(status);
@@ -77,7 +79,9 @@ const LeavesTable = () => {
     [openLeaveModal]
   );
 
-  const storeStatusToLocal = async (status: string) => {
+  const storeStatusToLocal: (status: string) => Promise<void> = async (
+    status: string
+  ) => {
     let all_data: any = pmsDataStore;
 
     const userIndex = all_data.findIndex(
@@ -89,27 +93,27 @@ const LeavesTable = () => {
         status: status, // Update the status
       };
     }
-
-    await sendStatusEmail(
-      all_data[userIndex].name,
-      capitalizeFirstLetter(all_data[userIndex].type),
-      all_data[userIndex].start_date
-        ? all_data[userIndex].start_date
-        : all_data[userIndex].start_time,
-      all_data[userIndex].end_date
-        ? all_data[userIndex].end_date
-        : all_data[userIndex].end_time,
-      all_data[userIndex].date,
-      capitalizeFirstLetter(all_data[userIndex].status),
-      all_data[userIndex].email
+    const current: permissions = all_data[userIndex];
+    // This functions will sen a mail to user regarding their leave status
+    await handleStatusEmail(
+      current.name as string,
+      current.type as string,
+      current.start_date as string,
+      current.start_time as string,
+      current.end_date as string,
+      current.end_time as string,
+      current.date as string,
+      current.email as string,
+      current.status as string
     );
     const docId = all_data[userIndex].uid;
     const permission_name = all_data[userIndex].reason;
+    //updating the updated data into both states
     setPmsData(all_data);
     setPmsDataStore(all_data);
     await updatePermissionStatusInDB(currentDocId, status); //updating status in database
 
-    await pushNotificationToDb(docId, status, permission_name); //updating status in database
+    await pushNotificationToDb(docId, status, permission_name); //updating notification in database
   };
 
   const getColumnDefs = useMemo(() => {
@@ -129,7 +133,7 @@ const LeavesTable = () => {
   }, [openStatusUpdateModal, leaveFilter.view_type]);
 
   const getAllUsersLeaveData = useCallback(async () => {
-    let tempData: any = [];
+    let tempData: unknown = [];
     try {
       const q = query(
         collection(db, "permissions"),
@@ -147,8 +151,12 @@ const LeavesTable = () => {
       console.error("Error fetching sorted documents: ", e);
       return [];
     }
-    setPmsDataStore(tempData);
-    setDataToState(tempData, setShowLoader, setPmsData);
+    setPmsDataStore(tempData as permissions[]);
+
+    setTimeout(() => {
+      if (tempData) setPmsData(tempData as permissions[]);
+      setShowLoader(false);
+    }, 1000);
   }, [setShowLoader]);
 
   const getCurrentUserLeaves = useCallback(async () => {
@@ -160,20 +168,23 @@ const LeavesTable = () => {
       const querySnapshot = await getDocs(userQuery);
 
       if (!querySnapshot.empty) {
-        let tempData: any = querySnapshot.docs.map((doc) => {
+        let tempData: unknown = querySnapshot.docs.map((doc) => {
           const { created_at, ...allData } = doc.data();
           return {
             id: doc.id,
             ...allData,
           };
         });
-        setPmsDataStore(tempData);
-        setDataToState(tempData, setShowLoader, setPmsData);
+        setPmsDataStore(tempData as permissions[]);
+        setTimeout(() => {
+          if (tempData) setPmsData(tempData as permissions[]);
+          setShowLoader(false);
+        }, 1000);
       } else {
         setShowLoader(!showLoader);
       }
     } catch (error) {
-      console.error("Error getting document:", error);
+      handleCatchError(error);
       return null;
     }
   }, [setShowLoader, searchQueryEmail, showLoader, user?.email]);
@@ -182,7 +193,7 @@ const LeavesTable = () => {
     setGridApi(params.api); // Storing the grid API for later use
   };
 
-  const onCellClicked = (event: any) => {
+  const onCellClicked = (event: CellClickedEvent) => {
     if (event.value !== undefined) {
       setCrrData(getLeave(event.data));
       setShowLeaveModel(true);
@@ -197,19 +208,16 @@ const LeavesTable = () => {
   const onTabChange = async (tab_name: string) => {
     const selectLeave = tab_name.replace("leave", "");
 
-    const case_match =
-      selectLeave.slice(0, 1).toLocaleUpperCase() + selectLeave.slice(1);
+    const case_match = capitalizeFirstLetter(selectLeave).replace(/\s+/g, "");
 
     const checkPermission =
-      selectLeave == "permission"
-        ? "permission"
-        : case_match.replace(/\s+/g, "");
+      selectLeave == "permission" ? "permission" : case_match;
     if (leaveFilter.view_type == "cardView") {
       let filter = pmsDataStore.filter((item) => item.type == checkPermission);
       setPmsData(tab_name !== "all" ? [...filter] : pmsDataStore);
     } else {
       if (tab_name !== "all") {
-        gridRef.current.api.setFilterModel({
+        gridRef?.current?.api.setFilterModel({
           type: {
             type: "equals",
             filter: checkPermission,
@@ -217,7 +225,7 @@ const LeavesTable = () => {
         });
         handleOverlay(gridRef);
       } else {
-        gridRef.current.api.setFilterModel(null);
+        gridRef?.current?.api.setFilterModel(null);
       }
     }
 
@@ -243,7 +251,7 @@ const LeavesTable = () => {
         });
         handleOverlay(gridRef);
       } else {
-        gridRef.current.api.setFilterModel(null);
+        gridRef?.current?.api.setFilterModel(null);
       }
     }
 
@@ -264,13 +272,11 @@ const LeavesTable = () => {
   }, [searchKey, gridApi]);
 
   useEffect(() => {
-    if (searchQueryEmail) {
-      getCurrentUserLeaves();
-    } else {
-      if (user && user?.role?.toLowerCase() !== "employee")
-        getAllUsersLeaveData();
-      else getCurrentUserLeaves();
-    }
+    searchQueryEmail
+      ? getCurrentUserLeaves()
+      : user && user?.role?.toLowerCase() !== "employee"
+      ? getAllUsersLeaveData()
+      : getCurrentUserLeaves();
   }, [
     showLoader,
     getAllUsersLeaveData,
@@ -288,7 +294,7 @@ const LeavesTable = () => {
             <NoDataFound />
           ) : (
             <>
-              <LeaveFilters
+              <DataFilters
                 updates_tabs={data.updates_tabs}
                 onTabChange={onTabChange}
                 leave_type={leaveFilter.leave_type}
@@ -316,7 +322,14 @@ const LeavesTable = () => {
                             key={leave.created_at}
                             onClick={() => onCardClick(leave)}
                           >
-                            <DataCardView leave={leave} />
+                            <DataCardView
+                              type={leave.type as string}
+                              date={leave.date as string}
+                              name={leave.name as string}
+                              email={leave.email as string}
+                              reason={leave.reason as string}
+                              status={leave.status as string}
+                            />
                           </div>
                         ))}
                       </div>

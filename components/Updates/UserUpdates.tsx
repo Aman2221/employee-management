@@ -2,15 +2,15 @@
 import React, { useEffect, useState, useCallback } from "react";
 import UserCard from "./UserCard";
 import SearchInput from "../Common/SearchInput";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
-import { db } from "@/config/firebase";
 import Loader from "../Common/Loader";
-import { user } from "@/interfaces";
-import { motion, AnimatePresence } from "framer-motion";
 import DropDown from "../Common/DropDown";
 import NoDataFound from "../Common/NoDataFound";
 import hideOverlay from "@/HOC/hideOverlay";
 import { deleteUser } from "@/functions";
+import { user } from "@/interfaces";
+import { motion, AnimatePresence } from "framer-motion";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { db } from "@/config/firebase";
 
 const UpdateCard = () => {
   const [showDD, setShowDD] = useState(false);

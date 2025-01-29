@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
 import moment from "moment";
+import { useState } from "react";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
 import { Timestamp, addDoc, collection } from "firebase/firestore";
@@ -13,9 +13,9 @@ const PasteMessage = ({
   show: boolean;
   setShow: (a: boolean) => void;
 }) => {
+  const { setShowLoader } = usePmsContext();
   const userUid = JSON.parse(getCookie("user") as string);
   const [message, setMessage] = useState("");
-  const { setShowLoader } = usePmsContext();
 
   const handleExtractData = async (e: React.FormEvent) => {
     e.preventDefault();

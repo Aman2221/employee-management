@@ -1,15 +1,12 @@
-import { user_leave_data } from "@/interfaces";
 import React from "react";
 
 const LeaveBalanceStatus = ({
   leave_balance,
   type,
-  leaves,
   hideLeaveAlert,
 }: {
   leave_balance: number;
   type: string;
-  leaves: user_leave_data;
   hideLeaveAlert: () => void;
 }) => {
   return (

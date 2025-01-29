@@ -14,7 +14,7 @@ async function setSuperUser(email: string) {
 
         await auth.setCustomUserClaims(user.uid, { superUser: true });
 
-        console.log(`Successfully set ${email} as a super user.`);
+        // console.log(`Successfully set ${email} as a super user.`);
     } catch (error) {
         console.error('Error setting super user:', error);
     }

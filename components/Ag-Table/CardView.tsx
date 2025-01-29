@@ -1,11 +1,25 @@
 import React from "react";
 import Avatar from "../Common/Avatar";
-import { permissions, updates } from "@/interfaces";
+import CustomTooltip from "../Common/Tooltip";
 import { AnimatePresence, motion } from "framer-motion";
 import { controleText } from "@/functions";
-import CustomTooltip from "../Common/Tooltip";
+import { s } from "@/interfaces";
 
-const DataCardViewLeaves = ({ leave }: { leave: permissions }) => {
+const DataCardViewLeaves = ({
+  type,
+  date,
+  name,
+  email,
+  reason,
+  status,
+}: {
+  type: s;
+  date: s;
+  name: s;
+  email: s;
+  reason: s;
+  status: s;
+}) => {
   return (
     <AnimatePresence>
       <motion.div
@@ -17,33 +31,33 @@ const DataCardViewLeaves = ({ leave }: { leave: permissions }) => {
       >
         <div className="flex w-full absolute -top-5 justify-between px-6">
           <span className="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg capitalize">
-            {leave.type}
+            {type}
           </span>
           <span className="py-2 px-4 ms-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 ">
-            {leave.date}
+            {date}
           </span>
         </div>
         <div className="flex  items-center p-5 gap-10 mt-5">
           <Avatar
             extClass="h-20 w-20"
-            name={leave.name}
+            name={name}
             fontSize="text-2xl"
             showAnimation={false}
           />
           <div>
             <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
-              {leave.name}
+              {name}
             </h5>
             <h6 className="mb-1 text-base text-gray-300">
-              <CustomTooltip content={leave.email} id="email-tooltip">
-                {controleText(leave.email, 20)}
+              <CustomTooltip content={email} id="email-tooltip">
+                {controleText(email, 20)}
               </CustomTooltip>
             </h6>
             <span className="capitalize mt-1 text-xs text-gray-500 dark:text-gray-400">
-              <CustomTooltip content={leave.reason} id="reason-tooltip">
-                {controleText(leave.reason, 15)}
+              <CustomTooltip content={reason} id="reason-tooltip">
+                {controleText(reason, 15)}
               </CustomTooltip>
-              / {leave.status}
+              / {status}
             </span>
           </div>
         </div>
@@ -52,7 +66,19 @@ const DataCardViewLeaves = ({ leave }: { leave: permissions }) => {
   );
 };
 
-export const DataCardViewUpdates = ({ update }: { update: updates }) => {
+export const DataCardViewUpdates = ({
+  status,
+  date,
+  name,
+  email,
+  task,
+}: {
+  status: s;
+  date: s;
+  name: s;
+  email: s;
+  task: s;
+}) => {
   return (
     <AnimatePresence>
       <motion.div
@@ -64,31 +90,31 @@ export const DataCardViewUpdates = ({ update }: { update: updates }) => {
       >
         <div className="flex w-full absolute -top-5 justify-between px-6">
           <span className="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg ">
-            {update.status}
+            {status}
           </span>
           <span className="py-2 px-4 ms-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 ">
-            {update.date}
+            {date}
           </span>
         </div>
         <div className="flex  items-center p-5 gap-10 mt-5">
           <Avatar
             extClass="h-20 w-20"
-            name={update.name}
+            name={name}
             fontSize="text-2xl"
             showAnimation={false}
           />
           <div>
             <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
-              {update.name}
+              {name}
             </h5>
             <h6 className="mb-1 text-base text-gray-300 ">
-              <CustomTooltip content={update.email} id="email-tooltip">
-                {controleText(update.email, 20)}
+              <CustomTooltip content={email} id="email-tooltip">
+                {controleText(email, 20)}
               </CustomTooltip>
             </h6>
             <span className="capitalize mt-1 text-xs text-gray-500 dark:text-gray-400">
-              <CustomTooltip content={update.email} id="update-tooltip">
-                {controleText(update.task, 15)}
+              <CustomTooltip content={email} id="update-tooltip">
+                {controleText(task, 15)}
               </CustomTooltip>
             </span>
           </div>

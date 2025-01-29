@@ -1,9 +1,7 @@
 "use client";
-import { slotType } from "@/interfaces";
 import React, { useEffect, useState } from "react";
 import json from "@/JSON/data.json";
-
-type obj = { [key: string]: string };
+import { Obj, slotType } from "@/interfaces";
 
 const LeaveDuration = ({
   show,
@@ -44,7 +42,7 @@ const LeaveDuration = ({
   const [data, setData] = useState(keyData);
 
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
-    const target: any = e.target;
+    const target = e.target as HTMLInputElement;
     const key: string = target.name;
     setData({
       ...data,
@@ -68,7 +66,7 @@ const LeaveDuration = ({
       } bg-white rounded-lg shadow w-max dark:bg-gray-700 p-3 -top-4 ml-6 left-full`}
     >
       <div className="w-max mx-auto grid grid-cols-2 gap-4 mb-2">
-        {slotTypeData.map((i: obj) => (
+        {slotTypeData.map((i: Obj) => (
           <div key={i.label}>
             <label
               htmlFor={i.label}

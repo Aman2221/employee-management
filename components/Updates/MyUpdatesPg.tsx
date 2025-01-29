@@ -1,5 +1,25 @@
 "use client";
+import data from "@/JSON/data.json";
+import Loader from "../Common/Loader";
+import useSystemTheme from "@/hooks/useSystemTheme";
+import dynamic from "next/dynamic";
+import NoDataFound from "../Common/NoDataFound";
+import DataFilters from "../Common/DataFilters";
+import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS
+import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useSearchParams } from "next/navigation";
+import { AgGridReact } from "ag-grid-react";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import { db } from "@/config/firebase";
+import { usePmsContext } from "@/context";
+import { DataCardViewUpdates } from "../Ag-Table/CardView";
+import { updates } from "@/interfaces";
+import {
+  getCookie,
+  getUpdate,
+  handleCatchError,
+  handleOverlay,
+} from "@/functions";
 import React, {
   useCallback,
   useEffect,
@@ -7,32 +27,13 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
-import { db } from "@/config/firebase";
-import { usePmsContext } from "@/context";
-import Loader from "../Common/Loader";
-import { AgGridReact } from "ag-grid-react";
-import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS
-import "ag-grid-community/styles/ag-theme-alpine.css";
-import data from "@/JSON/data.json";
-import {
-  getCookie,
-  getUpdate,
-  handleOverlay,
-  setDataToState,
-} from "@/functions";
+
 const AddUpdates = dynamic(() => import("../Pop-ups/AddUpdates"), {
   ssr: false,
 });
-import useSystemTheme from "@/hooks/useSystemTheme";
-import dynamic from "next/dynamic";
-import { DataCardViewUpdates } from "../Ag-Table/CardView";
-import { updates } from "@/interfaces";
-import NoDataFound from "../Common/NoDataFound";
-import LeaveFilters from "../Common/DataFilters";
 
 const MyUpdatesPg = () => {
-  const gridRef: any = useRef(null);
+  const gridRef = useRef<AgGridReact>(null);
   const systemTheme = useSystemTheme();
   const searchParams = useSearchParams();
   const searchQuerytUid = searchParams.get("uid");
@@ -87,19 +88,23 @@ const MyUpdatesPg = () => {
             ...doc.data(),
           };
         });
-        // setUpdatesDataStore([...tempData]);
-        setDataToState(tempData, setShowLoader, setUpdatesData);
+
+        setUpdatesDataStore(tempData as updates[]);
+        setTimeout(() => {
+          if (tempData) setUpdatesData(tempData as updates[]);
+          setShowLoader(false);
+        }, 1000);
       } else {
         setShowLoader(!showLoader);
       }
     } catch (error) {
-      console.error("Error getting document:", error);
+      handleCatchError(error);
       return null;
     }
   }, [setShowLoader, user?.uid, searchQuerytUid]);
 
   const getAllUpdatesData = useCallback(async () => {
-    const tempData: any = [];
+    const tempData: unknown[] = [];
     try {
       const q = query(collection(db, "updates"), orderBy("created_at", "desc"));
       const querySnapshot = await getDocs(q);
@@ -113,14 +118,17 @@ const MyUpdatesPg = () => {
       console.error("Error fetching sorted documents: ", e);
       return [];
     }
-    setUpdatesDataStore([...tempData]);
+    setUpdatesDataStore(tempData as updates[]);
 
-    setDataToState(tempData, setShowLoader, setUpdatesData);
+    setTimeout(() => {
+      if (tempData) setUpdatesData(tempData as updates[]);
+      setShowLoader(false);
+    }, 1000);
   }, [setShowLoader]);
 
   const onTabChange = (tab_name: string) => {
     const selectedTab = tab_name.toLowerCase();
-    if (leaveFilter.view_type !== "cardView") {
+    if (gridRef.current && leaveFilter.view_type !== "cardView") {
       if (tab_name !== "all") {
         gridRef.current.api.setFilterModel({
           designation: {
@@ -146,7 +154,7 @@ const MyUpdatesPg = () => {
   };
 
   const onStatusChange = (status: string) => {
-    if (leaveFilter.view_type !== "cardView") {
+    if (gridRef.current && leaveFilter.view_type !== "cardView") {
       if (status !== "status(all)") {
         gridRef.current.api.setFilterModel({
           status: {
@@ -162,7 +170,6 @@ const MyUpdatesPg = () => {
       let filter = updatesDataStore.filter((item) => {
         if (item.status == status) return item;
       });
-      console.log("filter :", filter);
       setUpdatesData(status !== "status(all)" ? [...filter] : updatesDataStore);
     }
 
@@ -201,7 +208,7 @@ const MyUpdatesPg = () => {
             <NoDataFound extClss="text-4xl mt-10" />
           ) : (
             <>
-              <LeaveFilters
+              <DataFilters
                 updates_tabs={data.leaves_tabs}
                 onTabChange={onTabChange}
                 leave_type={leaveFilter.leave_type}
@@ -231,7 +238,13 @@ const MyUpdatesPg = () => {
                               key={update.id}
                               onClick={() => onCardClick(update)}
                             >
-                              <DataCardViewUpdates update={update} />
+                              <DataCardViewUpdates
+                                status={update.status}
+                                date={update.date}
+                                name={update.name}
+                                email={update.email}
+                                task={update.task}
+                              />
                             </div>
                           ))}
                         </div>

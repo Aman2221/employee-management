@@ -1,8 +1,15 @@
 "use client";
+import React, { useState } from "react";
+import CustomTooltip from "../Common/Tooltip";
+import LeaveBalanceStatus from "./LeaveBalanceStatus";
+import json from "@/JSON/data.json";
+import DropDown from "../Common/DropDown";
+import LeaveDuration from "../Ag-Table/LeaveDuration";
+import { Obj, leaveInterface, slotType } from "@/interfaces";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
 import { addDoc, collection } from "firebase/firestore";
-import React, { useState } from "react";
+import { freshLeave } from "../../DefaultData";
 import {
   ErrorToast,
   SuccessToast,
@@ -11,14 +18,7 @@ import {
   extraValidation,
   fetchEmployeeByEmpId,
   fetchEmpLeavesByType,
-  freshLeave,
 } from "@/functions";
-import json from "@/JSON/data.json";
-import DropDown from "../Common/DropDown";
-import LeaveDuration from "../Ag-Table/LeaveDuration";
-import { slotType } from "@/interfaces";
-import CustomTooltip from "../Common/Tooltip";
-import LeaveBalanceStatus from "./LeaveBalanceStatus";
 
 const AddPermission = ({
   data = freshLeave(),
@@ -32,7 +32,9 @@ const AddPermission = ({
   const { setShowLoader } = usePmsContext();
   const [showPermissionDD, setPermissionDD] = useState(false);
   const [permission, setPermission] = useState(data);
-  const [validations, setValidations] = useState(json.leaves_validations);
+  const [validations, setValidations] = useState<leaveInterface>(
+    json.leaves_validations
+  );
   const [showTimeSlot, setShowTimeSlot] = useState(true);
   const [isSlotSelected, setIsSlotSelected] = useState(false);
   const [showBalance, setShowBalance] = useState({
@@ -43,7 +45,6 @@ const AddPermission = ({
   const checkValues = () => {
     let getValidation = checkLeaveFields(permission);
     setValidations(getValidation);
-
     return checkAllFields(permission);
   };
 
@@ -57,15 +58,13 @@ const AddPermission = ({
       | React.ChangeEvent<HTMLSelectElement>
       | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    let target: any = e.target;
+    const target = e.target as HTMLInputElement;
     let value: any = e.target.value;
     let durationVal: number = permission.type == "permission" ? 4 : 10;
     extraValidation(target.name, value, validations, setValidations);
     if (target.name == "emp_id" && value.toString().length == 3) {
       const temp = await fetchEmployeeByEmpId(value.toString());
-      if (temp) {
-        Object.keys(temp).forEach((i) => (permission[i] = temp[i]));
-      }
+      if (temp) Object.keys(temp).forEach((i) => (permission[i] = temp[i]));
     }
     if (target.name == "duration" && parseInt(value) > durationVal) {
       setValidations({
@@ -105,10 +104,13 @@ const AddPermission = ({
 
   const addDocument = async () => {
     try {
-      const docRef = await addDoc(collection(db, "permissions"), permission);
-      SuccessToast(
-        permission.type == "permission" ? "Permission added" : "Leave Added"
-      );
+      await addDoc(collection(db, "permissions"), permission)
+        .then(() => {
+          SuccessToast(
+            permission.type == "permission" ? "Permission added" : "Leave Added"
+          );
+        })
+        .catch((e) => ErrorToast(e.message));
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -344,7 +346,6 @@ const AddPermission = ({
                 <LeaveBalanceStatus
                   leave_balance={showBalance.leave_balance}
                   type={permission.type}
-                  leaves={permission.leaves}
                   hideLeaveAlert={hideLeaveAlert}
                 />
               )}

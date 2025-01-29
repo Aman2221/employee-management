@@ -6,6 +6,7 @@ import { holiday } from "@/interfaces";
 const UpcomingLeavsComp = () => {
   const [data, setData] = useState<holiday[]>();
 
+  //set data to future holiday's only
   const getUpcomingHolidays = () => {
     const currentDate = new Date();
 

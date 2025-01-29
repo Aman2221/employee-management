@@ -1,32 +1,37 @@
 "use client";
 import React, { useState } from "react";
+import Image from "next/image";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/config/firebase";
+import { ToastContainer } from "react-toastify";
+import { useRouter } from "next/navigation";
 import {
   ErrorToast,
   SuccessToast,
   encryptData,
   getUserDoc,
+  handleCatchError,
   setCookie,
   setItemToLocal,
 } from "@/functions";
-import { ToastContainer } from "react-toastify";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
+import Link from "next/link";
+
+type userType = {
+  accessToken?: string;
+  uid: string;
+};
 
 const LoginPg = () => {
   const router = useRouter();
 
   const [showPass, setShowPass] = useState(false);
   const [userData, setUserData] = useState({
-    // email: "aman@primasoft.ae",
-    // password: "Aman@123",
     email: "",
     password: "",
   });
 
   const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
-    let target: any = e.target;
+    let target = e.target as HTMLInputElement;
     let key = target.name;
     setUserData({
       ...userData,
@@ -45,8 +50,9 @@ const LoginPg = () => {
         userData.password
       );
 
-      const user: any = userCredential.user;
-      const encryptToken = encryptData(user.accessToken, user.uid);
+      const user: userType = userCredential.user;
+
+      const encryptToken = encryptData(user?.accessToken as string, user.uid);
       // setUserToLocal("user", user);
       setCookie("token", encryptToken, 7);
       setItemToLocal("uid", user.uid);
@@ -56,17 +62,9 @@ const LoginPg = () => {
         router.push("/");
       }, 500);
     } catch (error) {
-      ErrorToast("Please enter valid email and password");
+      handleCatchError(error, "Please enter valid email and password");
     }
-    // } else {
-    //   ErrorToast("Email is not valid");
-    // }
   };
-
-  //if want to access login page even after login just remove this code
-  // useEffect(() => {
-  //   deleteAllCookies();
-  // });
 
   return (
     <section className="">
@@ -146,12 +144,12 @@ const LoginPg = () => {
                     </label>
                   </div>
                 </div>
-                <a
-                  href="#"
+                <Link
+                  href="/in-development"
                   className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
                 >
                   Forgot password?
-                </a>
+                </Link>
               </div>
               <button
                 type="submit"

@@ -1,14 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import admin from "firebase-admin";
 
-// Check and log Firebase Admin environment variables
-console.log("Initializing Firebase Admin SDK with the following configuration:");
-console.log({
-    project_id: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-    has_private_key: !!process.env.NEXT_PUBLIC_PRIVATE_KEY,
-    has_client_email: !!process.env.NEXT_PUBLIC_CLIENT_EMAIL,
-});
-
 // Initialize Firebase Admin SDK if not already initialized
 if (!admin.apps.length) {
     try {
@@ -19,7 +11,6 @@ if (!admin.apps.length) {
             client_email: process.env.NEXT_PUBLIC_CLIENT_EMAIL,
         };
 
-        // Check if required environment variables are available
         if (!serviceAccount.private_key || !serviceAccount.client_email) {
             throw new Error(
                 "Missing Firebase Admin credentials. Ensure PRIVATE_KEY and CLIENT_EMAIL are set in the environment variables."
@@ -30,7 +21,6 @@ if (!admin.apps.length) {
             credential: admin.credential.cert(serviceAccount as any),
         });
 
-        console.log("Firebase Admin SDK initialized successfully.");
     } catch (error) {
         console.error("Failed to initialize Firebase Admin SDK:", error);
     }
@@ -40,8 +30,6 @@ export async function POST(request: NextRequest) {
     try {
         // Parse request body
         const { uid, docId } = await request.json();
-
-        console.log("Request received with UID and docId:", { uid, docId });
 
         // Validate input
         if (!uid || !docId) {
@@ -54,12 +42,10 @@ export async function POST(request: NextRequest) {
 
         // Delete user from Firebase Auth
         await admin.auth().deleteUser(uid);
-        console.log(`User with UID: ${uid} deleted from Firebase Auth.`);
 
         // Delete corresponding document in Firestore
         const db = admin.firestore();
         await db.collection("users").doc(docId).delete();
-        console.log(`Document with ID: ${docId} deleted from Firestore.`);
 
         // Return success response
         return NextResponse.json(

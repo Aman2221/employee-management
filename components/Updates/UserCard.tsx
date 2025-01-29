@@ -1,12 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import Avatar from "../Common/Avatar";
-import { user } from "@/interfaces";
-import { useRouter } from "next/navigation";
 import DropDown from "../Common/DropDown";
-import { controleText } from "@/functions";
 import CustomTooltip from "../Common/Tooltip";
 import hideOverlay from "@/HOC/hideOverlay";
+import { controleText } from "@/functions";
+import { user } from "@/interfaces";
+import { useRouter } from "next/navigation";
 
 const UserCard = ({
   data,

@@ -1,7 +1,8 @@
 import React from "react";
 import Loader from "../Common/Loader";
-import { getCookie, markNotificationAsReadInDb } from "@/functions";
 import CustomTooltip from "../Common/Tooltip";
+import { getCookie, markNotificationAsReadInDb } from "@/functions";
+import { notificationsInterface } from "@/interfaces";
 
 const NavNotifications = ({
   show,
@@ -12,9 +13,9 @@ const NavNotifications = ({
 }: {
   show: boolean;
   setShow: (a: boolean) => void;
-  data: any[];
+  data: notificationsInterface[];
   getNotifications: () => void;
-  setNotiData: (a: any) => void;
+  setNotiData: (a: notificationsInterface[]) => void;
 }) => {
   const hanldeNotification = () => {
     setShow(!show);
@@ -27,7 +28,7 @@ const NavNotifications = ({
   ) => {
     if (isAlreadyRead == false) {
       const user = JSON.parse(getCookie("user") as any);
-      let all_data: any = data;
+      let all_data: notificationsInterface[] = data;
       const userIndex = all_data.findIndex(
         (item: any) => item.timestamp.toMillis() === timestamp.toMillis()
       );
@@ -49,14 +50,6 @@ const NavNotifications = ({
         <CustomTooltip onClick={hanldeNotification} content="Notifications">
           <i className="bi bi-bell text-base md:text-2xl cursor-pointer"></i>
         </CustomTooltip>
-
-        {/* {data && data.filter((i) => i.read == false).length > 0 ? (
-          <span
-            className={`h-2 w-2 rounded-full border bg-red-400  absolute right-0 top-1`}
-          ></span>
-        ) : (
-          <></>
-        )} */}
       </div>
 
       <div
@@ -67,7 +60,7 @@ const NavNotifications = ({
         {data !== null && data.length ? (
           data.map((item) => (
             <div
-              key={item.timestamp.toMillis()}
+              key={item.timestamp.seconds}
               className="flex gap-3 cursor-pointer"
               onClick={() => onNotificationClick(item.timestamp, item.read)}
             >

@@ -1,5 +1,5 @@
+import { Obj } from "@/interfaces";
 import React from "react";
-type Obj = { [key: string]: string };
 
 const Tabs = ({
   tabs,

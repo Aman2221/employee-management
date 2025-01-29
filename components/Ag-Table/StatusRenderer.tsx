@@ -1,4 +1,5 @@
 import { getCookie } from "@/functions";
+import { params } from "@/interfaces";
 import React, { useEffect, useState } from "react";
 
 const StatusRenderer = ({
@@ -47,7 +48,7 @@ const StatusRenderer = ({
 
 export default StatusRenderer;
 
-export const CellStatusRenderer = (params: any) => {
+export const CellStatusRenderer = (params: params) => {
   return (
     <>
       {params.value == "pending" ? (

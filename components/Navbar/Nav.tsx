@@ -2,6 +2,17 @@
 import React, { useEffect, useState } from "react";
 import AddPermission from "../Pop-ups/AddPermission";
 import PasteMessage from "../Pop-ups/PasteMessage";
+import Avatar from "../Common/Avatar";
+import dynamic from "next/dynamic";
+import SearchInput from "../Common/SearchInput";
+import Link from "next/link";
+import Image from "next/image";
+import hideOverlay from "@/HOC/hideOverlay";
+import { usePmsContext } from "@/context";
+import { DocumentData, doc, getDoc } from "firebase/firestore";
+import { db } from "@/config/firebase";
+import { useRouter } from "next/navigation";
+import { getAuth, signOut } from "firebase/auth";
 import {
   ErrorToast,
   deleteAllCookies,
@@ -9,9 +20,8 @@ import {
   getCookie,
   getData,
 } from "@/functions";
-import { useRouter } from "next/navigation";
-import { getAuth, signOut } from "firebase/auth";
-import Avatar from "../Common/Avatar";
+import { notificationsInterface } from "@/interfaces";
+
 const AddUpdates = dynamic(() => import("../Pop-ups/AddUpdates"), {
   ssr: false,
 });
@@ -21,28 +31,22 @@ const NavDropdown = dynamic(() => import("./NavDropdown"), {
 const NavNotifications = dynamic(() => import("./NavNotifications"), {
   ssr: false,
 });
-import hideOverlay from "@/HOC/hideOverlay";
-import { usePmsContext } from "@/context";
-import { DocumentData, doc, getDoc } from "firebase/firestore";
-import { db } from "@/config/firebase";
-import dynamic from "next/dynamic";
-import SearchInput from "../Common/SearchInput";
-import Link from "next/link";
-import Image from "next/image";
 
 const Nav = ({ showSearchInput = true }: { showSearchInput?: boolean }) => {
   const router = useRouter();
   const { setSearchKey, showSidebar, setShowSidebar } = usePmsContext();
   const [showNotice, setShowNotice] = useState(false);
-  const [notiData, setNotiData] = useState<any>([]);
+  const [notiData, setNotiData] = useState<notificationsInterface[]>([]);
   const [isSuper, setIsSuper] = useState(false);
   const [userName, setUserName] = useState("");
   const [show, setShow] = useState(false);
   const [showUpdateMdl, setShowUpdateMdl] = useState(false);
   const [showMsg, setShowMsg] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+
   const NavDropdownComp = hideOverlay(NavDropdown, setShowDropdown);
   const NavNotificationsComp = hideOverlay(NavNotifications, setShowNotice);
+
   const handleExport = async () => {
     const data = await getData();
     exportToExcel(data);
@@ -69,16 +73,16 @@ const Nav = ({ showSearchInput = true }: { showSearchInput?: boolean }) => {
       const docRef = doc(db, "notifications", user.uid);
       const docSnapshot = await getDoc(docRef);
       if (docSnapshot.exists()) {
-        let data: DocumentData | undefined = docSnapshot.data();
+        let data: DocumentData = docSnapshot.data();
         const notifications = data.notifications || [];
         // Sort notifications by timestamp in descending order
         const sortedNotifications = notifications.sort((a: any, b: any) => {
           return b.timestamp.toMillis() - a.timestamp.toMillis();
         });
-
+        console.log("sortedNotifications :", sortedNotifications);
         setNotiData(sortedNotifications as any);
       } else {
-        setTimeout(() => setNotiData(null), 500);
+        setTimeout(() => setNotiData([]), 500);
       }
     } catch (err: any) {
       ErrorToast(err.message);

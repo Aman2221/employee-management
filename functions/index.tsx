@@ -1,6 +1,22 @@
-import { freshUserInterface, permissions } from "@/interfaces";
-import * as XLSX from "xlsx";
 import {
+  Obj,
+  freshUserInterface,
+  leaveInterface,
+  notificationsInterface,
+  params,
+  permissions,
+  s,
+  updates,
+  user,
+} from "@/interfaces";
+import * as XLSX from "xlsx";
+import cookie from "cookie";
+import CryptoJS from "crypto-js";
+import { db } from "@/config/firebase";
+import { Bounce, toast } from "react-toastify";
+import {
+  DocumentReference,
+  DocumentSnapshot,
   Timestamp,
   arrayUnion,
   collection,
@@ -13,20 +29,20 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { db } from "@/config/firebase";
-import { Bounce, toast } from "react-toastify";
-import cookie from "cookie";
-import CryptoJS from "crypto-js";
-import moment from "moment";
+import { NextApiRequest, NextApiResponse } from "next";
+import { AgGridReact } from "ag-grid-react";
 
-export const removeKeyFromArray = (arr: any, key: keyof permissions) => {
+export const removeKeyFromArray = (
+  arr: permissions[],
+  key: keyof permissions
+) => {
   return arr.map((item: permissions) => {
     const { [key]: _, ...rest } = item; // Destructure to remove the key
     return rest;
   });
 };
 
-export const exportToExcel = (jsonData: any) => {
+export const exportToExcel = (jsonData: unknown[]) => {
   const worksheet = XLSX.utils.json_to_sheet(jsonData);
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
@@ -36,7 +52,7 @@ export const exportToExcel = (jsonData: any) => {
 };
 
 export const getData = async () => {
-  const tempData: any = [];
+  const tempData: permissions[] = [];
   try {
     const q = query(
       collection(db, "permissions"),
@@ -61,9 +77,8 @@ export const validateEmail = (email: string) => {
   const domain2 = "@theswipewire.com";
 
   const checkDomain = email.endsWith(domain1) || email.endsWith(domain2);
-  console.log("checkDomain :", checkDomain);
+
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  // console.log("email :", emailPattern.test(email), checkDomain);
   if (emailPattern.test(email) && checkDomain) {
     return true;
   }
@@ -72,14 +87,7 @@ export const validateEmail = (email: string) => {
 
 export const checkPassword = (password: string, confirm_password: string) => {
   const checkPasswordCompxity = isPasswordComplex(password);
-  console.log(
-    "checkPassword",
-    password === confirm_password,
-    password,
-    confirm_password,
-    "isPasswordComplex :",
-    isPasswordComplex(password)
-  );
+
   if (password === confirm_password && checkPasswordCompxity) {
     return true;
   }
@@ -136,11 +144,11 @@ export function setCookie(name: string, value: string, days: number) {
 export function getCookie(name: string): string | null {
   if (typeof document !== "undefined") {
     const value = `; ${document.cookie}`;
-    const parts: any = value.split(`; ${name}=`);
-    if (parts.length === 2) {
-      const encryptedCookie = parts.pop().split(";").shift();
+    const parts: string[] = value.split(`; ${name}=`);
+    if (parts && parts.length === 2) {
+      const encryptedCookie = parts?.pop()?.split(";").shift();
       const user_uid = getItemFromLocal("uid");
-      const decryptedCookie = decryptData(encryptedCookie, user_uid);
+      const decryptedCookie = decryptData(encryptedCookie as string, user_uid);
       return decryptedCookie;
     }
   }
@@ -237,26 +245,32 @@ export const ErrorToast = (
   });
 };
 
-export const setItemToLocal = (name: string = "user", value: any) => {
+export const setItemToLocal = (
+  name: string = "user",
+  value: unknown | unknown[]
+) => {
   localStorage.setItem(name, JSON.stringify(value));
 };
 
 export const getItemFromLocal = (name: string = "user") => {
-  const getUser: any = localStorage.getItem(name);
-  return JSON.parse(getUser);
+  const getUser: string | null = localStorage.getItem(name);
+  return JSON.parse(getUser as string);
 };
 
-export const setItemToSession = (name: string = "user", value: any) => {
+export const setItemToSession = (
+  name: string = "user",
+  value: unknown | unknown[]
+) => {
   sessionStorage.setItem(name, JSON.stringify(value));
 };
 
 export const getItemFromSession = () => {
-  const getUser: any = sessionStorage.getItem("user");
-  return JSON.parse(getUser);
+  const getUser: string | null = sessionStorage.getItem("user");
+  return JSON.parse(getUser as string);
 };
 
 export const addUserToDB = async (
-  userDoc: any,
+  userDoc: DocumentReference,
   userData: freshUserInterface,
   uid: string
 ) => {
@@ -270,19 +284,22 @@ export const addUserToDB = async (
 export const getUserDoc = async (docId: string) => {
   try {
     const userDocRef = doc(db, "users", docId);
-    const userDocSnap: any = await getDoc(userDocRef);
-
-    const { password, confirm_password, ...userData } = userDocSnap.data();
+    const userDocSnap = await getDoc(userDocRef);
+    const userDB: user = userDocSnap.data() as user;
+    const { password, confirm_password, ...userData } = userDB;
 
     const encryptUser = encryptData(JSON.stringify(userData), docId);
     setCookie("user", encryptUser, 1);
   } catch (error) {
-    console.error("Error fetching user document: ", error);
+    handleCatchError(error);
     throw error;
   }
 };
 
-export const deleteAllCookies = (req?: any, res?: any) => {
+export const deleteAllCookies = (
+  req?: NextApiRequest,
+  res?: NextApiResponse
+) => {
   // Client-side deletion
   if (typeof window !== "undefined") {
     const cookies = document.cookie.split(";");
@@ -313,8 +330,8 @@ export const deleteAllCookies = (req?: any, res?: any) => {
 
 export const dynamic_column_def = (
   StatusRenderer: (a: any, b: any) => void,
-  CellStatusRenderer: (a: any) => void,
-  db_data: any,
+  CellStatusRenderer: (a: params) => void,
+  db_data: permissions[],
   openStatusUpdateModal: (a: string, b: string) => void
 ) => {
   const getUser = getCookie("user");
@@ -345,7 +362,7 @@ export const dynamic_column_def = (
             width: 140,
             filter: true,
             cellRenderer: CellStatusRenderer,
-            cellRendererParams: (params: any) => {
+            cellRendererParams: (params: params) => {
               params: params;
             },
           },
@@ -359,7 +376,7 @@ export const dynamic_column_def = (
             width: 140,
             filter: true,
             cellRenderer: CellStatusRenderer,
-            cellRendererParams: (params: any) => {
+            cellRendererParams: (params: params) => {
               params: params;
             },
           },
@@ -369,6 +386,7 @@ export const dynamic_column_def = (
   return "";
 };
 
+//? This two I need to check data should follow same format
 export const updateSatatusAccordingDB = (status: string) => {
   if (status == "approve") return "approved";
   else if (status == "reject") return "rejected";
@@ -396,13 +414,13 @@ export const updatePermissionStatusInDB = async (
     // Optionally, return true if the update was successful
     return true;
   } catch (error) {
-    console.error("Error updating document: ", error);
+    handleCatchError(error);
     return false;
   }
 };
 
 // Encrypt data
-export const encryptData = (data: any, secretKey: string) => {
+export const encryptData = (data: string, secretKey: string) => {
   const hashAndSalt = data + process.env.NEXT_PUBLIC_HASH_SALT;
   return CryptoJS.AES.encrypt(hashAndSalt, secretKey).toString();
 };
@@ -415,59 +433,20 @@ export const decryptData = (cipherText: string, secretKey: string) => {
       ""
     );
     const bytes = CryptoJS.AES.decrypt(hashWithoutSalt, secretKey);
-    // console.log(
-    //   "bytes.toString(CryptoJS.enc.Utf8) :",
-    //   JSON.parse(
-    //     bytes
-    //       .toString(CryptoJS.enc.Utf8)
-    //       .replace(process.env.NEXT_PUBLIC_HASH_SALT as string, "")
-    //   )
-    // );
+
     return bytes
       .toString(CryptoJS.enc.Utf8)
       .replace(process.env.NEXT_PUBLIC_HASH_SALT as string, "");
   } else return "";
 };
 
-export const setDataToState = (
-  tempData: any,
-  setShowLoader: (a: boolean) => void,
-  setUpdatesData: (a: any) => void
-) => {
-  setTimeout(() => {
-    if (tempData && tempData?.length) {
-      setUpdatesData([...tempData]);
-    }
-    setShowLoader(false);
-  }, 1000);
-};
-
-export const freshLeave = () => {
-  const userUid = JSON.parse(getCookie("user") as string);
-  return {
-    name: "",
-    type: "permission",
-    phone: "",
-    email: "",
-    duration: "",
-    emp_id: "",
-    reason: "",
-    date: moment().format("L"),
-    time: moment().format("LTS"),
-    created_at: Timestamp.now(),
-    status: "pending",
-    uid: userUid.uid,
-    added_by: userUid.email,
-  };
-};
-
-export const getLeave = (data: any) => {
+export const getLeave = (data: permissions) => {
   return {
     name: data.name,
     type: data.type,
     phone: data.phone,
     email: data.email,
-    duration: data.duration.slice(0, 2),
+    duration: data.duration,
     emp_id: data.emp_id,
     reason: data.reason,
     date: data.date,
@@ -479,28 +458,7 @@ export const getLeave = (data: any) => {
   };
 };
 
-export const freshUpdate = () => {
-  const user = JSON.parse(getCookie("user") as string);
-  return {
-    website_names: "",
-    status: "Completed",
-    task: "",
-    assigned_by: "",
-    verified_by: "",
-    summary: "",
-    emp_id: user && user.emp_id ? user.emp_id : "",
-    designation: user && user.designation ? user.designation : "",
-    email: user && user.email ? user.email : "",
-    name: user && user.username ? user.username : "",
-    date: moment().format("L"),
-    time: moment().format("LTS"),
-    created_at: Timestamp.now(),
-    uid: user && user.uid ? user.uid : "",
-    added_by: user && user.email ? user.email : "",
-  };
-};
-
-export const getUpdate = (data: any) => {
+export const getUpdate = (data: updates) => {
   return {
     website_names: data.website_names,
     status: data.status,
@@ -525,8 +483,10 @@ export const pushNotificationToDb = async (
   status: string,
   name: string
 ) => {
+  type errorType = {
+    error: string;
+  };
   try {
-    console.log("pushNotificationToDb docId :", docId);
     const docRef = doc(db, "notifications", docId);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
@@ -553,14 +513,25 @@ export const pushNotificationToDb = async (
       });
     }
     SuccessToast(`Status updated and notification sent`);
-  } catch (error: any) {
-    console.log(error.message);
+  } catch (error) {
+    handleCatchError(error);
   }
 };
 
+export const handleCatchError = (
+  error: unknown,
+  customeMessage: s = "An unknown error occurred"
+) => {
+  if (error instanceof Error) {
+    ErrorToast(error.message);
+  } else {
+    console.log("error", error);
+    ErrorToast(customeMessage);
+  }
+};
 export const markNotificationAsReadInDb = async (
   docId: string,
-  updatedNotifications: any
+  updatedNotifications: notificationsInterface[]
 ) => {
   try {
     const docRef = doc(db, "notifications", docId);
@@ -572,11 +543,9 @@ export const markNotificationAsReadInDb = async (
       });
 
       SuccessToast("Notification marked as read!");
-    } else {
-      console.log("Notification not found!");
     }
-  } catch (error: any) {
-    console.error("Error updating notification:", error.message);
+  } catch (error) {
+    handleCatchError(error);
   }
 };
 
@@ -634,9 +603,6 @@ export const checkUpdateFields = (updates: { [key: string]: string }) => {
 };
 
 export const checkLeaveFields = (permission: { [key: string]: string }) => {
-  // if (permission.type == "permission") {
-  //   return permission.start_time == "";
-  // }
   return {
     emp_id: permission?.emp_id == null || permission?.emp_id?.length == 0,
     isEmpId3Digit: permission?.emp_id?.length > 3,
@@ -656,8 +622,8 @@ export const checkLeaveFields = (permission: { [key: string]: string }) => {
 export const extraValidation = (
   keyName: string,
   value: string,
-  validations: any,
-  setValidations: (a: any) => void
+  validations: leaveInterface,
+  setValidations: (a: leaveInterface) => void
 ) => {
   if (keyName == "emp_id") {
     setValidations({
@@ -710,13 +676,11 @@ export const sendEmail = async (
     });
 
     const data = await res.json();
-    if (res.ok) {
-      SuccessToast("Email notifcation sent successfully");
-    } else {
-      console.error("Email sending failed:", data.message);
-    }
+    res.ok
+      ? SuccessToast("Email notifcation sent successfully")
+      : console.error("Email sending failed:", data.message);
   } catch (error) {
-    console.error("Error sending email:", error);
+    handleCatchError(error, "Error while sending error");
   }
 };
 
@@ -755,17 +719,19 @@ export const sendStatusEmail = async (
       console.error("Email sending failed:", data.message);
     }
   } catch (error) {
-    console.error("Error sending email:", error);
+    handleCatchError(error);
   }
 };
 
-export const handleOverlay = (gridRef: any) => {
-  const rowCount = gridRef.current.api.getDisplayedRowCount();
+export const handleOverlay = (gridRef: React.RefObject<AgGridReact>) => {
+  if (gridRef?.current) {
+    const rowCount = gridRef?.current?.api.getDisplayedRowCount();
 
-  if (rowCount === 0) {
-    gridRef.current.api.showNoRowsOverlay();
-  } else {
-    gridRef.current.api.hideOverlay();
+    if (rowCount === 0) {
+      gridRef.current.api.showNoRowsOverlay();
+    } else {
+      gridRef.current.api.hideOverlay();
+    }
   }
 };
 
@@ -775,7 +741,7 @@ export const controleText = (text: string, limit: number = 20) => {
 };
 
 export const fetchEmployeeByEmpId = async (emp_id: string) => {
-  let data: any = [];
+  let data: Obj[] = [];
   const employeeCollection = collection(db, "users");
 
   const q = query(employeeCollection, where("emp_id", "==", emp_id));
@@ -793,8 +759,6 @@ export const fetchEmployeeByEmpId = async (emp_id: string) => {
         leaves,
       });
     });
-  } else {
-    console.log("No matching documents found.");
   }
   return data[0];
 };
@@ -803,7 +767,7 @@ export const fetchEmpLeavesByType = async (
   emp_id: string,
   leave_type: string
 ) => {
-  let data: any = [];
+  let data: Obj[] = [];
   const employeeCollection = collection(db, "permissions");
 
   const q = query(
@@ -819,11 +783,9 @@ export const fetchEmpLeavesByType = async (
     querySnapshot.forEach((doc) => {
       data.push(doc.data());
     });
-  } else {
-    console.log("No matching documents found.");
   }
   let sum = 0;
-  data.forEach((item: any) => {
+  data.forEach((item: Obj) => {
     sum += parseInt(item["duration"]);
     return sum;
   });
@@ -846,26 +808,31 @@ export const deleteUser = async (uid: string) => {
     if (response.ok) {
       SuccessToast(result.message);
     } else {
-      console.log("result :", result);
       ErrorToast(result.error);
     }
   } catch (error) {
-    console.error("Error:", error);
-    ErrorToast("An error occurred while deleting the user.");
+    handleCatchError(error);
   }
 };
 
-export const freshUser = {
-  username: "",
-  emp_id: "",
-  phone: "",
-  role: "employee",
-  email: "",
-  password: "",
-  confirm_password: "",
-  designation: "business analyst",
-  leaves: {
-    casual: 12,
-    sick: 6,
-  },
+export const handleStatusEmail = async (
+  name: s,
+  type: s,
+  start_date: s,
+  start_time: s,
+  end_date: s,
+  end_time: s,
+  date: s,
+  email: s,
+  status: s
+) => {
+  await sendStatusEmail(
+    name,
+    capitalizeFirstLetter(type),
+    start_date ? start_date : start_time,
+    end_date ? end_date : end_time,
+    date,
+    capitalizeFirstLetter(status),
+    email
+  );
 };

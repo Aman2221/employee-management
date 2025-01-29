@@ -6,14 +6,12 @@ const InputField = ({
   type = "",
   placeholder = "",
   onChange = () => {},
-  extrClasses = "w-full",
 }: {
   name?: string;
   label?: string;
   type?: string;
   placeholder?: string;
   onChange?: (a: any) => void;
-  extrClasses?: string;
 }) => {
   return (
     <div key={name}>

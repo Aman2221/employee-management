@@ -1,5 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { usePmsContext } from "@/context";
+import { getAuth, signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import {
   deleteAllCookies,
@@ -7,20 +11,15 @@ import {
   getCookie,
   getData,
 } from "@/functions";
-import Image from "next/image";
-import { usePmsContext } from "@/context";
-import Link from "next/link";
-import { getAuth, signOut } from "firebase/auth";
+import {
+  default_employee_opts,
+  default_superuser_opts,
+} from "../../DefaultData";
 
 const Sidebar = () => {
   const router = useRouter();
   const { showSidebar, setShowSidebar } = usePmsContext();
   const [isSuper, setIsSuper] = useState(false);
-
-  const handleExport = async () => {
-    const data = await getData();
-    exportToExcel(data);
-  };
 
   const handleLogout = async () => {
     const auth = getAuth();
@@ -31,121 +30,14 @@ const Sidebar = () => {
     router.push("/login");
   };
 
-  const superuser_options = [
-    {
-      name: "home",
-      onClick: () => router.push("/"),
-      svg: "/sidebar-icons/home.svg",
-    },
-    {
-      name: "view updates",
-      onClick: () => router.push("/view-updates"),
-      svg: "/sidebar-icons/dash.svg",
-    },
-    {
-      name: "view leaves",
-      onClick: () => router.push("/view-leaves"),
-      svg: "/sidebar-icons/square-box.svg",
-    },
-    {
-      name: "my profile",
-      onClick: () => router.push("/view-profile"),
-      svg: "/sidebar-icons/user.svg",
-    },
-    {
-      name: "register user",
-      onClick: () => router.push("/register"),
-      svg: "/sidebar-icons/users.svg",
-    },
-    {
-      name: "export data",
-      onClick: handleExport,
-      svg: "/sidebar-icons/sign-in.svg",
-    },
-    {
-      name: "upcoming event's",
-      onClick: () => router.push("/upcoming-events"),
-      svg: "/sidebar-icons/events.svg",
-    },
-    {
-      name: "upcoming holiday's",
-      onClick: () => router.push("/upcoming-holidays"),
-      svg: "/sidebar-icons/upcoming-holidays.svg",
-    },
-    {
-      name: "Leave Policy",
-      onClick: () => router.push("/leave-policy"),
-      svg: "/sidebar-icons/file.svg",
-    },
-    {
-      name: "travel & expenses",
-      onClick: () => router.push("/travel-and-expenses"),
-      svg: "/sidebar-icons/file-fill.svg",
-    },
-    {
-      name: "FAQ's",
-      onClick: () => router.push("/faqs"),
-      svg: "/sidebar-icons/FAQ.svg",
-    },
-    {
-      name: "settings",
-      onClick: () => router.push("/settings"),
-      svg: "/sidebar-icons/settings.svg",
-    },
-  ];
+  const handleExport = async () => {
+    const data = await getData();
+    exportToExcel(data);
+  };
 
-  const normaluser_options = [
-    {
-      name: "home",
-      onClick: () => router.push("/"),
-      svg: "/sidebar-icons/home.svg",
-    },
-    {
-      name: "my leaves",
-      onClick: () => router.push("/view-leaves"),
-      svg: "/sidebar-icons/sign-in.svg",
-    },
-    {
-      name: "my updates",
-      onClick: () => router.push("/view-updates"),
-      svg: "/sidebar-icons/square-box.svg",
-    },
-    {
-      name: "my profile",
-      onClick: () => router.push("/view-profile"),
-      svg: "/sidebar-icons/user.svg",
-    },
-    {
-      name: "upcoming event's",
-      onClick: () => router.push("/upcoming-events"),
-      svg: "/sidebar-icons/events.svg",
-    },
-    {
-      name: "upcoming holiday's",
-      onClick: () => router.push("/upcoming-holidays"),
-      svg: "/sidebar-icons/upcoming-holidays.svg",
-    },
-    {
-      name: "Leave Policy",
-      onClick: () => router.push("/leave-policy"),
-      svg: "/sidebar-icons/file.svg",
-    },
-    {
-      name: "travel & expenses",
-      onClick: () => router.push("/travel-and-expenses"),
-      svg: "/sidebar-icons/file-fill.svg",
-    },
-    {
-      name: "FAQ's",
-      onClick: () => router.push("/faqs"),
-      svg: "/sidebar-icons/FAQ.svg",
-    },
-    {
-      name: "settings",
-      onClick: () => router.push("/settings"),
-      svg: "/sidebar-icons/settings.svg",
-    },
-  ];
+  const superuser_options = default_superuser_opts(router, handleExport);
+
+  const normaluser_options = default_employee_opts(router);
 
   useEffect(() => {
     const user = JSON.parse(getCookie("user") as any);

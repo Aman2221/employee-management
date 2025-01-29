@@ -1,36 +1,31 @@
 "use client";
+import CustomLeave from "../Pop-ups/CustomLeave";
+import DropDown from "../Common/DropDown";
+import InputField from "../Common/InputField";
+import data from "@/JSON/data.json";
 import React, { useState } from "react";
 import { auth, db } from "@/config/firebase";
+import { ToastContainer } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc } from "firebase/firestore";
+import { freshUserInterface } from "@/interfaces";
 import {
   ErrorToast,
   SuccessToast,
   addUserToDB,
   checkPassword,
-  freshUser,
+  handleCatchError,
   sendEmail,
   validateEmail,
 } from "@/functions";
-import { ToastContainer } from "react-toastify";
-import { useRouter } from "next/navigation";
-import InputField from "../Common/InputField";
-import data from "@/JSON/data.json";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc } from "firebase/firestore";
-import DropDown from "../Common/DropDown";
-import { freshUserInterface, user_leave_data } from "@/interfaces";
-import CustomLeave from "../Pop-ups/CustomLeave";
+import { freshUser } from "../../DefaultData";
 
 type DDStatesKeys = "role" | "designation";
 type passwords = "password" | "confirm_password";
 
 const RegisterPg = () => {
   const router = useRouter();
-  const [showPass, setShowPass] = useState({
-    password: false,
-    confirm_password: false,
-  });
-  const [userData, setUserData] = useState<freshUserInterface>(freshUser);
-  const [showCtmLeave, setShowCtmLeave] = useState(false);
   const roleOpt = ["employee", "human resource", "manager"];
   const designationOpt = [
     "business analyst",
@@ -39,13 +34,19 @@ const RegisterPg = () => {
     "testing",
   ];
 
+  const [showPass, setShowPass] = useState({
+    password: false,
+    confirm_password: false,
+  });
+  const [userData, setUserData] = useState<freshUserInterface>(freshUser);
+  const [showCtmLeave, setShowCtmLeave] = useState(false);
   const [ddStates, setDdStates] = useState({
     role: false,
     designation: false,
   });
 
   const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
-    let target: any = e.target;
+    const target = e.target as HTMLInputElement;
     let key = target.name;
     setUserData({
       ...userData,
@@ -62,7 +63,6 @@ const RegisterPg = () => {
 
   const handleDDChange = (value: string, key?: string) => {
     if (key) {
-      console.log("handleDDChange :", key);
       setUserData({
         ...userData,
         [key]: value,
@@ -89,8 +89,8 @@ const RegisterPg = () => {
           userData.email,
           userData.password
         );
-
-        const user: any = userCredential.user;
+        type userType = { uid: string };
+        const user: userType = userCredential.user;
         // setUserToLocal("user", user);
 
         const userDoc = doc(db, "users", user.uid);
@@ -106,9 +106,8 @@ const RegisterPg = () => {
         setTimeout(() => {
           router.push("/");
         }, 500);
-      } catch (error: any) {
-        console.log("error :", error.message);
-        ErrorToast("");
+      } catch (error) {
+        handleCatchError(error);
       }
     } else {
       ErrorToast(
@@ -119,10 +118,13 @@ const RegisterPg = () => {
     }
   };
 
-  const handleUserLeaves = (data: user_leave_data) => {
+  const handleDefaultLeaves = () => {
     setUserData({
       ...userData,
-      leaves: data,
+      leaves: {
+        casual: 12,
+        sick: 6,
+      },
     });
   };
 
@@ -194,7 +196,6 @@ const RegisterPg = () => {
                               ? item.label + "3 digit number"
                               : item.label
                           }
-                          extrClasses="w-52"
                         />
                         {item.name == "password" ||
                         item.name == "confirm_password" ? (
@@ -225,6 +226,7 @@ const RegisterPg = () => {
                     user leaves
                   </label>
                   <button
+                    onClick={handleDefaultLeaves}
                     className="capitalize w-full border border-gray-600 bg-gray-700 text-base rounded-lg
                   py-2"
                     type="button"
@@ -234,7 +236,7 @@ const RegisterPg = () => {
                 </div>
                 <div>
                   <label htmlFor={"leaves"} className="invisible opacity-0">
-                    sfsadf
+                    test
                   </label>
                   <button
                     className="capitalize w-full border border-gray-600 bg-gray-700 text-base rounded-lg
