@@ -19,8 +19,9 @@ import {
   exportToExcel,
   getCookie,
   getData,
+  handleCatchError,
 } from "@/functions";
-import { notificationsInterface } from "@/interfaces";
+import { Obj, notificationsInterface } from "@/interfaces";
 
 const AddUpdates = dynamic(() => import("../Pop-ups/AddUpdates"), {
   ssr: false,
@@ -68,7 +69,7 @@ const Nav = ({ showSearchInput = true }: { showSearchInput?: boolean }) => {
   };
 
   const getNotification = async () => {
-    const user = JSON.parse(getCookie("user") as any);
+    const user = JSON.parse(getCookie("user") as string);
     try {
       const docRef = doc(db, "notifications", user.uid);
       const docSnapshot = await getDoc(docRef);
@@ -76,16 +77,17 @@ const Nav = ({ showSearchInput = true }: { showSearchInput?: boolean }) => {
         let data: DocumentData = docSnapshot.data();
         const notifications = data.notifications || [];
         // Sort notifications by timestamp in descending order
-        const sortedNotifications = notifications.sort((a: any, b: any) => {
-          return b.timestamp.toMillis() - a.timestamp.toMillis();
-        });
-        console.log("sortedNotifications :", sortedNotifications);
-        setNotiData(sortedNotifications as any);
+        const sortedNotifications = notifications.sort(
+          (a: notificationsInterface, b: notificationsInterface) => {
+            return b.timestamp.toMillis() - a.timestamp.toMillis();
+          }
+        );
+        setNotiData(sortedNotifications);
       } else {
         setTimeout(() => setNotiData([]), 500);
       }
-    } catch (err: any) {
-      ErrorToast(err.message);
+    } catch (error) {
+      handleCatchError(error);
     }
   };
 
@@ -94,7 +96,7 @@ const Nav = ({ showSearchInput = true }: { showSearchInput?: boolean }) => {
   }, [showNotice]);
 
   useEffect(() => {
-    const user = JSON.parse(getCookie("user") as any);
+    const user = JSON.parse(getCookie("user") as string);
     if (user && user?.username) {
       setUserName(user.username);
       setIsSuper(user.role.toLowerCase() !== "employee");

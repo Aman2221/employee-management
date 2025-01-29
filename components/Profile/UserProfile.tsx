@@ -8,7 +8,7 @@ import { db } from "@/config/firebase";
 import { user, userKeys } from "@/interfaces";
 
 const UserProfile = () => {
-  const user = JSON.parse(getCookie("user") as any);
+  const user = JSON.parse(getCookie("user") as string);
   const searchParams = useSearchParams();
   const searchQuery = searchParams.size ? searchParams.get("uid") : user?.uid;
   const [showLoader, setShowLoader] = useState(true);

@@ -37,7 +37,7 @@ const MyUpdatesPg = () => {
   const systemTheme = useSystemTheme();
   const searchParams = useSearchParams();
   const searchQuerytUid = searchParams.get("uid");
-  const user = JSON.parse(getCookie("user") as any);
+  const user = JSON.parse(getCookie("user") as string);
   const { showLoader, setShowLoader, searchKey } = usePmsContext();
   const [showUpdateMdl, setShowUpdateMdl] = useState(false);
   const [gridApi, setGridApi] = useState<any>(null);

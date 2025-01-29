@@ -22,7 +22,7 @@ const UpcomingLeavsComp = () => {
       })
       .filter(Boolean); // Remove null values
 
-    setData(upcomingHolidays as any);
+    setData(upcomingHolidays as holiday[]);
   };
 
   useEffect(() => {

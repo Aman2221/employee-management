@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase-admin/firestore";
+
 export type s = string;
 export type b = boolean;
 export type n = number;
@@ -7,23 +9,25 @@ export interface Obj {
 }
 
 export interface permissions {
-  id?: s;
-  emp_id?: n;
-  name?: s;
-  duration?: n;
-  type?: s;
-  email?: s;
-  phone?: s;
-  reason?: s;
-  date?: s;
-  time?: s;
-  created_at?: s;
-  status?: s;
-  start_date?: s;
-  end_date?: s;
-  start_time?: s;
-  end_time?: s;
-  uid?: s;
+  [key: string]: any;
+  id?: s | undefined;
+  emp_id?: s | undefined;
+  name?: s | undefined;
+  duration?: n | s | undefined;
+  type?: s | undefined;
+  email?: s | undefined;
+  phone?: s | undefined;
+  reason?: s | undefined;
+  date?: s | undefined;
+  time?: s | undefined;
+  created_at?: Timestamp;
+  status?: s | undefined;
+  start_date?: s | undefined;
+  end_date?: s | undefined;
+  start_time?: s | undefined;
+  end_time?: s | undefined;
+  uid?: s | undefined;
+  leaves?: user_leave_data;
 }
 
 export type updates_inteface = {
@@ -111,7 +115,7 @@ export interface slotType {
 }
 
 export interface holiday {
-  slNo: s;
+  slNo: n;
   dates: Obj[];
   holidayName: s;
   date: s;
@@ -143,7 +147,7 @@ export type user_leave_data = {
   casual: number;
 };
 
-export type Timestamp = {
+export type TimestampObj = {
   seconds: n;
   nanoseconds: n;
 };

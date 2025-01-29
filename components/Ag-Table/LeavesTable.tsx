@@ -13,8 +13,8 @@ import { AgGridReact } from "ag-grid-react";
 import StatusRenderer, { CellStatusRenderer } from "./StatusRenderer";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
-import { permissions, s, updates } from "@/interfaces";
-import { CellClickedEvent } from "ag-grid-community";
+import { permissions, s, updates, user } from "@/interfaces";
+import { CellClickedEvent, GridReadyEvent } from "ag-grid-community";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
@@ -49,14 +49,14 @@ const LeavesTable = () => {
   const systemTheme = useSystemTheme(); //For getting user theme
   const searchParams = useSearchParams();
   const searchQueryEmail = searchParams.get("email");
-  const user = JSON.parse(getCookie("user") as any);
+  const user = JSON.parse(getCookie("user") as string);
   const { showLoader, setShowLoader, searchKey } = usePmsContext();
   const [openLeaveModal, setOpenLeaveModal] = useState(false);
   const [showDD, setShowDD] = useState(false);
   const [currentStatus, setCurrentStatus] = useState("");
   const [currentDocId, setCurrentDocId] = useState("");
   const [gridApi, setGridApi] = useState<any>(null);
-  const [crrData, setCrrData] = useState<permissions | any>();
+  const [crrData, setCrrData] = useState<permissions>();
   const [showLeaveModel, setShowLeaveModel] = useState(false);
   const [pmsData, setPmsData] = useState<permissions[]>([]);
   const [pmsDataStore, setPmsDataStore] = useState<permissions[]>([]);
@@ -82,10 +82,10 @@ const LeavesTable = () => {
   const storeStatusToLocal: (status: string) => Promise<void> = async (
     status: string
   ) => {
-    let all_data: any = pmsDataStore;
+    let all_data: permissions[] = pmsDataStore;
 
     const userIndex = all_data.findIndex(
-      (user: any) => user.id === currentDocId
+      (user: permissions) => user.id === currentDocId
     );
     if (userIndex !== -1) {
       all_data[userIndex] = {
@@ -113,7 +113,7 @@ const LeavesTable = () => {
     setPmsDataStore(all_data);
     await updatePermissionStatusInDB(currentDocId, status); //updating status in database
 
-    await pushNotificationToDb(docId, status, permission_name); //updating notification in database
+    await pushNotificationToDb(docId as s, status, permission_name as s); //updating notification in database
   };
 
   const getColumnDefs = useMemo(() => {
@@ -189,7 +189,7 @@ const LeavesTable = () => {
     }
   }, [setShowLoader, searchQueryEmail, showLoader, user?.email]);
 
-  const onGridReady = (params: any) => {
+  const onGridReady = (params: GridReadyEvent<any, any>) => {
     setGridApi(params.api); // Storing the grid API for later use
   };
 
@@ -319,7 +319,7 @@ const LeavesTable = () => {
                       <div className="grid grid-cols-4 gap-6">
                         {pmsData.map((leave) => (
                           <div
-                            key={leave.created_at}
+                            key={leave.created_at?.toMillis()}
                             onClick={() => onCardClick(leave)}
                           >
                             <DataCardView
@@ -360,7 +360,7 @@ const LeavesTable = () => {
                             <AgGridReact
                               ref={gridRef}
                               rowData={pmsDataStore}
-                              columnDefs={getColumnDefs as any}
+                              columnDefs={getColumnDefs}
                               className="dm-sans custom-cell-border text-xs"
                               onGridReady={onGridReady}
                               animateRows={true}
@@ -396,7 +396,7 @@ const LeavesTable = () => {
             <AddPermission
               show={showLeaveModel}
               setShow={setShowLeaveModel}
-              data={crrData as any}
+              data={crrData}
             />
           )}
         </>

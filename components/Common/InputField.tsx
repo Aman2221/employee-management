@@ -11,7 +11,7 @@ const InputField = ({
   label?: string;
   type?: string;
   placeholder?: string;
-  onChange?: (a: any) => void;
+  onChange?: (a: React.FormEvent<HTMLInputElement>) => void;
 }) => {
   return (
     <div key={name}>

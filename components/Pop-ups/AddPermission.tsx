@@ -5,7 +5,12 @@ import LeaveBalanceStatus from "./LeaveBalanceStatus";
 import json from "@/JSON/data.json";
 import DropDown from "../Common/DropDown";
 import LeaveDuration from "../Ag-Table/LeaveDuration";
-import { Obj, leaveInterface, slotType } from "@/interfaces";
+import {
+  leaveInterface,
+  permissions,
+  slotType,
+  user_leave_data,
+} from "@/interfaces";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
 import { addDoc, collection } from "firebase/firestore";
@@ -25,7 +30,7 @@ const AddPermission = ({
   show,
   setShow,
 }: {
-  data?: { [key: string]: any };
+  data?: permissions;
   show: boolean;
   setShow: (a: boolean) => void;
 }) => {
@@ -59,7 +64,7 @@ const AddPermission = ({
       | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const target = e.target as HTMLInputElement;
-    let value: any = e.target.value;
+    let value = target.value.toString();
     let durationVal: number = permission.type == "permission" ? 4 : 10;
     extraValidation(target.name, value, validations, setValidations);
     if (target.name == "emp_id" && value.toString().length == 3) {
@@ -128,19 +133,24 @@ const AddPermission = ({
   //This function fetches number of leave type taken by the current employee
   const fetchAllLeaves = async () => {
     const totalLeaves = await fetchEmpLeavesByType(
-      permission?.emp_id,
-      permission?.type
+      permission?.emp_id as string,
+      permission?.type as string
     );
-
-    setShowBalance({
-      show: true,
-      leave_balance: permission.leaves[permission.type] - totalLeaves,
-    });
+    if (permission.leaves && permission.type)
+      setShowBalance({
+        show: true,
+        leave_balance:
+          permission?.leaves[permission.type as keyof user_leave_data] -
+          totalLeaves,
+      });
 
     setTimeout(() => {
       setShowBalance({
         ...showBalance,
-        leave_balance: permission.leaves[permission.type] - totalLeaves,
+        leave_balance: permission.leaves
+          ? permission.leaves[permission.type as keyof user_leave_data] -
+            totalLeaves
+          : 0,
         show: false,
       });
     }, 3500);
@@ -176,7 +186,7 @@ const AddPermission = ({
         <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              {data.name.length ? "Leave Details" : "Add Leave"}
+              {data?.name?.length ? "Leave Details" : "Add Leave"}
             </h3>
             <CustomTooltip
               className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -218,7 +228,6 @@ const AddPermission = ({
                   type="number"
                   name="emp_id"
                   id="emp_id"
-                  disabled={data.name.length}
                   onChange={handleInputChange}
                   value={permission.emp_id as any}
                   className="bg-gray-50 border outline-none focus:outline-none border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
@@ -243,7 +252,6 @@ const AddPermission = ({
                   type="text"
                   name="name"
                   id="name"
-                  disabled={data.name.length}
                   value={permission.name}
                   onChange={handleInputChange}
                   className="bg-gray-50 border outline-none focus:outline-noneborder-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
@@ -274,29 +282,30 @@ const AddPermission = ({
                   type="number"
                   name="duration"
                   id="duration"
-                  disabled={data.name.length}
                   value={permission.duration as any}
                   onChange={handleInputChange}
                   className="bg-gray-50 border outline-none focus:outline-noneborder-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                   placeholder="2"
                   maxLength={2}
                 />
-                {permission.duration.toString().length > 0 && (
-                  <div className="absolute right-2 top-10">
-                    <CustomTooltip
-                      className="text-white text-sm absolute  font-bold "
-                      onClick={() => setShowTimeSlot(!showTimeSlot)}
-                      id="slot-tooltip"
-                      content={
-                        permission.type == "permission"
-                          ? "Select time"
-                          : "Select date"
-                      }
-                    >
-                      <i className="bi bi-calendar-range"></i>
-                    </CustomTooltip>
-                  </div>
-                )}
+                {permission &&
+                  permission?.duration &&
+                  permission?.duration?.toString().length > 0 && (
+                    <div className="absolute right-2 top-10">
+                      <CustomTooltip
+                        className="text-white text-sm absolute  font-bold "
+                        onClick={() => setShowTimeSlot(!showTimeSlot)}
+                        id="slot-tooltip"
+                        content={
+                          permission.type == "permission"
+                            ? "Select time"
+                            : "Select date"
+                        }
+                      >
+                        <i className="bi bi-calendar-range"></i>
+                      </CustomTooltip>
+                    </div>
+                  )}
 
                 <p className="text-xs text-red-500 font-medium mt-1 ml-1">
                   {validations.duration
@@ -310,14 +319,16 @@ const AddPermission = ({
               </div>
 
               <div className="col-span-2 sm:col-span-1 relative">
-                {showTimeSlot && permission.duration.length > 0 && (
-                  <LeaveDuration
-                    type={permission.type}
-                    show={showTimeSlot}
-                    handleSave={handleSaveSlot}
-                    duration={permission.duration}
-                  />
-                )}
+                {showTimeSlot &&
+                  permission?.duration &&
+                  permission?.duration?.toString().length > 0 && (
+                    <LeaveDuration
+                      type={permission.type as string}
+                      show={showTimeSlot}
+                      handleSave={handleSaveSlot}
+                      duration={permission.duration as number}
+                    />
+                  )}
                 <DropDown
                   label={"Leave/Permission Type"}
                   show={showPermissionDD}
@@ -345,7 +356,7 @@ const AddPermission = ({
               {showBalance.show && (
                 <LeaveBalanceStatus
                   leave_balance={showBalance.leave_balance}
-                  type={permission.type}
+                  type={permission.type as string}
                   hideLeaveAlert={hideLeaveAlert}
                 />
               )}
@@ -361,7 +372,6 @@ const AddPermission = ({
                   type="number"
                   name="phone"
                   id="phone"
-                  disabled={data.name.length}
                   value={permission.phone}
                   onChange={handleInputChange}
                   className="bg-gray-50 border outline-none focus:outline-noneborder-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
@@ -387,7 +397,6 @@ const AddPermission = ({
                   type="email"
                   name="email"
                   id="email"
-                  disabled={data.name.length}
                   onChange={handleInputChange}
                   value={permission.email}
                   className="bg-gray-50 border outline-none focus:outline-noneborder-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
@@ -411,7 +420,6 @@ const AddPermission = ({
                 <textarea
                   name="reason"
                   id="reason"
-                  disabled={data.name.length}
                   value={permission.reason}
                   rows={3}
                   onChange={handleInputChange}
@@ -423,48 +431,44 @@ const AddPermission = ({
                 </p>
               </div>
             </div>
-            {!data.name.length ? (
-              <div className="flex justify-between">
-                <button
-                  type="button"
-                  onClick={resetPermission}
-                  className="text-white inline-flex items-center bg-red-700 hover:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 "
+            <div className="flex justify-between">
+              <button
+                type="button"
+                onClick={resetPermission}
+                className="text-white inline-flex items-center bg-red-700 hover:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 "
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  className="me-1 -ms-1 w-5 h-5 "
+                  viewBox="0 0 16 16"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    className="me-1 -ms-1 w-5 h-5 "
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-                  </svg>
-                  Clear form
-                </button>
-                <button
-                  type="submit"
-                  className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                </svg>
+                Clear form
+              </button>
+              <button
+                type="submit"
+                className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              >
+                <svg
+                  className="me-1 -ms-1 w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <svg
-                    className="me-1 -ms-1 w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                      clipRule="evenodd"
-                    ></path>
-                  </svg>
-                  Add Leave
-                </button>
-              </div>
-            ) : (
-              <></>
-            )}
+                  <path
+                    fillRule="evenodd"
+                    d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+                Add Leave
+              </button>
+            </div>
           </form>
         </div>
       </div>

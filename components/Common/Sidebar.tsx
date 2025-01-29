@@ -40,7 +40,7 @@ const Sidebar = () => {
   const normaluser_options = default_employee_opts(router);
 
   useEffect(() => {
-    const user = JSON.parse(getCookie("user") as any);
+    const user = JSON.parse(getCookie("user") as string);
     if (user && user?.username) {
       setIsSuper(user.role.toLowerCase() !== "employee");
     }

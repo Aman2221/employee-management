@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { Tooltip } from "react-tooltip";
+import { PlacesType, Tooltip, VariantType } from "react-tooltip";
 
 const CustomTooltip = ({
   id = "tooltip",
@@ -12,9 +12,9 @@ const CustomTooltip = ({
 }: {
   id?: string;
   content?: string;
-  variant?: string | any;
+  variant?: VariantType | undefined;
   className?: string;
-  place?: string | any;
+  place?: PlacesType | undefined;
   onClick?: () => void;
   children: ReactNode | string;
 }) => {

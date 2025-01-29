@@ -6,7 +6,6 @@ import { auth } from "@/config/firebase";
 import { ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
 import {
-  ErrorToast,
   SuccessToast,
   encryptData,
   getUserDoc,

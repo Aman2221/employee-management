@@ -12,7 +12,7 @@ const StatusRenderer = ({
   const [isSuper, setIsSuper] = useState(false);
 
   useEffect(() => {
-    const user = JSON.parse(getCookie("user") as any);
+    const user = JSON.parse(getCookie("user") as string);
     if (user) setIsSuper(user?.role?.toLowerCase() !== "employee");
   }, []);
 

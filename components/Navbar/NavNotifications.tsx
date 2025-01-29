@@ -3,6 +3,7 @@ import Loader from "../Common/Loader";
 import CustomTooltip from "../Common/Tooltip";
 import { getCookie, markNotificationAsReadInDb } from "@/functions";
 import { notificationsInterface } from "@/interfaces";
+import { Timestamp } from "firebase-admin/firestore";
 
 const NavNotifications = ({
   show,
@@ -23,14 +24,15 @@ const NavNotifications = ({
   };
 
   const onNotificationClick = async (
-    timestamp: any,
+    timestamp: Timestamp,
     isAlreadyRead: boolean
   ) => {
     if (isAlreadyRead == false) {
-      const user = JSON.parse(getCookie("user") as any);
+      const user = JSON.parse(getCookie("user") as string);
       let all_data: notificationsInterface[] = data;
       const userIndex = all_data.findIndex(
-        (item: any) => item.timestamp.toMillis() === timestamp.toMillis()
+        (item: notificationsInterface) =>
+          item.timestamp.toMillis() === timestamp.toMillis()
       );
       if (userIndex !== -1) {
         all_data[userIndex] = {

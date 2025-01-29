@@ -563,9 +563,16 @@ export const validatePhone = (phone: string) => {
   return phoneNumberPattern.test(phone);
 };
 
-export const checkAllFields = (permission: { [key: string]: string }) => {
+export const checkAllFields = (permission: permissions) => {
   return (
     permission?.emp_id !== null &&
+    permission?.emp_id !== undefined &&
+    permission?.name !== undefined &&
+    permission?.email !== undefined &&
+    permission?.phone !== undefined &&
+    permission?.duration !== undefined &&
+    permission?.type !== undefined &&
+    permission?.reason !== undefined &&
     permission?.emp_id?.toString().length !== 0 &&
     permission?.emp_id?.length > 0 &&
     permission?.emp_id?.length === 3 &&
@@ -602,20 +609,34 @@ export const checkUpdateFields = (updates: { [key: string]: string }) => {
   };
 };
 
-export const checkLeaveFields = (permission: { [key: string]: string }) => {
+export const checkLeaveFields = (permission: permissions) => {
+  const ud = undefined;
+  const fs = false;
+  const nl = null;
   return {
     emp_id: permission?.emp_id == null || permission?.emp_id?.length == 0,
-    isEmpId3Digit: permission?.emp_id?.length > 3,
-    name: permission.name.length == 0,
-    isNameWithSpecialCharOrNum: isNameIsValid(permission.name),
-    duration: permission.duration == null || permission?.duration?.length == 0,
-    durationLimit: parseInt(permission.duration) > 10,
-    type: permission.type.length == 0,
-    phone: permission.phone.length == 0,
-    email: permission.email.length == 0,
-    validEmail: !validateEmail(permission.email),
-    validPhone: !validatePhone(permission.phone),
-    reason: permission.reason.length == 0,
+    isEmpId3Digit:
+      permission?.emp_id == ud || nl ? fs : permission?.emp_id?.length > 3,
+    name: permission?.name == ud || nl ? fs : permission.name.length == 0,
+    isNameWithSpecialCharOrNum:
+      permission?.name == ud || nl ? fs : isNameIsValid(permission.name),
+    duration:
+      permission?.duration == ud || nl
+        ? fs
+        : permission.duration == null ||
+          permission?.duration.toString()?.length == 0,
+    durationLimit:
+      permission?.duration == ud || nl
+        ? fs
+        : parseInt(permission.duration as string) > 10,
+    type: permission?.type == ud || nl ? fs : permission.type.length == 0,
+    phone: permission?.phone == ud || nl ? fs : permission.phone.length == 0,
+    email: permission?.email == ud || nl ? fs : permission.email.length == 0,
+    validEmail:
+      permission?.email == ud || nl ? fs : !validateEmail(permission.email),
+    validPhone:
+      permission?.phone == ud || nl ? fs : !validatePhone(permission.phone),
+    reason: permission?.reason == ud || nl ? fs : permission.reason.length == 0,
   };
 };
 
