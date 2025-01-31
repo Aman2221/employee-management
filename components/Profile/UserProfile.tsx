@@ -17,7 +17,7 @@ const UserProfile = () => {
   const getCurrentUserData = async () => {
     try {
       const userDocRef = doc(db, "users", searchQuery as string);
-      const userDocSnap: any = await getDoc(userDocRef);
+      const userDocSnap = await getDoc(userDocRef);
 
       if (userDocSnap.exists()) {
         const date = new Date(
@@ -29,7 +29,7 @@ const UserProfile = () => {
           date: date,
           ...filtered,
         };
-        setUserData(data);
+        setUserData(data as user);
         setShowLoader(!showLoader);
       } else {
         setShowLoader(!showLoader);

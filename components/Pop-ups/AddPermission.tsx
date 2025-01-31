@@ -229,7 +229,7 @@ const AddPermission = ({
                   name="emp_id"
                   id="emp_id"
                   onChange={handleInputChange}
-                  value={permission.emp_id as any}
+                  value={permission.emp_id}
                   className="bg-gray-50 border outline-none focus:outline-none border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                   placeholder="Employee ID"
                 />
@@ -282,7 +282,7 @@ const AddPermission = ({
                   type="number"
                   name="duration"
                   id="duration"
-                  value={permission.duration as any}
+                  value={permission.duration}
                   onChange={handleInputChange}
                   className="bg-gray-50 border outline-none focus:outline-noneborder-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                   placeholder="2"

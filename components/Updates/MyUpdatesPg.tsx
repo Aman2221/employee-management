@@ -13,7 +13,7 @@ import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
 import { DataCardViewUpdates } from "../Ag-Table/CardView";
-import { updates } from "@/interfaces";
+import { Obj, ObjAny, updates } from "@/interfaces";
 import {
   getCookie,
   getUpdate,
@@ -41,7 +41,7 @@ const MyUpdatesPg = () => {
   const { showLoader, setShowLoader, searchKey } = usePmsContext();
   const [showUpdateMdl, setShowUpdateMdl] = useState(false);
   const [gridApi, setGridApi] = useState<any>(null);
-  const [crrData, setCrrData] = useState<unknown>();
+  const [crrData, setCrrData] = useState<updates>();
   const [updatesData, setUpdatesData] = useState<updates[]>([]);
   const [updatesDataStore, setUpdatesDataStore] = useState<updates[]>([]);
   const [showDD, setShowDD] = useState(false);
@@ -59,11 +59,11 @@ const MyUpdatesPg = () => {
     return tableColumnsDegs;
   }, [leaveFilter.view_type]);
 
-  const onGridReady = (params: any) => {
+  const onGridReady = (params: ObjAny) => {
     setGridApi(params.api); // Storing the grid API for later use
   };
 
-  const onCellClicked = (event: any) => {
+  const onCellClicked = (event: ObjAny) => {
     setCrrData(getUpdate(event.data));
     setShowUpdateMdl(true);
   };
@@ -142,7 +142,7 @@ const MyUpdatesPg = () => {
       }
     } else {
       let filter = updatesDataStore.filter(
-        (item) => item.designation.toLowerCase() == selectedTab
+        (item) => item?.designation.toLowerCase() == selectedTab
       );
       setUpdatesData(tab_name !== "all" ? [...filter] : updatesDataStore);
     }
@@ -296,7 +296,7 @@ const MyUpdatesPg = () => {
                 <AddUpdates
                   show={showUpdateMdl}
                   setShow={setShowUpdateMdl}
-                  data={crrData as any}
+                  data={crrData}
                 />
               )}
             </>

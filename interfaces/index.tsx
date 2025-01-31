@@ -8,6 +8,10 @@ export interface Obj {
   [key: string]: string;
 }
 
+export interface ObjAny {
+  [key: string]: any;
+}
+
 export interface permissions {
   [key: string]: any;
   id?: s | undefined;
@@ -86,25 +90,23 @@ export type userKeys =
   | "date";
 
 export interface updates {
-  id: s;
+  [key: string]: any;
+  id?: s;
   website_names: s;
-  assigned_by: s;
-  emp_id: s;
+  assigned_by?: s;
+  emp_id?: s;
   name: s;
-  created_at: {
-    seconds: n;
-    nanoseconds: n;
-  };
-  added_by: s;
+  created_at?: Timestamp;
+  added_by?: s;
   task: s;
-  uid: s;
+  uid?: s;
   date: s;
   email: s;
   designation: s;
   status: s;
-  verified_by: s;
-  time: s;
-  summary: s;
+  verified_by?: s;
+  time?: s;
+  summary?: s;
 }
 
 export interface slotType {

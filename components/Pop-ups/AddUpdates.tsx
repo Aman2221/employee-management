@@ -6,7 +6,7 @@ import jsonData from "@/JSON/data.json";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
 import { addDoc, collection } from "firebase/firestore";
-import { updates_inteface } from "@/interfaces";
+import { Obj, ObjAny, updates } from "@/interfaces";
 import { freshUpdate } from "../../DefaultData";
 import {
   ErrorToast,
@@ -20,7 +20,7 @@ const AddUpdates = ({
   show,
   setShow,
 }: {
-  data?: { [key: string]: any };
+  data?: updates;
   show: boolean;
   setShow: (a: boolean) => void;
 }) => {
@@ -28,7 +28,9 @@ const AddUpdates = ({
 
   const [updates, setUpdates] = useState(data);
   const [showStatusDD, setShowStatusDD] = useState(false);
-  const [validations, setValidations] = useState(jsonData.updates_validations);
+  const [validations, setValidations] = useState<ObjAny>(
+    jsonData.updates_validations
+  );
 
   const checkValues = () => {
     let getValidation = checkUpdateFields(updates);
@@ -127,8 +129,8 @@ const AddUpdates = ({
           </div>
           <form className="p-4 md:p-5" onSubmit={handleSubmit}>
             <div className="grid gap-4 mb-4 grid-cols-2">
-              {jsonData.updates_fields.map((item: any) => {
-                let keyName: keyof updates_inteface = item.name;
+              {jsonData.updates_fields.map((item: ObjAny) => {
+                let keyName: string = item.name;
                 return (
                   <>
                     {item.name == "website_names" || item.name == "summary" ? (
