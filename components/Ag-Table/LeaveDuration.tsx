@@ -14,11 +14,11 @@ const LeaveDuration = ({
   type: string;
   duration: number;
 }) => {
-  const [newDate, setNewDate] = useState<Date | null>(null);
-  if (!newDate) return null;
-  const hours = String(newDate.getHours()).padStart(2, "0");
-  const minutes = String(newDate.getMinutes()).padStart(2, "0");
-  const twoHoursLater = new Date(newDate.getTime() + duration * 60 * 60 * 1000); // Add 2 hours in milliseconds
+  const hours = String(new Date().getHours()).padStart(2, "0");
+  const minutes = String(new Date().getMinutes()).padStart(2, "0");
+  const twoHoursLater = new Date(
+    new Date().getTime() + duration * 60 * 60 * 1000
+  ); // Add 2 hours in milliseconds
   const endHours = String(twoHoursLater.getHours()).padStart(2, "0");
   const endMinutes = String(twoHoursLater.getMinutes()).padStart(2, "0");
 
@@ -34,8 +34,10 @@ const LeaveDuration = ({
           end_time: endTime,
         }
       : {
-          start_date: newDate.toISOString().split("T")[0],
-          end_date: new Date(newDate.getTime() + duration24x * 60 * 60 * 1000)
+          start_date: new Date().toISOString().split("T")[0],
+          end_date: new Date(
+            new Date().getTime() + duration24x * 60 * 60 * 1000
+          )
             .toISOString()
             .split("T")[0],
         };
@@ -58,8 +60,6 @@ const LeaveDuration = ({
   useEffect(() => {
     setData(keyData);
   }, [type]);
-
-  useEffect(() => setNewDate(new Date()), []);
 
   return (
     <div
