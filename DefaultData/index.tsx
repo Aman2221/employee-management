@@ -59,6 +59,11 @@ export const default_superuser_opts = (
       svg: "/sidebar-icons/file-fill.svg",
     },
     {
+      name: "Report",
+      onClick: () => router.push("/report-bug"),
+      svg: "/sidebar-icons/settings.svg",
+    },
+    {
       name: "FAQ's",
       onClick: () => router.push("/faqs"),
       svg: "/sidebar-icons/FAQ.svg",
@@ -178,5 +183,18 @@ export const freshUpdate = () => {
     created_at: Timestamp.now(),
     uid: user && user.uid ? user.uid : "",
     added_by: user && user.email ? user.email : "",
+  };
+};
+
+export const freshBug = () => {
+  return {
+    bug_title: "",
+    bug_description: "",
+    bug_priority: "bug priority",
+    device_browser_info: "",
+    expected_behaviour: "",
+    step_to_reproduce: "",
+    screenshot_upload: [],
+    created_at: Timestamp.now(),
   };
 };

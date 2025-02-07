@@ -14,10 +14,11 @@ const LeaveDuration = ({
   type: string;
   duration: number;
 }) => {
-  const now = new Date();
-  const hours = String(now.getHours()).padStart(2, "0");
-  const minutes = String(now.getMinutes()).padStart(2, "0");
-  const twoHoursLater = new Date(now.getTime() + duration * 60 * 60 * 1000); // Add 2 hours in milliseconds
+  const [newDate, setNewDate] = useState<Date | null>(null);
+  if (!newDate) return null;
+  const hours = String(newDate.getHours()).padStart(2, "0");
+  const minutes = String(newDate.getMinutes()).padStart(2, "0");
+  const twoHoursLater = new Date(newDate.getTime() + duration * 60 * 60 * 1000); // Add 2 hours in milliseconds
   const endHours = String(twoHoursLater.getHours()).padStart(2, "0");
   const endMinutes = String(twoHoursLater.getMinutes()).padStart(2, "0");
 
@@ -33,8 +34,8 @@ const LeaveDuration = ({
           end_time: endTime,
         }
       : {
-          start_date: new Date().toISOString().split("T")[0],
-          end_date: new Date(now.getTime() + duration24x * 60 * 60 * 1000)
+          start_date: newDate.toISOString().split("T")[0],
+          end_date: new Date(newDate.getTime() + duration24x * 60 * 60 * 1000)
             .toISOString()
             .split("T")[0],
         };
@@ -57,6 +58,8 @@ const LeaveDuration = ({
   useEffect(() => {
     setData(keyData);
   }, [type]);
+
+  useEffect(() => setNewDate(new Date()), []);
 
   return (
     <div
@@ -85,9 +88,9 @@ const LeaveDuration = ({
                     viewBox="0 0 24 24"
                   >
                     <path
-                      fill-rule="evenodd"
+                      fillRule="evenodd"
                       d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z"
-                      clip-rule="evenodd"
+                      clipRule="evenodd"
                     />
                   </svg>
                 </div>

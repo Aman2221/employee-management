@@ -125,10 +125,12 @@ const Nav = ({ showSearchInput = true }: { showSearchInput?: boolean }) => {
         <div className="container mx-auto flex flex-wrap items-center justify-between py-4">
           <Link href="/" className=" ">
             <Image
+              priority
               src="/logo/logo.svg"
               width={200}
               height={20}
               alt="primasoft logo"
+              className="dimensions-auto"
             />
           </Link>
 

@@ -69,8 +69,10 @@ const Sidebar = () => {
               <Image
                 src="/logo/logo.svg"
                 width={200}
+                priority
                 height={20}
                 alt="primasoft logo"
+                className="dimensions-auto"
               />
             </Link>
           </div>

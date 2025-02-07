@@ -1,3 +1,4 @@
+"use client";
 import React, { ReactNode } from "react";
 import HomeComp from "../HomeComp";
 import Nav from "../Navbar/Nav";
@@ -10,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "react-tooltip/dist/react-tooltip.css";
 import "animate.css";
+import ReportBugToast from "../Report-Bug/ReportBugToast";
 
 const Layout = ({
   children = <HomeComp />,
@@ -26,6 +28,7 @@ const Layout = ({
         <div className="w-full">
           <Nav showSearchInput={showSearchInput} />
           <div className="py-14">{children}</div>
+          <ReportBugToast />
           <Footer />
           <ToastContainer />
         </div>

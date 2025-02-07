@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 
-const NotFounf = () => {
+const NotFound = () => {
   return (
     <section className="bg-white dark:bg-gray-900 h-dvh flex-center">
       <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
@@ -28,4 +28,4 @@ const NotFounf = () => {
   );
 };
 
-export default NotFounf;
+export default NotFound;

@@ -5,20 +5,19 @@ import { holiday } from "@/interfaces";
 
 const UpcomingLeavsComp = () => {
   const [data, setData] = useState<holiday[]>();
-
+  const [newDate, setNewDate] = useState<Date | null>(null);
+  if (!newDate) return null;
   //set data to future holiday's only
   const getUpcomingHolidays = () => {
-    const currentDate = new Date();
-
     const upcomingHolidays = json.holidays
       .map((holiday) => {
         if (Array.isArray(holiday.dates)) {
           const futureDates = holiday.dates.filter(
-            (entry) => new Date(entry.date) > currentDate
+            (entry) => new Date(entry.date) > newDate
           );
           return futureDates.length ? { ...holiday, dates: futureDates } : null;
         }
-        return new Date(holiday.date as string) > currentDate ? holiday : null;
+        return new Date(holiday.date as string) > newDate ? holiday : null;
       })
       .filter(Boolean); // Remove null values
 
@@ -27,6 +26,7 @@ const UpcomingLeavsComp = () => {
 
   useEffect(() => {
     getUpcomingHolidays();
+    setNewDate(new Date());
   }, []);
 
   return (

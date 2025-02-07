@@ -686,6 +686,38 @@
         "type" : "number",
         "label" : "sick leave"
       }
+    ],
+    "bug_fields" : [
+      {
+        "label": "Bug Title (Short Summary)",
+        "name": "bug_title",
+        "type": "text"
+      },
+      {
+        "label": "Bug Description (What Happened?)",
+        "name": "bug_description",
+        "type": "text"
+      },
+      {
+        "label": "Steps to Reproduce",
+        "name": "step_to_reproduce",
+        "type": "text"
+      },
+      {
+        "label": "Expected Behavior",
+        "name": "expected_behaviour",
+        "type": "text"
+      },
+      {
+        "label": "Device & Browser Info",
+        "name": "device_browser_info",
+        "type": "text"
+      },
+      {
+        "label": "Bug Priority",
+        "name": "bug_priority",
+        "type": "text"
+      }
     ]
 }
 

@@ -73,7 +73,9 @@ const LoginPg = () => {
             width={200}
             height={20}
             alt="primasoft logo"
+            priority
             src="/logo/logo.svg"
+            className="dimensions-auto"
           />
         </div>
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
@@ -98,6 +100,7 @@ const LoginPg = () => {
                   className=" outline-none border bg-transparent border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="john@primasofttechnology.com"
                   required
+                  autoComplete={"email"}
                 />
               </div>
               <div className="relative">
@@ -116,6 +119,7 @@ const LoginPg = () => {
                   value={userData.password}
                   className="bg-transparent border outline-none border-gray-300 text-gray-900 rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required
+                  autoComplete={"password"}
                 />
                 <i
                   onClick={() => setShowPass(!showPass)}

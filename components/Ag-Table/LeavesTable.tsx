@@ -2,7 +2,6 @@
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import dynamic from "next/dynamic";
-import DataCardView from "./CardView";
 import Loader from "../Common/Loader";
 import data from "@/JSON/data.json";
 import useSystemTheme from "@/hooks/useSystemTheme";
@@ -36,6 +35,7 @@ import {
   pushNotificationToDb,
   updatePermissionStatusInDB,
 } from "@/functions";
+import DataCardViewLeaves from "./CardView";
 
 const LeaveModal = dynamic(() => import("../Pop-ups/LeaveModal"), {
   ssr: false,
@@ -141,10 +141,9 @@ const LeavesTable = () => {
       );
       const querySnapshot = await getDocs(q);
       tempData = querySnapshot.docs.map((doc) => {
-        const { created_at, ...allData } = doc.data();
         return {
           id: doc.id,
-          ...allData,
+          ...doc.data(),
         };
       });
     } catch (e) {
@@ -169,10 +168,9 @@ const LeavesTable = () => {
 
       if (!querySnapshot.empty) {
         let tempData: unknown = querySnapshot.docs.map((doc) => {
-          const { created_at, ...allData } = doc.data();
           return {
             id: doc.id,
-            ...allData,
+            ...doc.data,
           };
         });
         setPmsDataStore(tempData as permissions[]);
@@ -202,6 +200,7 @@ const LeavesTable = () => {
 
   const onCardClick = (leaveData: permissions) => {
     setCrrData(leaveData);
+    console.log("leaveData :", leaveData);
     setShowLeaveModel(true);
   };
 
@@ -317,12 +316,9 @@ const LeavesTable = () => {
                   {pmsDataStore && pmsDataStore.length ? (
                     leaveFilter.view_type == "cardView" ? (
                       <div className="grid grid-cols-4 gap-6">
-                        {pmsData.map((leave) => (
-                          <div
-                            key={leave.created_at?.toMillis()}
-                            onClick={() => onCardClick(leave)}
-                          >
-                            <DataCardView
+                        {pmsData.map((leave, index) => (
+                          <div key={index} onClick={() => onCardClick(leave)}>
+                            <DataCardViewLeaves
                               type={leave.type as string}
                               date={leave.date as string}
                               name={leave.name as string}

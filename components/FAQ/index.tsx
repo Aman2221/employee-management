@@ -34,7 +34,11 @@ const FAQPage = () => {
                     width={20}
                     height={20}
                     alt="accordion"
-                    className={active == index ? "rotate-270" : "rotate-180"}
+                    className={
+                      active == index
+                        ? "rotate-270 dimensions-auto"
+                        : "rotate-180 dimensions-auto"
+                    }
                   />
                 </button>
                 <div

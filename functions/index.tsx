@@ -1,5 +1,30 @@
+import * as XLSX from "xlsx";
+import * as cookie from "cookie";
+import CryptoJS from "crypto-js";
+import { db } from "@/config/firebase";
+import { Bounce, toast } from "react-toastify";
+import { NextApiRequest, NextApiResponse } from "next";
+import { AgGridReact } from "ag-grid-react";
+import {
+  DocumentReference,
+  Timestamp,
+  addDoc,
+  arrayUnion,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  orderBy,
+  query,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import {
   Obj,
+  ObjAny,
+  bugInterface,
   freshUserInterface,
   leaveInterface,
   notificationsInterface,
@@ -9,28 +34,7 @@ import {
   updates,
   user,
 } from "@/interfaces";
-import * as XLSX from "xlsx";
-import cookie from "cookie";
-import CryptoJS from "crypto-js";
-import { db } from "@/config/firebase";
-import { Bounce, toast } from "react-toastify";
-import {
-  DocumentReference,
-  DocumentSnapshot,
-  Timestamp,
-  arrayUnion,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  orderBy,
-  query,
-  setDoc,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-import { NextApiRequest, NextApiResponse } from "next";
-import { AgGridReact } from "ag-grid-react";
+import { getDatabase, ref, push, set } from "firebase/database";
 
 export const removeKeyFromArray = (
   arr: permissions[],
@@ -277,7 +281,7 @@ export const addUserToDB = async (
   await setDoc(userDoc, {
     ...userData,
     uid: uid,
-    createdAt: new Date(),
+    createdAt: serverTimestamp(),
   });
 };
 
@@ -856,4 +860,64 @@ export const handleStatusEmail = async (
     capitalizeFirstLetter(status),
     email
   );
+};
+
+export const checkBugData = (bug_data: bugInterface) => {
+  return (
+    bug_data.bug_title.length > 0 &&
+    bug_data.bug_description.length > 0 &&
+    bug_data.bug_priority.length > 0 &&
+    bug_data.device_browser_info.length > 0 &&
+    bug_data.expected_behaviour.length > 0 &&
+    bug_data.step_to_reproduce.length > 0 &&
+    bug_data.screenshot_upload.length > 0
+  );
+};
+
+export const storeBugToDB = async (bug: bugInterface) => {
+  console.log("bug:", bug);
+  try {
+    await addDoc(collection(db, "bugs"), bug)
+      .then(() => {
+        SuccessToast("Thanks for reporting the bug! We will fix it soon");
+      })
+      .catch((e) => ErrorToast(e.message));
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+};
+
+export const genrateImgPrev = (fileArray: File[]) => {
+  const previewArray: string[] = [];
+  fileArray.forEach((file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      previewArray.push(reader.result as string);
+    };
+  });
+  return previewArray;
+};
+
+export const storeImgToDB = async (files: File[]) => {
+  const uploadedImages: string[] = [];
+
+  if (files.length === 0) return alert("No files selected");
+
+  const db = getDatabase();
+  const imagesRef = ref(db, "bug_reports/screenshots");
+
+  for (const file of files) {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = async () => {
+      const base64Image = reader.result as string;
+      uploadedImages.push(reader.result as string);
+      const newImageRef = push(imagesRef);
+      await set(newImageRef, { image: base64Image });
+    };
+  }
+
+  SuccessToast("Images uploaded successfully!");
+  return uploadedImages;
 };

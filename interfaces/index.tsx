@@ -1,4 +1,4 @@
-import { Timestamp } from "firebase-admin/firestore";
+import { Timestamp } from "firebase/firestore";
 
 export type s = string;
 export type b = boolean;
@@ -180,4 +180,14 @@ export interface leaveInterface {
   validEmail: b;
   validPhone: b;
   reason: b;
+}
+
+export interface bugInterface {
+  bug_title: s;
+  bug_description: s;
+  bug_priority: s;
+  device_browser_info: s;
+  expected_behaviour: s;
+  step_to_reproduce: s;
+  screenshot_upload: string[];
 }

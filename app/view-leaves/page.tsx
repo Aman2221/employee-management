@@ -3,11 +3,7 @@ import Layout from "@/components/Common/Layout";
 import React, { Suspense } from "react";
 
 const HomePg = () => {
-  return (
-    <Suspense>
-      <Layout>{<HomeComp />}</Layout>;
-    </Suspense>
-  );
+  return <Layout>{<HomeComp />}</Layout>;
 };
 
 export default HomePg;
