@@ -6,7 +6,7 @@ import { bugInterface } from "@/interfaces";
 import { freshBug } from "@/DefaultData";
 import DropDown from "../Common/DropDown";
 import FileUpload from "../Common/FileUpload";
-import { genrateImgPrev, storeBugToDB, storeImgToDB } from "@/functions";
+import { handleCatchError, storeBugToDB, storeImgToDB } from "@/functions";
 import Image from "next/image";
 import hideOverlay from "@/HOC/hideOverlay";
 
@@ -21,8 +21,7 @@ const ReportBug = () => {
 
   const [bugData, setBugData] = useState<bugInterface>(freshBug());
   const [showDd, setShowDd] = useState(false);
-  const [imagePrev, setImagePrev] = useState<string[]>();
-  const [imgFiles, setImgFiles] = useState<File[]>([]);
+  const [imgFiles, setImgFiles] = useState<string[]>([]);
   const DropdownComp = hideOverlay(DropDown, setShowDd);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,21 +37,46 @@ const ReportBug = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     if (target.files) {
-      const filesArray = Array.from(target.files);
-      setImgFiles(filesArray);
-      const prevImgs = genrateImgPrev(filesArray);
-      setImagePrev([...prevImgs]);
+      const files = e.target.files;
+      if (!files) return;
+
+      const fileReaders: Promise<string>[] = [];
+
+      for (const file of files) {
+        fileReaders.push(
+          new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.readAsDataURL(file);
+          })
+        );
+      }
+
+      Promise.all(fileReaders).then((images) => setImgFiles(images));
     }
   };
 
   const hadleBugSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const imgsDbURL = await storeImgToDB(imgFiles);
-    if (imgsDbURL) {
+    console.log("imgFiles :", imgFiles);
+    console.log("stringify :", JSON.stringify({ images: imgFiles }));
+    console.log("parse :", JSON.parse(JSON.stringify({ images: imgFiles })));
+
+    try {
+      const res = await fetch("/api/upload-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ images: imgFiles }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
       await storeBugToDB({
         ...bugData,
-        screenshot_upload: imgsDbURL,
+        screenshot_upload: data.urls,
       });
+    } catch (error) {
+      handleCatchError(error);
     }
   };
 
@@ -132,11 +156,20 @@ const ReportBug = () => {
           label="screenshot upload"
           handleChange={handleFileChange}
         />
-        {imagePrev?.map((pic) => (
-          <div key={pic}>
-            <Image src={pic} height={60} width={60} alt="bug screenshot" />
-          </div>
-        ))}
+        <div className="flex gap-5">
+          {imgFiles?.map((pic) => (
+            <div key={pic}>
+              <Image
+                src={pic}
+                height={100}
+                width={100}
+                alt="bug screenshot"
+                className="shadow shadow-slate-600"
+              />
+            </div>
+          ))}
+        </div>
+
         <div className="flex w-full justify-end">
           <button
             type="submit"

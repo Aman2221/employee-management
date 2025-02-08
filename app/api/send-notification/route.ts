@@ -1,14 +1,13 @@
 // app/api/send-email/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
-import { NextApiResponse } from 'next';
 import nodemailer from 'nodemailer';
 import fs from "fs";
 import path from "path";
 // Note: Next.js does not have built-in support to disable body parsing in the `app` directory like in the `pages` directory.
 // You need to manually handle the request body parsing.
 
-export async function POST(request: NextRequest, response: NextApiResponse) {
+export async function POST(request: NextRequest) {
     try {
         // Read the request body stream
         const reader = request.body?.getReader();

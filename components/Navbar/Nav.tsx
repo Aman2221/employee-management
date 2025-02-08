@@ -14,7 +14,6 @@ import { db } from "@/config/firebase";
 import { useRouter } from "next/navigation";
 import { getAuth, signOut } from "firebase/auth";
 import {
-  ErrorToast,
   deleteAllCookies,
   exportToExcel,
   getCookie,
@@ -96,7 +95,9 @@ const Nav = ({ showSearchInput = true }: { showSearchInput?: boolean }) => {
   }, [showNotice]);
 
   useEffect(() => {
-    const user = JSON.parse(getCookie("user") as string);
+    const getUser = getCookie("user");
+
+    const user = JSON.parse(getUser as string);
     if (user && user?.username) {
       setUserName(user.username);
       setIsSuper(user.role.toLowerCase() !== "employee");
