@@ -13,7 +13,7 @@ import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { usePmsContext } from "@/context";
 import { DataCardViewUpdates } from "../Ag-Table/CardView";
-import { Obj, ObjAny, updates } from "@/interfaces";
+import { ObjAny, updates } from "@/interfaces";
 import {
   getCookie,
   getUpdate,
