@@ -9,17 +9,16 @@ cloudinary.config({
 
 export async function POST(req: NextRequest) {
     if (req.method !== "POST") {
-        return NextResponse.json({ error: "Method Not Allowed" }), { status: 405 };
+        return NextResponse.json({ error: "Method Not Allowed" }, { status: 405 }); // ✅ Corrected return type
     }
 
     try {
-
         const reader = req.body?.getReader();
         const result = await reader?.read();
         const body: any = result?.value ? Buffer.from(result.value).toString() : '';
 
-        console.log("body :", req.body)
-        const { images } = JSON.parse(body); // ✅ No need to parse, Next.js already does it
+        console.log("body:", req.body);
+        const { images } = JSON.parse(body); // ✅ Next.js automatically parses JSON, so no need to manually parse
 
         if (!images || !Array.isArray(images)) {
             return NextResponse.json({ error: "Invalid images format" }, { status: 400 });
