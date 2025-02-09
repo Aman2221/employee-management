@@ -12,7 +12,7 @@ import { AgGridReact } from "ag-grid-react";
 import StatusRenderer, { CellStatusRenderer } from "./StatusRenderer";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
-import { permissions, s, updates, user } from "@/interfaces";
+import { permissions, s } from "@/interfaces";
 import { CellClickedEvent, GridReadyEvent } from "ag-grid-community";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "@/config/firebase";

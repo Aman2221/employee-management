@@ -867,10 +867,10 @@ export const checkBugData = (bug_data: bugInterface) => {
     bug_data.bug_title.length > 0 &&
     bug_data.bug_description.length > 0 &&
     bug_data.bug_priority.length > 0 &&
+    bug_data.bug_priority !== "bug priority" &&
     bug_data.device_browser_info.length > 0 &&
     bug_data.expected_behaviour.length > 0 &&
-    bug_data.step_to_reproduce.length > 0 &&
-    bug_data.screenshot_upload.length > 0
+    bug_data.step_to_reproduce.length > 0
   );
 };
 

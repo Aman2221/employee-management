@@ -4,6 +4,7 @@ const FloatingInput = ({
   name = "",
   label = "",
   type = "",
+  value = "",
   placeholder = "",
   isBorder = true,
   onChange = () => {},
@@ -11,6 +12,7 @@ const FloatingInput = ({
   name?: string;
   label?: string;
   type?: string;
+  value?: string;
   placeholder?: string;
   isBorder?: boolean;
   onChange?: (a: React.ChangeEvent<HTMLInputElement>) => void;
@@ -18,6 +20,7 @@ const FloatingInput = ({
   return (
     <div key={name} className="relative z-0 w-full mb-5 group">
       <input
+        value={value}
         type={type}
         name={name}
         id={name}

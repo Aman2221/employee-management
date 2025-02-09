@@ -191,3 +191,13 @@ export interface bugInterface {
   step_to_reproduce: s;
   screenshot_upload: string[];
 }
+
+export interface bugsInterface {
+  bug_priority: s;
+  device_browser_info: s;
+  expected_behaviour: s;
+  step_to_reproduce: s;
+  screenshot_upload: s[];
+  bug_title: s;
+  id?: s;
+}

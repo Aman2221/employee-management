@@ -7,4 +7,7 @@ const withPWA = require("next-pwa")({
 
 module.exports = withPWA({
   // Additional Next.js config options here
+  images: {
+    domains: ["res.cloudinary.com"],
+  },
 });

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config({
@@ -8,29 +8,26 @@ cloudinary.config({
 });
 
 export async function POST(req: NextRequest) {
-    if (req.method !== "POST") {
-        return NextResponse.json({ error: "Method Not Allowed" }, { status: 405 });
-    }
-
     try {
+        // ✅ Parse request body properly
+        const body = await req.json();
+        const { imgFiles } = body;
 
-        const reader = req.body?.getReader();
-        const result = await reader?.read();
-        const body: any = result?.value ? Buffer.from(result.value).toString() : '';
+        console.log("Received Images:", imgFiles);
 
-        console.log("body :", req.body)
-        const { images } = JSON.parse(body); // ✅ No need to parse, Next.js already does it
-
-        if (!images || !Array.isArray(images)) {
+        // ✅ Validate images array
+        if (!imgFiles || !Array.isArray(imgFiles) || imgFiles.length === 0) {
             return NextResponse.json({ error: "Invalid images format" }, { status: 400 });
         }
 
-        const uploadPromises = images.map((image) =>
+        // ✅ Upload images to Cloudinary
+        const uploadPromises = imgFiles.map((image) =>
             cloudinary.uploader.upload(image, { folder: "bug-reports" })
         );
 
         const uploadedImages = await Promise.all(uploadPromises);
 
+        // ✅ Return uploaded image URLs
         return NextResponse.json({ urls: uploadedImages.map((img) => img.secure_url) }, { status: 200 });
     } catch (error) {
         console.error("Upload Error:", error);

@@ -61,7 +61,7 @@ export const default_superuser_opts = (
     {
       name: "Report",
       onClick: () => router.push("/report-bug"),
-      svg: "/sidebar-icons/settings.svg",
+      svg: "/sidebar-icons/bug.svg",
     },
     {
       name: "FAQ's",
@@ -72,6 +72,11 @@ export const default_superuser_opts = (
       name: "settings",
       onClick: () => router.push("/settings"),
       svg: "/sidebar-icons/settings.svg",
+    },
+    {
+      name: "view bugs",
+      onClick: () => router.push("/view-bugs"),
+      svg: "/sidebar-icons/view-bugs.svg",
     },
   ];
 };
@@ -190,7 +195,7 @@ export const freshBug = () => {
   return {
     bug_title: "",
     bug_description: "",
-    bug_priority: "bug priority",
+    bug_priority: "select bug priority",
     device_browser_info: "",
     expected_behaviour: "",
     step_to_reproduce: "",
@@ -198,3 +203,11 @@ export const freshBug = () => {
     created_at: Timestamp.now(),
   };
 };
+
+export const bugInputs: string[] = [
+  "bug_priority",
+  "device_browser_info",
+  "expected_behaviour",
+  "step_to_reproduce",
+  "screenshot_upload",
+];

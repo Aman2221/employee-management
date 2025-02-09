@@ -70,12 +70,11 @@ const Sidebar = () => {
           <div className="flex border-b border-slate-600">
             <Link href="/" className="pb-4 pl-2 ">
               <Image
-                src="/logo/logo.svg"
-                width={200}
                 priority
+                src="/logo/logo.png"
+                width={180}
                 height={20}
                 alt="primasoft logo"
-                className="dimensions-auto"
               />
             </Link>
           </div>

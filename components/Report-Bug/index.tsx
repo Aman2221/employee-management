@@ -3,22 +3,20 @@ import React, { useEffect, useState } from "react";
 import josn from "@/JSON/data.json";
 import FloatingInput from "../Common/FloatingInput";
 import { bugInterface } from "@/interfaces";
-import { freshBug } from "@/DefaultData";
+import { bugInputs, freshBug } from "@/DefaultData";
 import DropDown from "../Common/DropDown";
 import FileUpload from "../Common/FileUpload";
-import { handleCatchError, storeBugToDB, storeImgToDB } from "@/functions";
+import {
+  ErrorToast,
+  WarningToast,
+  checkBugData,
+  handleCatchError,
+  storeBugToDB,
+} from "@/functions";
 import Image from "next/image";
 import hideOverlay from "@/HOC/hideOverlay";
 
 const ReportBug = () => {
-  const gridInput: string[] = [
-    "bug_priority",
-    "device_browser_info",
-    "expected_behaviour",
-    "step_to_reproduce",
-    "screenshot_upload",
-  ];
-
   const [bugData, setBugData] = useState<bugInterface>(freshBug());
   const [showDd, setShowDd] = useState(false);
   const [imgFiles, setImgFiles] = useState<string[]>([]);
@@ -58,25 +56,31 @@ const ReportBug = () => {
 
   const hadleBugSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("imgFiles :", imgFiles);
-    console.log("stringify :", JSON.stringify({ images: imgFiles }));
-    console.log("parse :", JSON.parse(JSON.stringify({ images: imgFiles })));
+    if (checkBugData(bugData)) {
+      try {
+        WarningToast("Please wait images are getting uploaded...");
+        // const res = await fetch("/api/upload-image", {
+        //   method: "POST",
+        //   headers: { "Content-Type": "application/json" },
+        //   body: JSON.stringify({ imgFiles }),
+        // }).then((res) => {
+        //   SuccessToast("Images uploaded to DB");
+        //   return res;
+        // });
 
-    try {
-      const res = await fetch("/api/upload-image", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ images: imgFiles }),
-      });
+        // const data = await res.json();
+        // if (!res.ok) throw new Error(data.error);
+        // await storeBugToDB({
+        //   ...bugData,
+        //   screenshot_upload: [],
+        // });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      await storeBugToDB({
-        ...bugData,
-        screenshot_upload: data.urls,
-      });
-    } catch (error) {
-      handleCatchError(error);
+        // setBugData(freshBug());
+      } catch (error) {
+        handleCatchError(error);
+      }
+    } else {
+      ErrorToast("All fields are required");
     }
   };
 
@@ -107,11 +111,12 @@ const ReportBug = () => {
 
       <form className="w-full mt-10" onSubmit={hadleBugSubmit}>
         {josn.bug_fields
-          .filter((i) => !gridInput.includes(i.name))
+          .filter((i) => !bugInputs.includes(i.name))
           .map((bug) => (
             <FloatingInput
+              value={bugData[bug.name as keyof bugInterface] as string}
               name={bug.name}
-              label={bug.label}
+              label={bug.label + "*"}
               type={bug.type}
               onChange={handleInputChange}
               key={bug.name}
@@ -119,14 +124,14 @@ const ReportBug = () => {
           ))}
         <div className={"grid md:grid-cols-2 md:gap-6"}>
           {josn.bug_fields
-            .filter((i) => gridInput.includes(i.name))
+            .filter((i) => bugInputs.includes(i.name))
             .map((bug) => {
               return bug.name == "bug_priority" ? (
                 <DropdownComp
                   key={bugData.bug_priority}
                   show={showDd}
                   setShow={setShowDd}
-                  options={["bug priority", "low", "medium", "high"]}
+                  options={["select bug priority", "low", "medium", "high"]}
                   onChange={handleDDChange}
                   SelectBtnComp={
                     <button
@@ -142,8 +147,9 @@ const ReportBug = () => {
                 />
               ) : (
                 <FloatingInput
+                  value={bugData[bug.name as keyof bugInterface] as string}
                   name={bug.name}
-                  label={bug.label}
+                  label={bug.label + "*"}
                   type={bug.type}
                   onChange={handleInputChange}
                   key={bug.name}
@@ -158,7 +164,13 @@ const ReportBug = () => {
         />
         <div className="flex gap-5">
           {imgFiles?.map((pic) => (
-            <div key={pic}>
+            <a
+              className="border border-blue-400"
+              key={pic}
+              href={pic}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Image
                 src={pic}
                 height={100}
@@ -166,7 +178,7 @@ const ReportBug = () => {
                 alt="bug screenshot"
                 className="shadow shadow-slate-600"
               />
-            </div>
+            </a>
           ))}
         </div>
 

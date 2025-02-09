@@ -20,7 +20,7 @@ import {
   getData,
   handleCatchError,
 } from "@/functions";
-import { Obj, notificationsInterface } from "@/interfaces";
+import { notificationsInterface } from "@/interfaces";
 
 const AddUpdates = dynamic(() => import("../Pop-ups/AddUpdates"), {
   ssr: false,
@@ -127,11 +127,10 @@ const Nav = ({ showSearchInput = true }: { showSearchInput?: boolean }) => {
           <Link href="/" className=" ">
             <Image
               priority
-              src="/logo/logo.svg"
+              src="/logo/logo.png"
               width={200}
               height={20}
               alt="primasoft logo"
-              className="dimensions-auto"
             />
           </Link>
 
