@@ -5,7 +5,7 @@ import React, { Suspense } from "react";
 const Profile = () => {
   return (
     <Suspense>
-      <Layout>{<UserProfile />}</Layout>
+      <Layout showSearchInput={false}>{<UserProfile />}</Layout>
     </Suspense>
   );
 };

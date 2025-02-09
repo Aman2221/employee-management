@@ -4,7 +4,7 @@ import React from "react";
 
 const TravelAndExpenses = () => {
   return (
-    <Layout>
+    <Layout showSearchInput={false}>
       <PDFViewer pdfSrc="/pdf/expenses-policy.pdf#zoom=175" />
     </Layout>
   );

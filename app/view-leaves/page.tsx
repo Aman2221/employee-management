@@ -1,6 +1,6 @@
 import HomeComp from "@/components/HomeComp";
 import Layout from "@/components/Common/Layout";
-import React, { Suspense } from "react";
+import React from "react";
 
 const HomePg = () => {
   return <Layout>{<HomeComp />}</Layout>;

@@ -4,7 +4,7 @@ import React from "react";
 
 const UpcomingLeaves = () => {
   return (
-    <Layout>
+    <Layout showSearchInput={false}>
       <UpcomingLeavsComp />
     </Layout>
   );

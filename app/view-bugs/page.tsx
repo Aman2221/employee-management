@@ -4,7 +4,7 @@ import React from "react";
 
 const ViewBugs = () => {
   return (
-    <Layout>
+    <Layout showSearchInput={false}>
       <BugsList />
     </Layout>
   );

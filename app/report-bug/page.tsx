@@ -4,7 +4,7 @@ import React from "react";
 
 const Report = () => {
   return (
-    <Layout>
+    <Layout showSearchInput={false}>
       <ReportBug />
     </Layout>
   );

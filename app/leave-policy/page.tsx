@@ -4,7 +4,7 @@ import React from "react";
 
 const LeavePolicy = () => {
   return (
-    <Layout>
+    <Layout showSearchInput={false}>
       <PDFViewer pdfSrc="/pdf/leave-policy.pdf#zoom=175" />
     </Layout>
   );

@@ -4,7 +4,7 @@ import React from "react";
 
 const FAQs = () => {
   return (
-    <Layout>
+    <Layout showSearchInput={false}>
       <FAQPage />
     </Layout>
   );

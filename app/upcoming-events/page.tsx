@@ -4,7 +4,7 @@ import React from "react";
 
 const UpcomingEvents = () => {
   return (
-    <Layout>
+    <Layout showSearchInput={false}>
       <UpcomingEventsComp />
     </Layout>
   );

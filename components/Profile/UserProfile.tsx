@@ -91,7 +91,7 @@ const UserProfile = () => {
                 <input
                   type="text"
                   className="bg-none bg-transparent font-bold capitalize text-2xl poppins"
-                  value={
+                  defaultValue={
                     item == "createdAt"
                       ? userData.date
                       : userData[item as userKeys]

@@ -4,7 +4,7 @@ import React from "react";
 
 const Settings = () => {
   return (
-    <Layout>
+    <Layout showSearchInput={false}>
       <SettingsComp />
     </Layout>
   );

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { usePmsContext } from "@/context";
 import { getAuth, signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
@@ -18,8 +19,11 @@ import {
 
 const Sidebar = () => {
   const router = useRouter();
+  const pathname = usePathname();
+  const activePath = pathname.replace("/", "");
   const { showSidebar, setShowSidebar } = usePmsContext();
   const [isSuper, setIsSuper] = useState(false);
+  const [currPath, setCurrPath] = useState("");
 
   const handleLogout = async () => {
     const auth = getAuth();
@@ -80,14 +84,28 @@ const Sidebar = () => {
           </div>
           <ul className="space-y-2 font-medium mt-4">
             {(isSuper ? superuser_options : normaluser_options).map((item) => (
-              <li key={item.name}>
-                <button
-                  onClick={item.onClick}
-                  className="w-full flex items-center px-6 py-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                >
-                  <Image src={item.svg} alt="name" height={20} width={20} />
-                  <span className="ms-3 capitalize">{item.name}</span>
-                </button>
+              <li key={item.name} onClick={() => setCurrPath(item.name)}>
+                {item.name == "export data" ? (
+                  <button
+                    onClick={item.onClick}
+                    className={`${
+                      activePath == item.path ? "bg-gray-700" : ""
+                    } w-full flex items-center px-6 py-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group`}
+                  >
+                    <Image src={item.svg} alt="name" height={20} width={20} />
+                    <span className="ms-3 capitalize">{item.name}</span>
+                  </button>
+                ) : (
+                  <Link
+                    href={"/" + item.path}
+                    className={`${
+                      activePath == item.path ? "bg-gray-700" : ""
+                    } w-full flex items-center px-6 py-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group`}
+                  >
+                    <Image src={item.svg} alt="name" height={20} width={20} />
+                    <span className="ms-3 capitalize">{item.name}</span>
+                  </Link>
+                )}
               </li>
             ))}
           </ul>
