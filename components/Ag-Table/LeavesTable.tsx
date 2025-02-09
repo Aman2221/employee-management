@@ -140,7 +140,7 @@ const LeavesTable = () => {
         orderBy("created_at", "desc")
       );
       const querySnapshot = await getDocs(q);
-      tempData = querySnapshot.docs.map((doc) => {
+      tempData = querySnapshot.docs.map((doc: any) => {
         return {
           id: doc.id,
           ...doc.data(),
@@ -167,15 +167,17 @@ const LeavesTable = () => {
       const querySnapshot = await getDocs(userQuery);
 
       if (!querySnapshot.empty) {
-        let tempData: unknown = querySnapshot.docs.map((doc) => {
+        let tempData: unknown = querySnapshot.docs.map((doc: any) => {
           return {
             id: doc.id,
-            ...doc.data,
+            ...doc.data(),
           };
         });
         setPmsDataStore(tempData as permissions[]);
+        console.log("tempData :", tempData);
+        if (tempData) setPmsData(tempData as permissions[]);
+
         setTimeout(() => {
-          if (tempData) setPmsData(tempData as permissions[]);
           setShowLoader(false);
         }, 1000);
       } else {
@@ -200,11 +202,11 @@ const LeavesTable = () => {
 
   const onCardClick = (leaveData: permissions) => {
     setCrrData(leaveData);
-    console.log("leaveData :", leaveData);
     setShowLeaveModel(true);
   };
 
   const onTabChange = async (tab_name: string) => {
+    console.log("tab :", pmsData);
     const selectLeave = tab_name.replace("leave", "");
 
     const case_match = capitalizeFirstLetter(selectLeave).replace(/\s+/g, "");
