@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "types": ["firebase"],
     "lib": [
       "dom",
       "dom.iterable",
