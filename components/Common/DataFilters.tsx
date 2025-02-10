@@ -18,6 +18,7 @@ const DataFilters = ({
   view_type,
   dropDownmOtps,
   extClass = "",
+  showTabs = true,
 }: {
   updates_tabs: Obj[];
   onTabChange: (a: string) => void;
@@ -31,6 +32,7 @@ const DataFilters = ({
   view_type: string;
   dropDownmOtps: string[];
   extClass?: string;
+  showTabs?: boolean;
 }) => {
   const DropdownComp = hideOverlay(DropDown, setShowDD);
 
@@ -38,14 +40,19 @@ const DataFilters = ({
     <div
       className={`${extClass} flex justify-between w-full border-b border-gray-200 dark:border-gray-700`}
     >
-      <div>
+      {showTabs && (
         <Tabs
           tabs={updates_tabs}
           onTabChange={onTabChange}
           activeTab={leave_type}
         />
-      </div>
-      <div className="flex items-start gap-6">
+      )}
+
+      <div
+        className={`flex ${
+          showTabs ? "items-start gap-6" : "justify-between w-full"
+        }`}
+      >
         <DropdownComp
           extClass="w-32"
           onChange={onStatusChange}

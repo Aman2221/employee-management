@@ -68,6 +68,13 @@ export const default_superuser_opts = (
       svg: "/sidebar-icons/file.svg",
     },
     {
+      name: "App Documentatiom",
+      path: "app-documentation",
+      pathname: "app-documentation",
+      onClick: () => router.push("/app-documentation"),
+      svg: "/sidebar-icons/pdf.svg",
+    },
+    {
       name: "travel & expenses",
       path: "travel-and-expenses",
       pathname: "travel-and-expenses",

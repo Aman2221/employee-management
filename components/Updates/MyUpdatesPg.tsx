@@ -209,6 +209,9 @@ const MyUpdatesPg = () => {
           ) : (
             <>
               <DataFilters
+                showTabs={
+                  searchQuerytUid == undefined || searchQuerytUid == null
+                }
                 updates_tabs={data.leaves_tabs}
                 onTabChange={onTabChange}
                 leave_type={leaveFilter.leave_type}

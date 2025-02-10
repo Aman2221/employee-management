@@ -5,32 +5,26 @@ import { holiday } from "@/interfaces";
 
 const UpcomingLeavsComp = () => {
   const [data, setData] = useState<holiday[]>();
-  const [newDate, setNewDate] = useState<Date | null>(null);
 
   //set data to future holiday's only
   const getUpcomingHolidays = () => {
-    if (newDate) {
-      const upcomingHolidays = json.holidays
-        .map((holiday) => {
-          if (Array.isArray(holiday.dates)) {
-            const futureDates = holiday.dates.filter(
-              (entry) => new Date(entry.date) > newDate
-            );
-            return futureDates.length
-              ? { ...holiday, dates: futureDates }
-              : null;
-          }
-          return new Date(holiday.date as string) > newDate ? holiday : null;
-        })
-        .filter(Boolean); // Remove null values
+    const upcomingHolidays = json.holidays
+      .map((holiday) => {
+        if (Array.isArray(holiday.dates)) {
+          const futureDates = holiday.dates.filter(
+            (entry) => new Date(entry.date) > new Date()
+          );
+          return futureDates.length ? { ...holiday, dates: futureDates } : null;
+        }
+        return new Date(holiday.date as string) > new Date() ? holiday : null;
+      })
+      .filter(Boolean); // Remove null values
 
-      setData(upcomingHolidays as holiday[]);
-    }
+    setData(upcomingHolidays as holiday[]);
   };
 
   useEffect(() => {
     getUpcomingHolidays();
-    setNewDate(new Date());
   }, []);
 
   return (
