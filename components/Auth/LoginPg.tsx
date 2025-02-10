@@ -6,6 +6,7 @@ import { auth } from "@/config/firebase";
 import { ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
 import {
+  ErrorToast,
   SuccessToast,
   encryptData,
   getUserDoc,
@@ -50,7 +51,7 @@ const LoginPg = () => {
       );
 
       const user: userType = userCredential.user;
-
+      console.log("user :", user);
       const encryptToken = encryptData(user?.accessToken as string, user.uid);
       // setUserToLocal("user", user);
       setCookie("token", encryptToken, 7);
