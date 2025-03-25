@@ -15,26 +15,29 @@ jobs:
         with:
           node-version: "18.x"
 
-      - name: Debug Secrets Access
-        run: |
-          echo "FIREBASE_PRIVATE_KEY: '${{ secrets.FIREBASE_PRIVATE_KEY }}'"
-          echo "FIREBASE_CLIENT_EMAIL: '${{ secrets.FIREBASE_CLIENT_EMAIL }}'"
-          echo "FIREBASE_PROJECT_ID: '${{ secrets.FIREBASE_PROJECT_ID }}'"
-
-      - name: Debug Environment Variables
-        env:
-          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-          FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
-        run: |
-          echo "FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}"
-          echo "FIREBASE_CLIENT_EMAIL=${FIREBASE_CLIENT_EMAIL}"
-
       - name: Create env file
         run: |
           touch .env.local
-          echo "FIREBASE_PRIVATE_KEY=$(echo '${{ secrets.FIREBASE_PRIVATE_KEY }}' | base64 --decode)" >> .env.local
+          echo "FIREBASE_PRIVATE_KEY=$('${{ secrets.FIREBASE_PRIVATE_KEY }}' | base64 --decode)" >> .env.local
           echo "FIREBASE_CLIENT_EMAIL='${{ secrets.FIREBASE_CLIENT_EMAIL }}'" >> .env.local
           echo "FIREBASE_PROJECT_ID='${{ secrets.FIREBASE_PROJECT_ID }}'" >> .env.local
+          echo "NEXT_PUBLIC_FIREBASE_API_KEY='${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}'" >> .env.local
+          echo "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN='${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}'" >> .env.local
+          echo "NEXT_PUBLIC_FIREBASE_PROJECT_ID='${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}'" >> .env.local
+          echo "NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET='${{ secrets.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET }}'" >> .env.local
+          echo "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID='${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}'" >> .env.local
+          echo "NEXT_PUBLIC_FIREBASE_APP_ID='${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}'" >> .env.local
+          echo "NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID='${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID }}'" >> .env.local
+          echo "NEXT_PUBLIC_FIREBASE_SUPER_USER='${{ secrets.NEXT_PUBLIC_FIREBASE_SUPER_USER }}'" >> .env.local
+          echo "NEXT_PUBLIC_HASH_SALT='${{ secrets.NEXT_PUBLIC_HASH_SALT }}'" >> .env.local
+          echo "NEXT_PUBLIC_EMAIL_USER='${{ secrets.NEXT_PUBLIC_EMAIL_USER }}'" >> .env.local
+          echo "NEXT_PUBLIC_EMAIL_PASS='${{ secrets.NEXT_PUBLIC_EMAIL_PASS }}'" >> .env.local
+          echo "NEXT_PUBLIC_DEV_ENVIRONMENT='${{ secrets.NEXT_PUBLIC_DEV_ENVIRONMENT }}'" >> .env.local
+          echo "NEXT_PUBLIC_PRIVATE_KEY='${{ secrets.NEXT_PUBLIC_PRIVATE_KEY }}'" >> .env.local
+          echo "NEXT_PUBLIC_CLOUD_NAME='${{ secrets.NEXT_PUBLIC_CLOUD_NAME }}'" >> .env.local
+          echo "NEXT_PUBLIC_CLOUD_API_KEY='${{ secrets.NEXT_PUBLIC_CLOUD_API_KEY }}'" >> .env.local
+          echo "NEXT_PUBLIC_CLOUD_API_SECRET='${{ secrets.NEXT_PUBLIC_CLOUD_API_SECRET }}'" >> .env.local
+          echo "NEXT_PUBLIC_CLOUD_ENV_VAR='${{ secrets.NEXT_PUBLIC_CLOUD_ENV_VAR }}'" >> .env.local
           cat .env.local  # Add this to verify contents
 
       - name: Install Dependencies
