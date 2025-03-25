@@ -66,7 +66,7 @@ const LeaveDuration = ({
 
   useEffect(() => {
     setData(keyData);
-  }, [type]);
+  }, [type, keyData]);
 
   return (
     <div

@@ -130,7 +130,7 @@ const LeavesTable = () => {
 
     if (dynamic_defs) return [...tableColumnsDefs, ...dynamic_defs];
     else return [...tableColumnsDefs];
-  }, [openStatusUpdateModal, leaveFilter.view_type]);
+  }, [openStatusUpdateModal, leaveFilter.view_type, pmsDataStore]);
 
   const getAllUsersLeaveData = useCallback(async () => {
     let tempData: unknown = [];
@@ -206,7 +206,6 @@ const LeavesTable = () => {
   };
 
   const onTabChange = async (tab_name: string) => {
-    console.log("tab :", pmsData);
     const selectLeave = tab_name.replace("leave", "");
 
     const case_match = capitalizeFirstLetter(selectLeave).replace(/\s+/g, "");
@@ -283,6 +282,7 @@ const LeavesTable = () => {
     getAllUsersLeaveData,
     getCurrentUserLeaves,
     searchQueryEmail,
+    user,
   ]);
 
   return (

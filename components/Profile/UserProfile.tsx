@@ -44,7 +44,7 @@ const UserProfile = () => {
     if (searchQuery) {
       getCurrentUserData();
     }
-  }, []);
+  }, [getCurrentUserData, searchQuery]);
 
   return userData && showLoader == false ? (
     <div className="py-10 w-full container mx-auto flex gap-4">
