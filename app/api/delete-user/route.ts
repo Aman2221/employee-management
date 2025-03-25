@@ -11,7 +11,6 @@ if (!admin.apps.length) {
             client_email: process.env.FIREBASE_CLIENT_EMAIL,
         };
 
-        console.log("serviceAccount :", serviceAccount)
         if (!serviceAccount.private_key || !serviceAccount.client_email) {
             throw new Error(
                 "Missing Firebase Admin credentials. Ensure PRIVATE_KEY and CLIENT_EMAIL are set in the environment variables."
