@@ -6,9 +6,9 @@ if (!admin.apps.length) {
     try {
         const serviceAccount = {
             type: "service_account",
-            project_id: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-            private_key: process.env.NEXT_PUBLIC_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-            client_email: process.env.NEXT_PUBLIC_CLIENT_EMAIL,
+            project_id: process.env.FIREBASE_PROJECT_ID,
+            private_key: process.env.PRIVATE_KEY?.replace(/\\n/g, "\n"),
+            client_email: process.env.CLIENT_EMAIL,
         };
 
         console.log("serviceAccount :", serviceAccount)
