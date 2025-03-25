@@ -16,19 +16,26 @@ const LeaveDuration = ({
 }) => {
   const hours = String(new Date().getHours()).padStart(2, "0");
   const minutes = String(new Date().getMinutes()).padStart(2, "0");
+  const getDuration =
+    type == "permission" || type == "4 hour"
+      ? parseInt(duration.toString().slice(0, 1))
+      : duration;
+
   const twoHoursLater = new Date(
-    new Date().getTime() + duration * 60 * 60 * 1000
+    new Date().getTime() + getDuration * 60 * 60 * 1000
   ); // Add 2 hours in milliseconds
   const endHours = String(twoHoursLater.getHours()).padStart(2, "0");
   const endMinutes = String(twoHoursLater.getMinutes()).padStart(2, "0");
 
   const currentTime = `${hours}:${minutes}`;
   const endTime = `${endHours}:${endMinutes}`;
-  const duration24x = 24 * duration;
+  const duration24x = 24 * getDuration;
 
-  const slotTypeData = type == "permission" ? json.timeSlot : json.dateSlot;
+  const slotTypeData =
+    type == "permission" || type == "4 hour" ? json.timeSlot : json.dateSlot;
+
   const keyData =
-    type == "permission"
+    type == "permission" || type == "4 hour"
       ? {
           start_time: currentTime,
           end_time: endTime,
@@ -101,8 +108,7 @@ const LeaveDuration = ({
                 name={i.name}
                 id={i.name}
                 className="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                value={data[i.name as keyof slotType]}
-                defaultValue={data[i.name as keyof slotType]}
+                defaultValue={data ? data[i.name as keyof slotType] : ""}
                 onChange={handleChange}
                 required
               />
