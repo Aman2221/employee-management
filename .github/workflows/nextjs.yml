@@ -33,7 +33,6 @@ jobs:
           echo "NEXT_PUBLIC_EMAIL_USER='${{ secrets.NEXT_PUBLIC_EMAIL_USER }}'" >> .env.local
           echo "NEXT_PUBLIC_EMAIL_PASS='${{ secrets.NEXT_PUBLIC_EMAIL_PASS }}'" >> .env.local
           echo "NEXT_PUBLIC_DEV_ENVIRONMENT='${{ secrets.NEXT_PUBLIC_DEV_ENVIRONMENT }}'" >> .env.local
-          echo "NEXT_PUBLIC_PRIVATE_KEY='${{ secrets.NEXT_PUBLIC_PRIVATE_KEY }}'" >> .env.local
           echo "NEXT_PUBLIC_CLOUD_NAME='${{ secrets.NEXT_PUBLIC_CLOUD_NAME }}'" >> .env.local
           echo "NEXT_PUBLIC_CLOUD_API_KEY='${{ secrets.NEXT_PUBLIC_CLOUD_API_KEY }}'" >> .env.local
           echo "NEXT_PUBLIC_CLOUD_API_SECRET='${{ secrets.NEXT_PUBLIC_CLOUD_API_SECRET }}'" >> .env.local
