@@ -10,7 +10,7 @@ if (!admin.apps.length) {
             private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
             client_email: process.env.FIREBASE_CLIENT_EMAIL,
         };
-        console.log("serviceAccount", serviceAccount, process.env.FIREBASE_PROJECT_ID)
+        console.log("serviceAccount", serviceAccount);
         console.log('Private Key EXISTS:', !!process.env.FIREBASE_PRIVATE_KEY)
         console.log('Client Email EXISTS:', !!process.env.FIREBASE_CLIENT_EMAIL)
         console.log('Project ID EXISTS:', !!process.env.FIREBASE_PROJECT_ID)
